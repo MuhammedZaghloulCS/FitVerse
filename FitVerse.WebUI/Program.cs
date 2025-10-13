@@ -1,4 +1,8 @@
+using FitVerse.Core.Interfaces;
+using FitVerse.Core.UnitOfWork;
 using FitVerse.Data.Context;
+using FitVerse.Data.Repositories;
+using FitVerse.Data.UnitOfWork;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -42,7 +46,8 @@ namespace FitVerse.WebUI
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IEquipmentRepository, EquipmentRepository>();
 
 
             var app = builder.Build();
