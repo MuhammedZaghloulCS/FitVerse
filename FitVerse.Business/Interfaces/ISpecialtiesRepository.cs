@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FitVerse.Core.Interfaces
 {
-    public interface ISpecialtiesRepository: IGenericRepository<Data.Models.Specialties>
+    public interface ISpecialtiesRepository: IGenericRepository<Data.Models.Specialty>
     {
     }
 }
