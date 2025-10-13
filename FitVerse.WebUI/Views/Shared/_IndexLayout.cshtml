@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var activeRoute = ViewContext.RouteData.Values["controller"]?.ToString();
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,7 +9,7 @@
     <title>Gym Management System</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="~/css/styles.css">
 </head>
 <body>
     <div class="dashboard">
@@ -18,15 +21,15 @@
             </div>
             <nav class="main-nav">
                 <ul>
-                    <li class="active">
+                    <li class="@(activeRoute == "Home" ? "active" : "")">
                         <a href="#admin">
                             <i class="fas fa-home"></i>
                             <span>Dashboard</span>
                         </a>
                     </li>
 
-                    <li class="active">
-                        <a href="/Equipment/index">
+                    <li class="@(activeRoute == "Equipment" ? "active" : "")">
+                        <a asp-action="index" asp-controller="Equipment">
                             <i class="fas fa-home"></i>
                             <span>Equipment</span>
                         </a>
@@ -117,6 +120,6 @@
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="js/script.js"></script>
+    <script src="~/js/script.js"></script>
 </body>
 </html>
