@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace FitVerse.Data.Models
+{
+    public class CoachSpecialties
+    {
+        public Guid CoachId { get; set; }
+        public virtual Coach? Coach { get; set; }
+        public int SpecialtyId { get; set; }
+        public virtual Specialties? Specialty { get; set; }
+        public string Certification { get; set; } = string.Empty;
+
+    }
+}

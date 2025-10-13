@@ -1,0 +1,64 @@
+﻿using FitVerse.Data.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace FitVerse.Data.Configurations
+{
+    public class ClientConfiguration : IEntityTypeConfiguration<Client>
+    {
+        public void Configure(EntityTypeBuilder<Client> builder)
+        {
+            builder.HasKey(c => c.Id);
+
+            builder.Property(c => c.Name)
+                   .IsRequired()
+                   .HasMaxLength(100);
+
+            builder.Property(c => c.Gender)
+                   .HasMaxLength(10);
+
+            builder.Property(c => c.Goal)
+                   .HasMaxLength(255);
+
+            builder.Property(c => c.Image)
+                   .HasMaxLength(255);
+
+            builder.HasOne(c => c.Coach)
+                   .WithMany(c => c.Clients)
+                   .HasForeignKey(c => c.CoachId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(c => c.Package)
+                   .WithMany(c=>c.Clients)
+                   .HasForeignKey(c => c.PackageId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+
+            builder.HasMany(c => c.ExercisePlans)
+                         .WithOne(e => e.Client)
+                         .HasForeignKey(e => e.ClientId)
+                         .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasMany(c => c.DietPlans)
+                        .WithOne(e => e.Client)
+                        .HasForeignKey(e => e.ClientId)
+                        .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasMany(c => c.Payments)
+                   .WithOne(p => p.Client)
+                   .HasForeignKey(p => p.ClientId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasMany(c => c.Chats)
+                   .WithOne(ch => ch.Client)
+                   .HasForeignKey(ch => ch.ClientId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+        }
+    }
+}
