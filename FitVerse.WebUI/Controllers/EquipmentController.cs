@@ -1,4 +1,6 @@
-﻿using FitVerse.Core.UnitOfWork;
+﻿using AutoMapper;
+using FitVerse.Core.UnitOfWork;
+using FitVerse.Core.ViewModels.Anatomy;
 using FitVerse.Core.ViewModels.Equipment;
 using Microsoft.AspNetCore.Mvc;
 
@@ -74,5 +76,33 @@ namespace FitVerse.Web.Controllers
             }
             return Json(new { success = false, message = "Somthing wrong!" });
         }
+        public IActionResult GetPaged(int page = 1, int pageSize = 5, string? search = null)
+        {
+            var query = unitOfWork.Equipments.GetAll().AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+
+                string lowerSearch = search.ToLower();
+                query = query.Where(a => a.Name.ToLower().Contains(lowerSearch));
+            }
+
+            var totalItems = query.Count();
+            var data = query
+                .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+            var mappedData = data.Select(e => new EquipmentVM { Id = e.Id, Name = e.Name }).ToList();
+
+
+            return Json(new
+            {
+                data = mappedData,
+                currentPage = page,
+                totalPages = (int)Math.Ceiling((double)totalItems / pageSize)
+            });
+        }
     }
+    
+
 }

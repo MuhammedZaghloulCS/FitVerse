@@ -1,4 +1,5 @@
 using FitVerse.Core.Interfaces;
+using FitVerse.Core.MapperConfigs;
 using FitVerse.Core.UnitOfWork;
 using FitVerse.Data.Context;
 using FitVerse.Data.Repositories;
@@ -48,6 +49,9 @@ namespace FitVerse.WebUI
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IEquipmentRepository, EquipmentRepository>();
+            builder.Services.AddScoped<IAnatomyRepository, AnatomyRepositroy>();
+
+            builder.Services.AddAutoMapper(op=>op.AddProfile(typeof(MapperConfig)));
 
 
             var app = builder.Build();
