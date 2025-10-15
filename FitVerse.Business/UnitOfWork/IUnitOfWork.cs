@@ -11,7 +11,7 @@ namespace FitVerse.Core.UnitOfWork
     public interface IUnitOfWork:IDisposable
     {
 
-        //IMuscleRepository Muscles { get; }
+        IMuscleRepository Muscles { get; }
         //ICoachRepository Coaches { get; }
         //IClientRepository Clients { get; }
         IAnatomyRepository Anatomies { get; }
