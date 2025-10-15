@@ -11,10 +11,10 @@ namespace FitVerse.Data.UnitOfWork
 
         public UnitOfWork(
             FitVerseDbContext context,
-            //IMuscleRepository muscles,
+            IMuscleRepository muscles,
             //ICoachRepository coaches,
             //IClientRepository clients,
-            //IAnatomyRepository anatomies,
+            IAnatomyRepository anatomies,
             //IMessageRepository messages,
             //IChatRepository chats,
             //IDietPlanRepository dietPlans,
@@ -32,10 +32,10 @@ namespace FitVerse.Data.UnitOfWork
         {
             _context = context;
 
-            //Muscles = muscles;
+            Muscles = muscles;
             //Coaches = coaches;
             //Clients = clients;
-            //Anatomies = anatomies;
+            Anatomies = anatomies;
             //Messages = messages;
             //Chats = chats;
             //DietPlans = dietPlans;
@@ -51,10 +51,10 @@ namespace FitVerse.Data.UnitOfWork
             //Specialties = specialties;
         }
 
-        //public IMuscleRepository Muscles { get; }
+        public IMuscleRepository Muscles { get; }
         //public ICoachRepository Coaches { get; }
         //public IClientRepository Clients { get; }
-        //public IAnatomyRepository Anatomies { get; }
+        public IAnatomyRepository Anatomies { get; }
         //public IMessageRepository Messages { get; }
         //public IChatRepository Chats { get; }
         //public IDietPlanRepository DietPlans { get; }

@@ -1,55 +1,77 @@
-﻿
+﻿  <!-- Muscle Content -->
 <div class="content-area">
     <div class="page-header">
-        <h1>Equipment</h1>
+        <h1>Muscle</h1>
         <div class="breadcrumb">
-            <a href="index.html">Home</a> / <span>Equipment</span>
+            <a href="index.html">Home</a> / <span>Muscle</span>
         </div>
     </div>
 
-    <!-- Equipment Form Section -->
+    <!-- Muscle Form Section -->
     <div class="form-section">
         <div class="form-card">
             <div class="form-header">
-                <h3>Add New Equipment Record</h3>
-                <p>Fill in the details below to add a new equipment record</p>
+                <h3>Manage Muscles</h3>
+                <p>Fill in the details below to add or edit a muscle</p>
             </div>
-            <form id="equipmentForm" class="equipment-form">
-                <input type="hidden" id="Id" name="equipmentId" value="0">
+
+            <form id="muscleForm" class="anatomy-form">
+                <input type="hidden" id="muscleId" />
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="Name">Muscle Name <span class="required">*</span></label>
+                        <div class="input-group">
+                            <i class="fas fa-dumbbell"></i>
+                            <input type="text" id="Name" name="Name" placeholder="e.g., Biceps, Triceps, Quadriceps" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="AnatomyGroup">Anatomy Group <span class="required">*</span></label>
+                        <div class="input-group">
+                            <i class="fas fa-tags"></i>
+                            <select id="AnatomyGroup" name="AnatomyGroup" class="form-select" required>
+                                <option value="" disabled selected>Select anatomy group</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="form-group">
-                    <label for="name">Name <span class="required">*</span></label>
+                    <label for="Description">Description</label>
                     <div class="input-group">
-                        <i class="fas fa-tag"></i>
-                        <input type="text" id="name" name="name" placeholder="Enter Equipment name" required>
+                        <i class="fas fa-align-left"></i>
+                        <textarea id="Description" name="Description" rows="3" placeholder="Enter a brief description (optional)"></textarea>
                     </div>
                 </div>
 
                 <div class="form-actions">
+                    <button type="button" id="addBtn" class="btn btn-primary" onclick="addMuscle()">
+                        <i class="fas fa-save"></i> Add Muscle
+                    </button>
+                    <button type="button" id="editBtn" class="btn btn-success" onclick="updateMuscle()" style="display:none;">
+                        <i class="fas fa-save"></i> Update Muscle
+                    </button>
                     <button type="reset" class="btn btn-outline">
                         <i class="fas fa-undo"></i> Reset
-                    </button>
-                    <button type="button" id="addBtn" onclick="addEquipment()" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Save Record
-                    </button>
-                    <button type="button" style="display:none"  id="editBtn" onclick="updateEquipment()" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Update Record
                     </button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Equipment List Section -->
+    <!-- Muscle List Section -->
     <div class="table-section">
         <div class="section-header">
             <div class="section-title">
-                <h3>Equipment Records</h3>
-                <p class="section-subtitle">List of all equipment records</p>
+                <h3>Muscle Records</h3>
+                <p class="section-subtitle">List of all muscle records</p>
             </div>
             <div class="table-actions">
                 <div class="search-box">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="searchEquipment" placeholder="Search records...">
+                    <input type="text" id="searchAnatomy" placeholder="Search records...">
                 </div>
                 <button class="btn btn-primary btn-icon">
                     <i class="fas fa-download"></i> Export
@@ -63,13 +85,16 @@
                     <tr>
                         <th>ID</th>
                         <th>Name</th>
+                        <th>Anatomy Group</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
+
                 <tbody id="Data">
-                
-                  
+                    <input type="hidden" id="Id" />
+
                 </tbody>
+
             </table>
         </div>
 
@@ -88,6 +113,8 @@
             </div>
         </div>
     </div>
+</div>
+</main>
 </div>
 
 <!-- Confirmation Modal -->
@@ -108,6 +135,6 @@
         </div>
     </div>
 </div>
-@section Scripts{
-    <script src="~/viewjs/equipment.js"></script>
+@section Scripts {
+    <script src="~/ViewJs/muscle.js"></script>
 }
