@@ -1,4 +1,5 @@
 using FitVerse.Core.Interfaces;
+using FitVerse.Core.MapperConfigs;
 using FitVerse.Core.UnitOfWork;
 using FitVerse.Data.Context;
 using FitVerse.Data.Repositories;

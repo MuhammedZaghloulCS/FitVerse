@@ -1,12 +1,13 @@
 ﻿let currentPage = 1;
 let pageSize = 5;
 let currentSearch = "";
+
 $(document).ready(function () {
-    loadEquipment();
+    loadAnatomy();
 });
-function loadEquipment() {
+function loadAnatomy() {
     $.ajax({
-        url: '/Equipment/GetAll',
+        url: '/Anatomy/GetAll',
         method: 'GET',
         success: function (response) {
 
@@ -29,7 +30,7 @@ function loadEquipment() {
         },
     })
 }
-function addEquipment() {
+function addAnatomy() {
     var name = $('#name').val();
     if (name === '') {
 
@@ -37,7 +38,7 @@ function addEquipment() {
         return;
     }
     $.ajax({
-        url: '/Equipment/Create',
+        url: '/Anatomy/Create',
         method: 'POST',
         data: { name: name },
         success: function (response) {
@@ -45,7 +46,7 @@ function addEquipment() {
 
                 swal("Good job!", `${response.message}`, "success");
 
-                loadEquipment();
+                loadAnatomy();
                 $('#Name').val('');
             } else {
                 swal("Error", `${response.message}`, "error");
@@ -57,7 +58,7 @@ function addEquipment() {
 
 function getById(id) {
     $.ajax({
-        url: '/Equipment/GetById?id=' + id,
+        url: '/Anatomy/GetById?id=' + id,
         method: 'GET',
         success: function (response) {
             if (response.success) {
@@ -76,7 +77,7 @@ function getById(id) {
     });
 }
 
-function updateEquipment() {
+function updateAnatomy() {
     var id = $('#Id').val();
     var name = $('#name').val();
     if (name === '') {
@@ -85,7 +86,7 @@ function updateEquipment() {
         return;
     }
     $.ajax({
-        url: '/Equipment/Update',
+        url: '/Anatomy/Update',
         method: 'POST',
         data: { id: id, name: name },
         success: function (response) {
@@ -94,7 +95,7 @@ function updateEquipment() {
 
                 $('#addBtn').show();
                 $('#editBtn').hide();
-                loadEquipment();
+                loadAnatomy();
                 $('#Id').val('');
                 $('#name').val('');
             } else {
@@ -116,12 +117,12 @@ function Delete(id) {
         .then((willDelete) => {
             if (willDelete) {
                 $.ajax({
-                    url: '/Equipment/Delete?id=' + id,
+                    url: '/Anatomy/Delete?id=' + id,
                     method: 'POST',
                     success: function (response) {
                         if (response.success) {
                             swal("Good job!", `${response.message}`, "success");
-                            loadEquipment();
+                            loadAnatomy();
                         } else {
                             swal("Error", `${response.message}`, "error");
                         }
@@ -133,19 +134,22 @@ function Delete(id) {
             }
         });
 }
-$(document).ready(function () {
-    loadEquipmentPaged();
 
-    $('#searchEquipment').on('input', function () {
+
+
+$(document).ready(function () {
+    loadAnatomyPaged();
+
+    $('#searchAnatomy').on('input', function () {
         currentSearch = $(this).val().trim();
-        currentPage = 1;
-        loadEquipmentPaged();
+        currentPage = 1; 
+        loadAnatomyPaged();
     });
 });
 
-function loadEquipmentPaged() {
+function loadAnatomyPaged() {
     $.ajax({
-        url: '/Equipment/GetPaged',
+        url: '/Anatomy/GetPaged',
         method: 'GET',
         data: {
             page: currentPage,
@@ -196,5 +200,6 @@ function renderPagination(currentPage, totalPages) {
 function changePage(page) {
     if (page < 1) return;
     currentPage = page;
-    loadEquipmentPaged();
+    loadAnatomyPaged();
 }
+
