@@ -1,7 +1,7 @@
 ﻿using FitVerse.Core.Interfaces;
 using FitVerse.Core.UnitOfWork;
 using FitVerse.Data.Context;
-using System;
+using FitVerse.Data.Repositories;
 
 namespace FitVerse.Data.UnitOfWork
 {
@@ -10,11 +10,11 @@ namespace FitVerse.Data.UnitOfWork
         private readonly FitVerseDbContext _context;
 
         public UnitOfWork(
-            FitVerseDbContext context,
-            IMuscleRepository muscles,
+            FitVerseDbContext context
+            //IMuscleRepository muscles,
             //ICoachRepository coaches,
             //IClientRepository clients,
-            IAnatomyRepository anatomies,
+            
             //IMessageRepository messages,
             //IChatRepository chats,
             //IDietPlanRepository dietPlans,
@@ -24,7 +24,7 @@ namespace FitVerse.Data.UnitOfWork
             //INotificationRepository notifications,
             //ICoachSpecialtiesRepository coachSpecialties,
             //ICoachFeedbackRepository coachFeedbacks,
-            IEquipmentRepository equipments
+            
             //IExercisePlanRepository exercisePlans,
             //IExercisePlanDetailRepository exercisePlanDetails,
             //ISpecialtiesRepository specialties
@@ -35,17 +35,17 @@ namespace FitVerse.Data.UnitOfWork
             Muscles = muscles;
             //Coaches = coaches;
             //Clients = clients;
-            Anatomies = anatomies;
+            AnatomyRepositroy anatomies = new AnatomyRepositroy(_context);
             //Messages = messages;
             //Chats = chats;
             //DietPlans = dietPlans;
-            //Exercises = exercises;
-            Packages = packages;
+            //Exercises = exercises; 
+            //Packages = packages;
             //Payments = payments;
             //Notifications = notifications;
             //CoachSpecialties = coachSpecialties;
             //CoachFeedbacks = coachFeedbacks;
-            Equipments = equipments;
+            EquipmentRepository equipments=new EquipmentRepository(_context);
             //ExercisePlans = exercisePlans;
             //ExercisePlanDetails = exercisePlanDetails;
             //Specialties = specialties;

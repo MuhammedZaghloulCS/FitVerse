@@ -48,10 +48,10 @@ namespace FitVerse.WebUI
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddScoped<IEquipmentRepository, EquipmentRepository>();
-            builder.Services.AddScoped<IMuscleRepository, MuscleRepository>();
-            builder.Services.AddScoped<IAnatomyRepository, AnatomyRepository>();
-            builder.Services.AddScoped<IPackageRepository, PackageRepository>();
+ 
+
+            builder.Services.AddAutoMapper(op=>op.AddProfile(typeof(MapperConfig)));
+
 
             var app = builder.Build();
 
