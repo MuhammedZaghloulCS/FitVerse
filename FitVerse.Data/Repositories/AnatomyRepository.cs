@@ -1,4 +1,5 @@
 ﻿using FitVerse.Core.Interfaces;
+using FitVerse.Data.Context;
 using FitVerse.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -8,10 +9,13 @@ using System.Threading.Tasks;
 
 namespace FitVerse.Data.Repositories
 {
-    public class MuscleRepositorie:GenericRepository<Muscle>, IMuscleRepository
+    public class AnatomyRepository :GenericRepository<Anatomy>,IAnatomyRepository
     {
-        public MuscleRepositorie(Context.FitVerseDbContext context) : base(context)
+        public AnatomyRepository(FitVerseDbContext context) : base(context)
         {
         }
+
+       
+
     }
 }

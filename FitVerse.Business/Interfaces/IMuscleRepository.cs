@@ -9,6 +9,7 @@ namespace FitVerse.Core.Interfaces
 {
     public interface IMuscleRepository: IGenericRepository<Muscle>
     {
-
+        IEnumerable<Muscle> GetAllWithAnatomy();
+        Muscle GetByIdWithAnatomy(int id);
     }
 }
