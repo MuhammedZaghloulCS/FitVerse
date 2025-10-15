@@ -19,7 +19,7 @@ namespace FitVerse.Data.UnitOfWork
             //IChatRepository chats,
             //IDietPlanRepository dietPlans,
             //IExerciseRepository exercises,
-            //IPackageRepository packages,
+            IPackageRepository packages,
             //IPaymentRepository payments,
             //INotificationRepository notifications,
             //ICoachSpecialtiesRepository coachSpecialties,
@@ -40,7 +40,7 @@ namespace FitVerse.Data.UnitOfWork
             //Chats = chats;
             //DietPlans = dietPlans;
             //Exercises = exercises;
-            //Packages = packages;
+            Packages = packages;
             //Payments = payments;
             //Notifications = notifications;
             //CoachSpecialties = coachSpecialties;
@@ -59,7 +59,7 @@ namespace FitVerse.Data.UnitOfWork
         //public IChatRepository Chats { get; }
         //public IDietPlanRepository DietPlans { get; }
         //public IExerciseRepository Exercises { get; }
-        //public IPackageRepository Packages { get; }
+        public IPackageRepository Packages { get; }
         //public IPaymentRepository Payments { get; }
         //public INotificationRepository Notifications { get; }
         //public ICoachSpecialtiesRepository CoachSpecialties { get; }
