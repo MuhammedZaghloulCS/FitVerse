@@ -1,0 +1,187 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="dashboard">
+	<!-- Main Content -->
+	<main class="main-content">
+		<!-- Top Navigation -->
+		<header class="top-nav">
+			<div class="search-bar">
+				<i class="fas fa-search"></i>
+				<input type="text" placeholder="Search...">
+			</div>
+			<div class="nav-right">
+				<button class="notification-btn">
+					<i class="far fa-bell"></i>
+					<span class="notification-badge">3</span>
+				</button>
+				<div class="theme-toggle">
+					<input type="checkbox" id="theme-switch" class="theme-switch">
+					<label for="theme-switch" class="theme-toggle-label">
+						<i class="fas fa-moon"></i>
+						<i class="fas fa-sun"></i>
+						<span class="theme-toggle-ball"></span>
+					</label>
+				</div>
+			</div>
+		</header>
+
+		<!-- Exercise Content -->
+		<div class="content-area">
+			<div class="page-header">
+				<h1>Exercise</h1>
+				<div class="breadcrumb">
+					<a href="index.html">Home</a> / <span>Exercise</span>
+				</div>
+			</div>
+
+			<!-- Exercise Form Section -->
+			<div class="form-section">
+				<div class="form-card">
+					<div class="form-header">
+						<h3><i class="fas fa-dumbbell"></i> Add / Edit Exercise</h3>
+						<p>Fill in the details below to manage exercises</p>
+					</div>
+					<form id="exerciseForm">
+						<input type="hidden" id="exerciseId" />
+						<div class="form-row">
+							<div class="form-group">
+								<label for="exerciseName">Name <span class="required">*</span></label>
+								<div class="input-group">
+									<i class="fas fa-tag"></i>
+									<input type="text" id="exerciseName" name="exerciseName" placeholder="Enter exercise name" required>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="muscleId">Muscle <span class="required">*</span></label>
+								<div class="input-group">
+									<i class="fas fa-person-running"></i>
+									<select id="muscleId" name="muscleId" class="form-select" required>
+										<option value="" disabled selected>Select muscle</option>
+									</select>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-row">
+							<div class="form-group">
+								<label for="equipmentId">Equipment <span class="required">*</span></label>
+								<div class="input-group">
+									<i class="fas fa-cog"></i>
+									<select id="equipmentId" name="equipmentId" class="form-select" required>
+										<option value="" disabled selected>Select equipment</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="videoLink">Video Link</label>
+								<div class="input-group">
+									<i class="fas fa-link"></i>
+									<input type="url" id="videoLink" name="videoLink" placeholder="https://...">
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="description">Description</label>
+							<div class="input-group">
+								<i class="fas fa-align-left"></i>
+								<textarea id="description" name="description" rows="3" placeholder="Describe the exercise (optional)"></textarea>
+							</div>
+						</div>
+
+						<div class="form-actions">
+							<button type="reset" class="btn btn-outline" id="resetBtn">
+								<i class="fas fa-undo"></i> Reset
+							</button>
+							<button type="submit" class="btn btn-primary" id="saveBtn">
+								<i class="fas fa-save"></i> Save Exercise
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<!-- Exercise List Section -->
+			<div class="table-section">
+				<div class="section-header">
+					<div class="section-title">
+						<h3>Exercise Records</h3>
+						<p class="section-subtitle">List of all exercise records</p>
+					</div>
+					<div class="table-actions">
+						<div class="search-box">
+							<i class="fas fa-search"></i>
+							<input type="text" id="searchExercise" placeholder="Search records...">
+						</div>
+						<button class="btn btn-primary btn-icon" id="exportBtn">
+							<i class="fas fa-download"></i> Export
+						</button>
+					</div>
+				</div>
+
+				<div class="table-responsive">
+					<table class="data-table" id="exerciseTable">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Name</th>
+								<th>Muscle</th>
+								<th>Equipment</th>
+								<th>Video</th>
+								<th>Description</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- Dynamic rows -->
+						</tbody>
+					</table>
+				</div>
+
+				<div class="table-footer">
+					<div class="table-info" id="tableInfo">
+						Showing <span>0</span> to <span>0</span> of <span>0</span> entries
+					</div>
+					<div class="pagination">
+						<button class="btn-icon" id="prevPage">
+							<i class="fas fa-chevron-left"></i>
+						</button>
+						<div class="page-numbers">
+							<button class="btn-icon page-btn active" id="currentPageBtn">1</button>
+						</div>
+						<button class="btn-icon" id="nextPage">
+							<i class="fas fa-chevron-right"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal" id="deleteModal">
+	<div class="modal-content">
+		<div class="modal-header">
+			<h4>Confirm Deletion</h4>
+			<button class="btn-icon close-modal">
+				<i class="fas fa-times"></i>
+			</button>
+		</div>
+		<div class="modal-body">
+			<p>Are you sure you want to delete this record? This action cannot be undone.</p>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-outline close-modal">Cancel</button>
+			<button class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+		</div>
+	</div>
+</div>
+
+@section Scripts{
+
+	<script src="js/exercise.js"></script>
+} 

@@ -8,7 +8,10 @@ namespace FitVerse.Data.UnitOfWork
     public class UnitOfWork : IUnitOfWork
     {
         private readonly FitVerseDbContext _context;
-
+        AnatomyRepositroy anatomies;
+        EquipmentRepository equipments;
+        MuscleRepository muscles;
+       
         public UnitOfWork(
             FitVerseDbContext context
             //IMuscleRepository muscles,
@@ -32,10 +35,10 @@ namespace FitVerse.Data.UnitOfWork
         {
             _context = context;
 
-            Muscles = muscles;
+         
             //Coaches = coaches;
             //Clients = clients;
-            AnatomyRepositroy anatomies = new AnatomyRepositroy(_context);
+           
             //Messages = messages;
             //Chats = chats;
             //DietPlans = dietPlans;
@@ -45,16 +48,32 @@ namespace FitVerse.Data.UnitOfWork
             //Notifications = notifications;
             //CoachSpecialties = coachSpecialties;
             //CoachFeedbacks = coachFeedbacks;
-            EquipmentRepository equipments=new EquipmentRepository(_context);
+            
             //ExercisePlans = exercisePlans;
             //ExercisePlanDetails = exercisePlanDetails;
             //Specialties = specialties;
         }
 
-        public IMuscleRepository Muscles { get; }
+        public IMuscleRepository Muscles
+        {
+            get
+            {
+                if (muscles == null)
+                muscles=new MuscleRepository(_context);
+                return muscles;
+            }
+        }
         //public ICoachRepository Coaches { get; }
         //public IClientRepository Clients { get; }
-        public IAnatomyRepository Anatomies { get; }
+        public IAnatomyRepository Anatomies
+        {
+            get
+            {
+                if (anatomies == null)
+                    anatomies = new AnatomyRepositroy(_context);
+                return anatomies;
+            }
+        }
         //public IMessageRepository Messages { get; }
         //public IChatRepository Chats { get; }
         //public IDietPlanRepository DietPlans { get; }
@@ -64,7 +83,15 @@ namespace FitVerse.Data.UnitOfWork
         //public INotificationRepository Notifications { get; }
         //public ICoachSpecialtiesRepository CoachSpecialties { get; }
         //public ICoachFeedbackRepository CoachFeedbacks { get; }
-        public IEquipmentRepository Equipments { get; }
+        public IEquipmentRepository Equipments
+        {
+            get
+            {
+                if (equipments == null)
+                    equipments = new EquipmentRepository(_context);
+                return equipments;
+            }
+        }
         //public IExercisePlanRepository ExercisePlans { get; }
         //public IExercisePlanDetailRepository ExercisePlanDetails { get; }
         //public ISpecialtiesRepository Specialties { get; }
