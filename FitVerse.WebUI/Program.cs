@@ -50,7 +50,7 @@ namespace FitVerse.WebUI
             builder.Services.AddScoped<IEquipmentRepository, EquipmentRepository>();
             builder.Services.AddScoped<IMuscleRepository, MuscleRepository>();
             builder.Services.AddScoped<IAnatomyRepository, AnatomyRepository>();
-
+       
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

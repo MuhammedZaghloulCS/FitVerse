@@ -15,7 +15,7 @@ function loadMuscles() {
                     <tr>
                         <td>#${item.id}</td>
                         <td>${item.name}</td>
-                        <td>${item.anatomygroup}</td>
+                        <td>${item.anatomyName}</td>
                         <td class="actions">
                             <button type="button" onclick="getById(${item.id})" class="btn-icon" title="Edit">
                                 <i class="fas fa-edit"></i>
@@ -32,8 +32,6 @@ function loadMuscles() {
         }
     });
 }
-
-
 
 function loadAnatomyGroups() {
     $.ajax({
@@ -53,39 +51,27 @@ function loadAnatomyGroups() {
     });
 }
 
-
-
 function addMuscle() {
-    var name = $('#Name').val();
-    var anatomyGroup = $('#AnatomyGroup').val();
-
-    if (name === '' || anatomyGroup === '') {
-        swal("Error", "Name and Anatomy Group are required!", "error");
-        return;
-    }
+    let name = $("#Name").val();
+    let anatomyName = $("#AnatomyGroup option:selected").text(); 
 
     $.ajax({
         url: '/Muscle/Create',
         method: 'POST',
         data: {
             Name: name,
-            Anatomygroup: anatomyGroup
+            AnatomyName: anatomyName
         },
         success: function (response) {
-            if (response.success) {
-                swal("Good job!", response.message, "success");
-                loadMuscles();
-                clearForm();
-            } else {
-                swal("Error", response.message, "error");
-            }
-        },
-        error: function () {
-            swal("Error", "Something went wrong!", "error");
-        }
+                    if (response.success) {
+                        swal("Added!", response.message, "success");
+                     
+                    } else {
+                        swal("Error", response.message, "error");
+                    }
+                },
     });
 }
-
 
 
 function getById(id) {
@@ -96,13 +82,11 @@ function getById(id) {
             if (response.success) {
                 $('#Id').val(response.data.id);
                 $('#Name').val(response.data.name);
-                $('#AnatomyGroup').val(response.data.anatomygroup);
-                $('#addBtn').hide(); 
+                $('#AnatomyGroup').val(response.data.anatomyId); 
+                $('#addBtn').hide();
                 $('#editBtn')
                     .show()
-                    .html('<i class="fas fa-save"></i> Save Changes'); 
-
-                swal("Edit Mode", "You are now editing: " + response.data.name, "info");
+                    .html('<i class="fas fa-save"></i> Save Changes');
             } else {
                 swal("Error", response.message, "error");
             }
@@ -113,11 +97,15 @@ function getById(id) {
     });
 }
 
-
 function updateMuscle() {
     var id = $('#Id').val();
     var name = $('#Name').val();
-    var anatomyGroup = parseInt($('#AnatomyGroup').val()); 
+    var anatomyGroup = parseInt($('#AnatomyGroup').val());
+
+    if (name === '' || !anatomyGroup) {
+        swal("Error", "Name and Anatomy Group are required!", "error");
+        return;
+    }
 
     $.ajax({
         url: '/Muscle/Update',
@@ -125,7 +113,7 @@ function updateMuscle() {
         data: {
             Id: id,
             Name: name,
-            AnatomyId: anatomyGroup
+            AnatomyId: anatomyGroup 
         },
         success: function (response) {
             if (response.success) {
@@ -133,13 +121,17 @@ function updateMuscle() {
                 $('#addBtn').show();
                 $('#editBtn').hide();
                 clearForm();
-                GetAll();
+                loadMuscles();
             } else {
                 swal("Error", response.message, "error");
             }
+        },
+        error: function () {
+            swal("Error", "Something went wrong!", "error");
         }
     });
 }
+
 
 function Delete(id) {
     swal({
@@ -171,11 +163,8 @@ function Delete(id) {
     });
 }
 
-
-
 function clearForm() {
     $('#Id').val('');
     $('#Name').val('');
     $('#AnatomyGroup').val('');
-
 }
