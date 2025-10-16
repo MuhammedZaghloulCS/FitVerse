@@ -35,7 +35,12 @@
                         </a>
                     </li>
 
-
+                    <li class="@(activeRoute == "Specialty" ? "active" : "")">
+                        <a asp-action="index" asp-controller="Specialty">
+                            <i class="fas fa-dumbbell"></i>
+                            <span>Specialty</span>
+                        </a>
+                    </li>
 
 
                     <li class="@(activeRoute == "Equipment" ? "active" : "")">

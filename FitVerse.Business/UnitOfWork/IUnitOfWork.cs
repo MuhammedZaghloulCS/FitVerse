@@ -27,7 +27,7 @@ namespace FitVerse.Core.UnitOfWork
         //INotificationRepository Notifications { get; }
         IPackageRepository Packages { get; }
         //IPaymentRepository Payments { get; }
-        //ISpecialtiesRepository Specialties { get; }
+        ISpecialtiesRepository Specialties { get; }
         int Complete();
     }
 }

@@ -16,7 +16,7 @@
             </div>
 
             <form id="muscleForm" class="anatomy-form">
-                <input type="hidden" id="muscleId" />
+                <input type="hidden" id="Id" />
 
                 <div class="form-row">
                     <div class="form-group">
@@ -47,15 +47,16 @@
                 </div>
 
                 <div class="form-actions">
-                    <button type="button" id="addBtn" class="btn btn-primary" onclick="addMuscle()">
-                        <i class="fas fa-save"></i> Add Muscle
-                    </button>
-                    <button type="button" id="editBtn" class="btn btn-success" onclick="updateMuscle()" style="display:none;">
-                        <i class="fas fa-save"></i> Update Muscle
-                    </button>
                     <button type="reset" class="btn btn-outline">
                         <i class="fas fa-undo"></i> Reset
                     </button>
+                    <button type="button" id="addBtn" class="btn btn-primary" onclick="addMuscle()">
+                        <i class="fas fa-save"></i> Add Muscle
+                    </button>
+                    <button type="button" id="editBtn" class="btn btn-primary" onclick="updateMuscle()" style="display:none;">
+                        <i class="fas fa-save"></i> Update Muscle
+                    </button>
+                   
                 </div>
             </form>
         </div>
@@ -71,11 +72,9 @@
             <div class="table-actions">
                 <div class="search-box">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="searchAnatomy" placeholder="Search records...">
+                    <input type="text" id="searchMuscle" placeholder="Search records...">
                 </div>
-                <button class="btn btn-primary btn-icon">
-                    <i class="fas fa-download"></i> Export
-                </button>
+               
             </div>
         </div>
 
@@ -91,7 +90,6 @@
                 </thead>
 
                 <tbody id="Data">
-                    <input type="hidden" id="Id" />
 
                 </tbody>
 
@@ -114,8 +112,7 @@
         </div>
     </div>
 </div>
-</main>
-</div>
+
 
 <!-- Confirmation Modal -->
 <div class="modal" id="deleteModal">

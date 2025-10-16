@@ -18,6 +18,7 @@ namespace FitVerse.Data.UnitOfWork
             Packages = new PackageRepository(_context);
             Equipments = new EquipmentRepository(_context);
             Coaches=new CoachRepository(_context);
+            Specialties=new SpecialityRepository(_context);
         }
 
         public IMuscleRepository Muscles { get; }
@@ -26,6 +27,8 @@ namespace FitVerse.Data.UnitOfWork
         public IEquipmentRepository Equipments { get; }
 
         public ICoachRepository Coaches { get; }
+
+        public ISpecialtiesRepository Specialties  { get; }
 
         public int Complete() => _context.SaveChanges();
         public void Dispose() => _context.Dispose();
