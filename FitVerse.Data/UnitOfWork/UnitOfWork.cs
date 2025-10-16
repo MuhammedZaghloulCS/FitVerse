@@ -17,12 +17,15 @@ namespace FitVerse.Data.UnitOfWork
             Anatomies = new AnatomyRepository(_context);
             Packages = new PackageRepository(_context);
             Equipments = new EquipmentRepository(_context);
+            Coaches=new CoachRepository(_context);
         }
 
         public IMuscleRepository Muscles { get; }
         public IAnatomyRepository Anatomies { get; }
         public IPackageRepository Packages { get; }
         public IEquipmentRepository Equipments { get; }
+
+        public ICoachRepository Coaches { get; }
 
         public int Complete() => _context.SaveChanges();
         public void Dispose() => _context.Dispose();

@@ -54,7 +54,7 @@ namespace FitVerse.WebUI
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IEquipmentRepository, EquipmentRepository>();
-            builder.Services.AddScoped<IAnatomyRepository, AnatomyRepositroy>();
+            builder.Services.AddScoped<IAnatomyRepository, AnatomyRepository>();
             builder.Services.AddScoped<ICoachRepository, CoachRepository>();
             builder.Services.AddScoped<IImageHandleService, ImageHandleService>();
             builder.Services.AddScoped<ICoachService, CoachService>();
