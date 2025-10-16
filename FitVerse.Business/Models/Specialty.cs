@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FitVerse.Data.Models
 {
-    public class Specialties
+    public class Specialty
     {
         public int Id { get; set; }
         public string Name { get; set; }

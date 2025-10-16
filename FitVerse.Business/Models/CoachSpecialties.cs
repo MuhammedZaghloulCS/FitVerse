@@ -11,7 +11,7 @@ namespace FitVerse.Data.Models
         public Guid CoachId { get; set; }
         public virtual Coach? Coach { get; set; }
         public int SpecialtyId { get; set; }
-        public virtual Specialties? Specialty { get; set; }
+        public virtual Specialty? Specialty { get; set; }
         public string Certification { get; set; } = string.Empty;
 
     }

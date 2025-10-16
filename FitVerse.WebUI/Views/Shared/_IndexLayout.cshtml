@@ -28,6 +28,21 @@
                         </a>
                     </li>
 
+                    <li class="@(activeRoute == "Coach" ? "active" : "")">
+                        <a asp-action="index" asp-controller="Coach">
+                            <i class="fas fa-home"></i>
+                            <span>coaches</span>
+                        </a>
+                    </li>
+
+                    <li class="@(activeRoute == "Specialty" ? "active" : "")">
+                        <a asp-action="index" asp-controller="Specialty">
+                            <i class="fas fa-dumbbell"></i>
+                            <span>Specialty</span>
+                        </a>
+                    </li>
+
+
                     <li class="@(activeRoute == "Equipment" ? "active" : "")">
                         <a asp-action="index" asp-controller="Equipment">
                             <i class="fas fa-home"></i>
@@ -39,6 +54,18 @@
                         <a asp-action="index" asp-controller="Muscle">
                             <i class="fas fa-dumbbell"></i>
                             <span>Muscles</span>
+                        </a>
+                    </li>
+                    <li class="@(activeRoute == "Anatomy" ? "active" : "")">
+                        <a asp-action="index" asp-controller="Anatomy">
+                            <i class="fas fa-dumbbell"></i>
+                            <span>Anatomy</span>
+                        </a>
+                    </li>
+                    <li class="@(activeRoute == "Package" ? "active" : "")">
+                        <a asp-action="index" asp-controller="Package">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>Package</span>
                         </a>
                     </li>
 

@@ -8,5 +8,7 @@ namespace FitVerse.Core.Interfaces
 {
     public interface IAnatomyRepository: IGenericRepository<Data.Models.Anatomy>
     {
+
+
     }
 }

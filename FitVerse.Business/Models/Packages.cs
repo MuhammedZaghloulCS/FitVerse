@@ -13,7 +13,7 @@ namespace FitVerse.Data.Models
         public double Price { get; set; }
         public int Sessions { get; set; }
 
-        public Guid CoachId { get; set; }
+        public Guid? CoachId { get; set; }
         public virtual Coach? Coach { get; set; }
         public virtual ICollection<Client> Clients { get; set; }=new HashSet<Client>();
         public virtual ICollection<Payment> Payments { get; set; }=new HashSet<Payment>();

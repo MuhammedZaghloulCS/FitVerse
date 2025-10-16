@@ -1,4 +1,7 @@
+using FitVerse.Core.IService;
+using FitVerse.Data.Service;
 using FitVerse.Core.Interfaces;
+using FitVerse.Core.MapperConfigs;
 using FitVerse.Core.UnitOfWork;
 using FitVerse.Data.Context;
 using FitVerse.Data.Repositories;
@@ -6,7 +9,10 @@ using FitVerse.Data.UnitOfWork;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+
+
 using System;
+using FitVerse.Data.Service.FitVerse.Data.Service;
 
 namespace FitVerse.WebUI
 {
@@ -19,7 +25,7 @@ namespace FitVerse.WebUI
 
             builder.Services.AddDbContext<FitVerseDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+            builder.Services.AddAutoMapper(op=>op.AddProfile(typeof(MapperConfig)));
 
 
             builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
@@ -48,9 +54,19 @@ namespace FitVerse.WebUI
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IEquipmentRepository, EquipmentRepository>();
-            builder.Services.AddScoped<IMuscleRepository, MuscleRepository>();
             builder.Services.AddScoped<IAnatomyRepository, AnatomyRepository>();
-       
+            builder.Services.AddScoped<IMuscleRepository, MuscleRepository>();
+            builder.Services.AddScoped<ICoachRepository, CoachRepository>();
+            builder.Services.AddScoped<IImageHandleService, ImageHandleService>();
+            builder.Services.AddScoped<ICoachService, CoachService>();
+
+
+
+ 
+
+            builder.Services.AddAutoMapper(op=>op.AddProfile(typeof(MapperConfig)));
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

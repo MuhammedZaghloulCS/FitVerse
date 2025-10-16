@@ -121,13 +121,13 @@ namespace FitVerse.Web.Controllers
         [HttpGet]
         public IActionResult GetPaged(int page = 1, int pageSize = 5, string? search = null)
         {
-            var query = unitOfWork.Muscles.GetAll().AsQueryable();
+             var query = unitOfWork.Muscles.GetAllWithAnatomy();
 
-            if (!string.IsNullOrEmpty(search))
-            {
-                string lowerSearch = search.ToLower();
-                query = query.Where(m => m.Name.ToLower().Contains(lowerSearch));
-            }
+           if (!string.IsNullOrEmpty(search))
+        {
+        string lowerSearch = search.ToLower();
+        query = query.Where(m => m.Name.ToLower().Contains(lowerSearch));
+        }
 
             var totalItems = query.Count();
             var data = query

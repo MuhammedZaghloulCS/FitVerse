@@ -37,6 +37,23 @@ namespace FitVerse.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Anatomies");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Upper Body"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Lower Body"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Core"
+                        });
                 });
 
             modelBuilder.Entity("FitVerse.Data.Models.Chat", b =>
@@ -121,6 +138,23 @@ namespace FitVerse.Data.Migrations
                     b.HasIndex("UserId1");
 
                     b.ToTable("Clients");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("22222222-2222-2222-2222-222222222222"),
+                            Age = 28,
+                            CoachId = new Guid("11111111-1111-1111-1111-111111111111"),
+                            Gender = "Male",
+                            Goal = "Lose 10kg",
+                            Height = 180.0,
+                            Image = "client1.jpg",
+                            IsActive = true,
+                            Name = "Ahmed Ali",
+                            PackageId = 1,
+                            StartWeight = 85.0,
+                            UserId = new Guid("00000000-0000-0000-0000-000000000000")
+                        });
                 });
 
             modelBuilder.Entity("FitVerse.Data.Models.Coach", b =>
@@ -163,6 +197,18 @@ namespace FitVerse.Data.Migrations
                     b.HasIndex("UserId1");
 
                     b.ToTable("Coaches");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111111"),
+                            About = "Experienced trainer specializing in strength and conditioning.",
+                            ImagePath = "coach1.jpg",
+                            IsActive = true,
+                            Name = "John Smith",
+                            Title = "Certified Personal Trainer",
+                            UserId = new Guid("00000000-0000-0000-0000-000000000000")
+                        });
                 });
 
             modelBuilder.Entity("FitVerse.Data.Models.CoachFeedback", b =>
@@ -269,6 +315,28 @@ namespace FitVerse.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Equipments");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Dumbbell"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Barbell"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Machine"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Bodyweight"
+                        });
                 });
 
             modelBuilder.Entity("FitVerse.Data.Models.Exercise", b =>
@@ -303,6 +371,24 @@ namespace FitVerse.Data.Migrations
                     b.HasIndex("MuscleId");
 
                     b.ToTable("Exercises");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Perform curls using dumbbells to target biceps.",
+                            EquipmentId = 1,
+                            MuscleId = 1,
+                            Name = "Bicep Curl"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Cable exercise for triceps.",
+                            EquipmentId = 3,
+                            MuscleId = 2,
+                            Name = "Triceps Pushdown"
+                        });
                 });
 
             modelBuilder.Entity("FitVerse.Data.Models.ExercisePlan", b =>
@@ -432,6 +518,32 @@ namespace FitVerse.Data.Migrations
                     b.HasIndex("AnatomyId");
 
                     b.ToTable("Muscles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AnatomyId = 1,
+                            Name = "Biceps"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AnatomyId = 1,
+                            Name = "Triceps"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AnatomyId = 2,
+                            Name = "Quadriceps"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            AnatomyId = 3,
+                            Name = "Abs"
+                        });
                 });
 
             modelBuilder.Entity("FitVerse.Data.Models.Notification", b =>
@@ -472,6 +584,18 @@ namespace FitVerse.Data.Migrations
                     b.HasIndex("ReciverId1");
 
                     b.ToTable("Notifications");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Content = "Welcome to FitVerse!",
+                            CreatedAt = new DateTime(2025, 10, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsRead = false,
+                            ReciverId = new Guid("00000000-0000-0000-0000-000000000000"),
+                            RefId = 0,
+                            Type = 0
+                        });
                 });
 
             modelBuilder.Entity("FitVerse.Data.Models.Package", b =>
@@ -482,7 +606,7 @@ namespace FitVerse.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<Guid>("CoachId")
+                    b.Property<Guid?>("CoachId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
@@ -500,6 +624,24 @@ namespace FitVerse.Data.Migrations
                     b.HasIndex("CoachId");
 
                     b.ToTable("Packages");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CoachId = new Guid("11111111-1111-1111-1111-111111111111"),
+                            Name = "Basic Package",
+                            Price = 100.0,
+                            Sessions = 8
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CoachId = new Guid("11111111-1111-1111-1111-111111111111"),
+                            Name = "Premium Package",
+                            Price = 250.0,
+                            Sessions = 20
+                        });
                 });
 
             modelBuilder.Entity("FitVerse.Data.Models.Payment", b =>
@@ -539,7 +681,7 @@ namespace FitVerse.Data.Migrations
                     b.ToTable("Payments");
                 });
 
-            modelBuilder.Entity("FitVerse.Data.Models.Specialties", b =>
+            modelBuilder.Entity("FitVerse.Data.Models.Specialty", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -554,6 +696,23 @@ namespace FitVerse.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Specialties");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Strength Training"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Cardio"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Nutrition"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -833,7 +992,7 @@ namespace FitVerse.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FitVerse.Data.Models.Specialties", "Specialty")
+                    b.HasOne("FitVerse.Data.Models.Specialty", "Specialty")
                         .WithMany("CoachSpecialties")
                         .HasForeignKey("SpecialtyId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -972,8 +1131,7 @@ namespace FitVerse.Data.Migrations
                     b.HasOne("FitVerse.Data.Models.Coach", "Coach")
                         .WithMany("Packages")
                         .HasForeignKey("CoachId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Coach");
                 });
@@ -1115,7 +1273,7 @@ namespace FitVerse.Data.Migrations
                     b.Navigation("Payments");
                 });
 
-            modelBuilder.Entity("FitVerse.Data.Models.Specialties", b =>
+            modelBuilder.Entity("FitVerse.Data.Models.Specialty", b =>
                 {
                     b.Navigation("CoachSpecialties");
                 });
