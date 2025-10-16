@@ -25,7 +25,7 @@ namespace FitVerse.Core.UnitOfWork
         //IExercisePlanRepository ExercisePlans { get; }
         //IExercisePlanDetailRepository ExercisePlanDetails { get; }
         //INotificationRepository Notifications { get; }
-        //IPackageRepository Packages { get; }
+        IPackageRepository Packages { get; }
         //IPaymentRepository Payments { get; }
         //ISpecialtiesRepository Specialties { get; }
         int Complete();

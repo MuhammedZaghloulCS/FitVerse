@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FitVerse.Core.Interfaces
+namespace FitVerse.Core.ViewModels.Package
 {
-    public interface IAnatomyRepository: IGenericRepository<Data.Models.Anatomy>
+    public class PackageVM:AddPackageVM
     {
-
-
+        public int Id { get; set; }
+        
     }
 }

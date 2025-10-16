@@ -25,7 +25,7 @@ namespace FitVerse.WebUI
 
             builder.Services.AddDbContext<FitVerseDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+            builder.Services.AddAutoMapper(op=>op.AddProfile(typeof(MapperConfig)));
 
 
             builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
@@ -60,6 +60,8 @@ namespace FitVerse.WebUI
             builder.Services.AddScoped<ICoachService, CoachService>();
 
 
+
+ 
 
             builder.Services.AddAutoMapper(op=>op.AddProfile(typeof(MapperConfig)));
 

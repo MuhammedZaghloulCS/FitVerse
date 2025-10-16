@@ -497,6 +497,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-function setupAnatomyPage() {
-    // Add your anatomy page initialization code here
-}
+//function setupAnatomyPage() {
+//    // Add your anatomy page initialization code here
+//}
