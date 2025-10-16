@@ -17,6 +17,8 @@ namespace FitVerse.Core.MapperConfigs
             CreateMap<Anatomy,AnatomyVM>().ReverseMap();
             CreateMap<Equipment,EquipmentVM>().ReverseMap();
             CreateMap<AddAnatomyVM, Anatomy>().ReverseMap();
+            CreateMap<AddEquipmentVM, Equipment>().ReverseMap();
+            CreateMap<Coach, Core.ViewModels.Coach.AddCoachVM>().ReverseMap();
         }
 
     }

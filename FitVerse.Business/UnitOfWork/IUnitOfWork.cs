@@ -12,7 +12,7 @@ namespace FitVerse.Core.UnitOfWork
     {
 
         //IMuscleRepository Muscles { get; }
-        //ICoachRepository Coaches { get; }
+        ICoachRepository Coaches { get; }
         //IClientRepository Clients { get; }
         IAnatomyRepository Anatomies { get; }
         //ICoachSpecialtiesRepository CoachSpecialties { get; }
