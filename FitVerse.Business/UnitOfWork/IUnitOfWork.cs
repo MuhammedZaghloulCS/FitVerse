@@ -22,12 +22,13 @@ namespace FitVerse.Core.UnitOfWork
         //IExerciseRepository Exercises { get; }
         //IMessageRepository Messages { get; }
         //IChatRepository Chats { get; }
+        IExerciseRepository Exercises { get; }
         //IExercisePlanRepository ExercisePlans { get; }
         //IExercisePlanDetailRepository ExercisePlanDetails { get; }
         //INotificationRepository Notifications { get; }
         IPackageRepository Packages { get; }
         //IPaymentRepository Payments { get; }
-        //ISpecialtiesRepository Specialties { get; }
+        ISpecialtiesRepository Specialties { get; }
         int Complete();
     }
 }

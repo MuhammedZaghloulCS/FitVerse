@@ -2,11 +2,11 @@
 let pageSize = 5;
 let currentSearch = "";
 $(document).ready(function () {
-    loadEquipment();
+    loadSpecialty();
 });
-function loadEquipment() {
+function loadSpecialty() {
     $.ajax({
-        url: '/Exercise/GetAll',
+        url: '/Specialty/GetAll',
         method: 'GET',
         success: function (response) {
 
@@ -29,7 +29,7 @@ function loadEquipment() {
         },
     })
 }
-function addEquipment() {
+function addSpecialty() {
     var name = $('#name').val();
     if (name === '') {
 
@@ -37,7 +37,7 @@ function addEquipment() {
         return;
     }
     $.ajax({
-        url: '/Equipment/Create',
+        url: '/Specialty/Create',
         method: 'POST',
         data: { name: name },
         success: function (response) {
@@ -45,7 +45,7 @@ function addEquipment() {
 
                 swal("Good job!", `${response.message}`, "success");
 
-                loadEquipment();
+                loadSpecialty();
                 $('#Name').val('');
             } else {
                 swal("Error", `${response.message}`, "error");
@@ -57,7 +57,7 @@ function addEquipment() {
 
 function getById(id) {
     $.ajax({
-        url: '/Equipment/GetById?id=' + id,
+        url: '/Specialty/GetById?id=' + id,
         method: 'GET',
         success: function (response) {
             if (response.success) {
@@ -76,7 +76,7 @@ function getById(id) {
     });
 }
 
-function updateEquipment() {
+function updateSpecialty() {
     var id = $('#Id').val();
     var name = $('#name').val();
     if (name === '') {
@@ -85,7 +85,7 @@ function updateEquipment() {
         return;
     }
     $.ajax({
-        url: '/Equipment/Update',
+        url: '/Specialty/Update',
         method: 'POST',
         data: { id: id, name: name },
         success: function (response) {
@@ -94,7 +94,7 @@ function updateEquipment() {
 
                 $('#addBtn').show();
                 $('#editBtn').hide();
-                loadEquipment();
+                loadSpecialty();
                 $('#Id').val('');
                 $('#name').val('');
             } else {
@@ -116,12 +116,12 @@ function Delete(id) {
         .then((willDelete) => {
             if (willDelete) {
                 $.ajax({
-                    url: '/Equipment/Delete?id=' + id,
+                    url: '/Specialty/Delete?id=' + id,
                     method: 'POST',
                     success: function (response) {
                         if (response.success) {
                             swal("Good job!", `${response.message}`, "success");
-                            loadEquipment();
+                            loadSpecialty();
                         } else {
                             swal("Error", `${response.message}`, "error");
                         }
@@ -134,18 +134,18 @@ function Delete(id) {
         });
 }
 $(document).ready(function () {
-    loadEquipmentPaged();
+    loadSpecialtyPaged();
 
-    $('#searchEquipment').on('input', function () {
+    $('#searchSpecialty').on('input', function () {
         currentSearch = $(this).val().trim();
         currentPage = 1;
-        loadEquipmentPaged();
+        loadSpecialtyPaged();
     });
 });
 
-function loadEquipmentPaged() {
+function loadSpecialtyPaged() {
     $.ajax({
-        url: '/Equipment/GetPaged',
+        url: '/Specialty/GetPaged',
         method: 'GET',
         data: {
             page: currentPage,
@@ -196,5 +196,6 @@ function renderPagination(currentPage, totalPages) {
 function changePage(page) {
     if (page < 1) return;
     currentPage = page;
-    loadEquipmentPaged();
+    loadSpecialtyPaged();
+    loadSpecialtyPaged();
 }

@@ -15,7 +15,7 @@ function loadMuscles() {
                     <tr>
                         <td>#${item.id}</td>
                         <td>${item.name}</td>
-                        <td>${item.anatomygroup}</td>
+                        <td>${item.anatomyName}</td>
                         <td class="actions">
                             <button type="button" onclick="getById(${item.id})" class="btn-icon" title="Edit">
                                 <i class="fas fa-edit"></i>
@@ -32,8 +32,6 @@ function loadMuscles() {
         }
     });
 }
-
-
 
 function loadAnatomyGroups() {
     $.ajax({
@@ -53,39 +51,27 @@ function loadAnatomyGroups() {
     });
 }
 
-
-
 function addMuscle() {
-    var name = $('#Name').val();
-    var anatomyGroup = $('#AnatomyGroup').val();
-
-    if (name === '' || anatomyGroup === '') {
-        swal("Error", "Name and Anatomy Group are required!", "error");
-        return;
-    }
+    let name = $("#Name").val();
+    let anatomyName = $("#AnatomyGroup option:selected").text(); 
 
     $.ajax({
         url: '/Muscle/Create',
         method: 'POST',
         data: {
             Name: name,
-            Anatomygroup: anatomyGroup
+            AnatomyName: anatomyName
         },
         success: function (response) {
-            if (response.success) {
-                swal("Good job!", response.message, "success");
-                loadMuscles();
-                clearForm();
-            } else {
-                swal("Error", response.message, "error");
-            }
-        },
-        error: function () {
-            swal("Error", "Something went wrong!", "error");
-        }
+                    if (response.success) {
+                        swal("Added!", response.message, "success");
+                     
+                    } else {
+                        swal("Error", response.message, "error");
+                    }
+                },
     });
 }
-
 
 
 function getById(id) {
@@ -96,13 +82,10 @@ function getById(id) {
             if (response.success) {
                 $('#Id').val(response.data.id);
                 $('#Name').val(response.data.name);
-                $('#AnatomyGroup').val(response.data.anatomygroup);
-                $('#addBtn').hide(); 
-                $('#editBtn')
-                    .show()
-                    .html('<i class="fas fa-save"></i> Save Changes'); 
-
-                swal("Edit Mode", "You are now editing: " + response.data.name, "info");
+                $('#AnatomyGroup').val(response.data.anatomyId); 
+                $('#addBtn').hide();
+                $('#editBtn').show()
+                  
             } else {
                 swal("Error", response.message, "error");
             }
@@ -113,11 +96,15 @@ function getById(id) {
     });
 }
 
-
 function updateMuscle() {
     var id = $('#Id').val();
     var name = $('#Name').val();
-    var anatomyGroup = parseInt($('#AnatomyGroup').val()); 
+    var anatomyGroup = $('#AnatomyGroup').val();
+
+    if (name === '' || !anatomyGroup) {
+        swal("Error", "Name and Anatomy Group are required!", "error");
+        return;
+    }
 
     $.ajax({
         url: '/Muscle/Update',
@@ -125,21 +112,27 @@ function updateMuscle() {
         data: {
             Id: id,
             Name: name,
-            AnatomyId: anatomyGroup
+            AnatomyId: anatomyGroup  
         },
         success: function (response) {
+            console.log(response);
             if (response.success) {
                 swal("Updated!", response.message, "success");
                 $('#addBtn').show();
                 $('#editBtn').hide();
                 clearForm();
-                GetAll();
+                loadMuscles();
             } else {
                 swal("Error", response.message, "error");
             }
+        },
+        error: function (xhr) {
+            console.log(xhr.responseText);
+            swal("Error", "Something went wrong!", "error");
         }
     });
 }
+
 
 function Delete(id) {
     swal({
@@ -170,12 +163,74 @@ function Delete(id) {
         }
     });
 }
+$(document).ready(function () {
+    loadMusclePaged();
 
+    $('#searchMuscle').on('input', function () {
+        currentSearch = $(this).val().trim();
+        currentPage = 1;
+        loadMusclePaged();
+    });
+});
 
+function loadMusclePaged() {
+    $.ajax({
+        url: '/Muscle/GetPaged',
+        method: 'GET',
+        data: {
+            page: currentPage,
+            pageSize: pageSize,
+            search: currentSearch
+        },
+        success: function (response) {
+            $('#Data').empty();
+            response.data.forEach(function (item) {
+                $('#Data').append(`
+                    <tr>
+                        <td>#${item.id}</td>
+                        <td>${item.name}</td>
+                        <td class="actions">
+                            <button type="button" onclick="getById(${item.id})" class="btn-icon" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button type="button" onclick="Delete(${item.id})" class="btn-icon text-danger" title="Delete">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `);
+            });
 
+            renderPagination(response.currentPage, response.totalPages);
+        }
+    });
+}
+
+function renderPagination(currentPage, totalPages) {
+    const pagination = $('.pagination');
+    pagination.empty();
+
+    const prevDisabled = currentPage === 1 ? 'disabled' : '';
+    const nextDisabled = currentPage === totalPages ? 'disabled' : '';
+
+    pagination.append(`<button class="btn-icon" ${prevDisabled} onclick="changePage(${currentPage - 1})"><i class="fas fa-chevron-left"></i></button>`);
+
+    for (let i = 1; i <= totalPages; i++) {
+        const active = i === currentPage ? 'active' : '';
+        pagination.append(`<button class="btn-icon ${active}" onclick="changePage(${i})">${i}</button>`);
+    }
+
+    pagination.append(`<button class="btn-icon" ${nextDisabled} onclick="changePage(${currentPage + 1})"><i class="fas fa-chevron-right"></i></button>`);
+}
+
+function changePage(page) {
+    if (page < 1) return;
+    currentPage = page;
+    loadMusclePaged();
+ 
+}
 function clearForm() {
     $('#Id').val('');
     $('#Name').val('');
     $('#AnatomyGroup').val('');
-
 }

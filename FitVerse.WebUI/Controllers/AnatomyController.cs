@@ -9,19 +9,22 @@ namespace FitVerse.Web.Controllers
     public class AnatomyController : Controller
     {
         private readonly IUnitOfWork unitOfWork;
+        private readonly IUnitOFWorkService Service;
         private readonly IMapper mapper;
 
-        public AnatomyController(IUnitOfWork unitOfWork, IMapper mapper)
+
+        public AnatomyController(IUnitOfWork unitOfWork, IMapper mapper, IUnitOFWorkService service)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
+            Service = service;
         }
         public IActionResult Index()
         {
             return View();
         }
-        
-            public IActionResult GetAll()
+
+        public IActionResult GetAll()
         {
             if (unitOfWork == null)
                 throw new Exception("unitOfWork is NULL!");
@@ -37,7 +40,7 @@ namespace FitVerse.Web.Controllers
             return Json(new { data });
         }
 
-        
+
         public IActionResult GetById(int id)
         {
             var anatomy = unitOfWork.Anatomies.GetById(id);
@@ -94,7 +97,7 @@ namespace FitVerse.Web.Controllers
             var query = unitOfWork.Anatomies.GetAll().AsQueryable();
             if (!string.IsNullOrEmpty(search))
             {
-                
+
                 string lowerSearch = search.ToLower();
                 query = query.Where(a => a.Name.ToLower().Contains(lowerSearch));
             }

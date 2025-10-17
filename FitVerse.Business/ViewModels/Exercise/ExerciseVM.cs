@@ -1,15 +1,15 @@
-﻿using System;
+﻿using FitVerse.Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-namespace FitVerse.Core.viewModels
+
+namespace FitVerse.Core.ViewModels.Exercise
 {
-public class EquipmentVM
+    public class ExerciseVM:AddExerciseVM
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+      
     }
 }
-    
-

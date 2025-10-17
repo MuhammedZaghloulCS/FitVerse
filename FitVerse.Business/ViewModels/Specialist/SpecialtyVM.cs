@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-namespace FitVerse.Core.viewModels
+
+namespace FitVerse.Core.ViewModels.Specialist
 {
-public class EquipmentVM
+    public class SpecialtyVM
     {
         public int Id { get; set; }
         public string Name { get; set; }
     }
 }
-    
-

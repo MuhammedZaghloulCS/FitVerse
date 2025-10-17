@@ -1,13 +1,11 @@
 ﻿using AutoMapper;
+using FitVerse.Core.viewModels;
+
 using FitVerse.Core.ViewModels.Anatomy;
-using FitVerse.Core.ViewModels.Equipment;
+using FitVerse.Core.ViewModels.Meuscle;
 using FitVerse.Core.ViewModels.Package;
 using FitVerse.Data.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace FitVerse.Core.MapperConfigs
 {
@@ -18,10 +16,16 @@ namespace FitVerse.Core.MapperConfigs
             CreateMap<Anatomy,AnatomyVM>().ReverseMap();
             CreateMap<Equipment,EquipmentVM>().ReverseMap();
             CreateMap<AddAnatomyVM, Anatomy>().ReverseMap();
-            CreateMap<AddEquipmentVM, Equipment>().ReverseMap();
+            CreateMap<AddAnatomyVM, Equipment>().ReverseMap();
             CreateMap<Coach, Core.ViewModels.Coach.AddCoachVM>().ReverseMap();
             CreateMap <Package,PackageVM>().ReverseMap();
+            CreateMap<Muscle, MuscleVM>().ReverseMap();
+            CreateMap<Muscle, AddMuscleVM>().ReverseMap();
             CreateMap<AddPackageVM, Package>().ReverseMap();
+            CreateMap<AddMuscleVM, MuscleVM>().ReverseMap();
+           // CreateMap<Exercise, ExersiceVM>().ReverseMap();
+          //  CreateMap<AddExersiceVM, Exercise>().ReverseMap();
+
         }
 
     }

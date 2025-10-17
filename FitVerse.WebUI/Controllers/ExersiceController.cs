@@ -1,19 +1,22 @@
-﻿using AutoMapper;
+﻿
+using AutoMapper;
 using FitVerse.Core.UnitOfWork;
 using FitVerse.Core.viewModels;
-using FitVerse.Core.ViewModels.Anatomy;
-using FitVerse.Core.ViewModels.Equipment;
+using FitVerse.Core.ViewModels;
+using FitVerse.Core.ViewModels.Exercise;
+using FitVerse.Core.ViewModels.Meuscle;
+using FitVerse.Data.Models;
+using FitVerse.Data.UnitOfWork;
 using Microsoft.AspNetCore.Mvc;
-
 namespace FitVerse.Web.Controllers
 {
-    public class EquipmentController : Controller
+    public class ExersiceController : Controller
     {
-        private readonly IUnitOfWork unitOfWork;
-
-        public EquipmentController(IUnitOfWork unitOfWork)
+        IUnitOfWork db; IMapper mapper;
+        public ExersiceController(IUnitOfWork db, IMapper mapper)
         {
-            this.unitOfWork = unitOfWork;
+            this.db = db;
+            this.mapper = mapper;
         }
         public IActionResult Index()
         {
@@ -21,42 +24,64 @@ namespace FitVerse.Web.Controllers
         }
         public IActionResult GetAll()
         {
-            var allObj = unitOfWork.Equipments.GetAll();
-            var data = allObj.Select(e => new EquipmentVM { Id = e.Id, Name = e.Name }).ToList();
-            return Json(new { data = data });
+            if (db == null)
+                throw new NullReferenceException("UnitOfWork returns NullException");
+            if (db.Exercises == null)
+                throw new NullReferenceException("DbContext.Excersice returns NullException");
+
+            var data = mapper.Map<ExerciseVM>(db.Exercises.GetAll());
+            return Json(new { data });
+            
+        }
+        public IActionResult GetAllMuscles()
+        {
+            var muscles=db.Muscles.GetAll();
+            var data = mapper.Map<MuscleVM>(muscles);
+            return Json(new { data });
+        }
+        public IActionResult GetAllEquipments()
+        {
+            var Equipments = db.Equipments.GetAll();
+            var data = mapper.Map<EquipmentVM>(Equipments);
+            return Json(new { data });
         }
 
-        public IActionResult Create(AddEquipmentVM model)
+        public IActionResult Create(AddExerciseVM exercise)
         {
-            unitOfWork.Equipments.Add(new Data.Models.Equipment { Name = model.Name });
-            if (unitOfWork.Complete() > 0)
+            if (exercise == null)
+                throw new NullReferenceException();
+            var exe = mapper.Map<Exercise>(exercise);
+            db.Exercises.Add(exe);
+            if (db.Complete() > 0)
             {
-                return Json(new { success = true, message = "Equipment created successfully" });
+                return Json(new { success = true, message = "Exercise created successfully" });
 
             }
             return Json(new { success = false, message = "Somthing wrong!" });
 
         }
+
+
         public IActionResult GetById(int id)
         {
-            var equipment = unitOfWork.Equipments.GetById(id);
-            if (equipment == null)
-            {
-                return Json(new { success = false, message = "Somthing wrong!" });
-            }
-            var model = new EquipmentVM { Id = equipment.Id, Name = equipment.Name };
-            return Json(new { success = true, data = model });
+           var exe= db.Exercises.GetById(id);
+            if (exe == null)
+                throw new NullReferenceException();
+            var exercise=mapper.Map<ExerciseVM>(exe);
+            return Json(new { success = true,  data =exercise } );
         }
+
+
         public IActionResult Update(EquipmentVM model)
         {
-            var equipment = unitOfWork.Equipments.GetById(model.Id);
+            var equipment = db.Exercises.GetById(model.Id);
             if (equipment == null)
             {
                 return Json(new { success = false, message = "Not Found!" });
             }
             equipment.Name = model.Name;
-            unitOfWork.Equipments.Update(equipment);
-            if (unitOfWork.Complete() > 0)
+            db.Exercises.Update(equipment);
+            if (db.Complete() > 0)
             {
                 return Json(new { success = true, message = "Equipment updated successfully" });
             }
@@ -65,13 +90,13 @@ namespace FitVerse.Web.Controllers
         }
         public IActionResult Delete(int id)
         {
-            var equipment = unitOfWork.Equipments.GetById(id);
+            var equipment = db.Exercises.GetById(id);
             if (equipment == null)
             {
                 return Json(new { success = false, message = "Not Found!" });
             }
-            unitOfWork.Equipments.Delete(equipment);
-            if (unitOfWork.Complete() > 0)
+            db.Exercises.Delete(equipment);
+            if (db.Complete() > 0)
             {
                 return Json(new { success = true, message = "Equipment deleted successfully" });
             }
@@ -79,7 +104,7 @@ namespace FitVerse.Web.Controllers
         }
         public IActionResult GetPaged(int page = 1, int pageSize = 5, string? search = null)
         {
-            var query = unitOfWork.Equipments.GetAll().AsQueryable();
+            var query = db.Exercises.GetAll().AsQueryable();
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -104,6 +129,5 @@ namespace FitVerse.Web.Controllers
             });
         }
     }
-    
 
 }
