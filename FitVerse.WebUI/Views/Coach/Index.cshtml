@@ -1,0 +1,96 @@
+﻿<!-- Coach Content -->
+<form enctype="multipart/form-data" id="coachForm"> 
+    <div class="content-area">
+    <div class="page-header">
+        <h1>Add New Coach</h1>
+        <div class="breadcrumb">
+            <a href="index.html">Home</a> / <span>Coaches</span> / <span>Add New</span>
+        </div>
+    </div>
+
+    <!-- Coach Form Section -->
+        <div class="form-card">
+            <div class="form-header">
+                <h3><i class="fas fa-user-tie"></i> Coach Information</h3>
+                <p>Fill in the details below to add a new coach to the system</p>
+            </div>
+
+
+                <!-- Name -->
+                <div class="form-group">
+                    <label for="coachName">Full Name <span class="required">*</span></label>
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="coachName" name="Name" placeholder="Enter coach's full name" required>
+                    </div>
+                </div>
+
+                <!-- Title -->
+                <div class="form-group">
+                    <label for="coachTitle">Title <span class="required">*</span></label>
+                    <div class="input-group">
+                        <i class="fas fa-id-badge"></i>
+                        <input type="text" id="coachTitle" name="Title" placeholder="e.g., Head Trainer, Yoga Instructor" required>
+                    </div>
+                </div>
+
+                <!-- About -->
+                <div class="form-group">
+                    <label for="coachAbout">About Coach <span class="required">*</span></label>
+                    <div class="input-group">
+                        <i class="fas fa-align-left"></i>
+                        <textarea id="coachAbout" name="About" rows="4" placeholder="Write something about coach experience..." required></textarea>
+                    </div>
+                </div>
+
+                <!-- Image -->
+                <div class="form-group">
+                    <label for="coachImage">Profile Image</label>
+                    <div class="file-upload">
+                    <input type="file" id="coachImage" name="CoachImageFile" class="file-input">
+                        <label for="coachImage" class="file-upload-label">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Choose an image file</span>
+                        </label>
+                        <div id="fileName" class="file-name">No file chosen</div>
+                    </div>
+                </div>
+
+                <!-- IsActive -->
+                <div class="form-group switch-group">
+                    <label class="switch">
+                        <input type="checkbox" id="isActive" name="IsActive" checked>
+                        <span class="slider round"></span>
+                    </label>
+                    <label for="isActive" class="switch-label">Active Coach</label>
+                </div>
+
+                <!-- UserId -->
+                <div class="form-group">
+                    <label for="userId">User Account <span class="required">*</span></label>
+                    <div class="input-group">
+                        <i class="fas fa-user-circle"></i>
+                        <select id="userId" name="UserId" class="form-select" required>
+                            <option value="" disabled selected>Select user account</option>
+                            <option value="1">john.doe@example.com</option>
+                            <option value="2">jane.smith@example.com</option>
+                            <option value="3">mike.johnson@example.com</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="reset" class="btn btn-outline id="RestCoach">
+                        <i class="fas fa-undo"></i> Reset
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="SaveCoach">
+                        <i class="fas fa-save"></i> Save Coach
+                    </button>
+                </div>
+        </div>
+    </div>
+    </div>
+</form>
+@section Scripts {
+    <script src="~/ViewJs/Coach.js"></script>
+}

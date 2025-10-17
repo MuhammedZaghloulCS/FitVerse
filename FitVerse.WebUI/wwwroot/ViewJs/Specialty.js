@@ -1,21 +1,21 @@
-﻿$(document).ready(function () {
-    loadAnatomyGroups();
-    loadMuscles();
-    $('#editBtn').hide();
+﻿let currentPage = 1;
+let pageSize = 5;
+let currentSearch = "";
+$(document).ready(function () {
+    loadSpecialty();
 });
-
-function loadMuscles() {
+function loadSpecialty() {
     $.ajax({
-        url: '/Muscle/GetAll',
+        url: '/Specialty/GetAll',
         method: 'GET',
         success: function (response) {
+
             $('#Data').empty();
             response.data.forEach(function (item) {
                 $('#Data').append(`
-                    <tr>
+                <tr>
                         <td>#${item.id}</td>
                         <td>${item.name}</td>
-                        <td>${item.anatomyName}</td>
                         <td class="actions">
                             <button type="button" onclick="getById(${item.id})" class="btn-icon" title="Edit">
                                 <i class="fas fa-edit"></i>
@@ -27,155 +27,125 @@ function loadMuscles() {
                     </tr>`);
             });
         },
-        error: function () {
-            swal("Error", "Failed to load muscles!", "error");
-        }
-    });
+    })
 }
+function addSpecialty() {
+    var name = $('#name').val();
+    if (name === '') {
 
-function loadAnatomyGroups() {
+        swal("Error", "Name is required!", "error");
+        return;
+    }
     $.ajax({
-        url: '/Muscle/GetAnatomyGroups',
-        method: 'GET',
-        success: function (response) {
-            var dropdown = $('#AnatomyGroup');
-            dropdown.empty();
-            dropdown.append('<option value="">Select Anatomy Group</option>');
-            response.data.forEach(function (item) {
-                dropdown.append(`<option value="${item.id}">${item.name}</option>`);
-            });
-        },
-        error: function () {
-            swal("Error", "Failed to load anatomy groups!", "error");
-        }
-    });
-}
-
-function addMuscle() {
-    let name = $("#Name").val();
-    let anatomyName = $("#AnatomyGroup option:selected").text(); 
-
-    $.ajax({
-        url: '/Muscle/Create',
+        url: '/Specialty/Create',
         method: 'POST',
-        data: {
-            Name: name,
-            AnatomyName: anatomyName
-        },
+        data: { name: name },
         success: function (response) {
-                    if (response.success) {
-                        swal("Added!", response.message, "success");
-                     
-                    } else {
-                        swal("Error", response.message, "error");
-                    }
-                },
-    });
-}
+            if (response.success) {
 
+                swal("Good job!", `${response.message}`, "success");
+
+                loadSpecialty();
+                $('#Name').val('');
+            } else {
+                swal("Error", `${response.message}`, "error");
+
+            }
+        },
+    })
+}
 
 function getById(id) {
     $.ajax({
-        url: '/Muscle/GetById?id=' + id,
+        url: '/Specialty/GetById?id=' + id,
         method: 'GET',
         success: function (response) {
             if (response.success) {
                 $('#Id').val(response.data.id);
-                $('#Name').val(response.data.name);
-                $('#AnatomyGroup').val(response.data.anatomyId); 
+                $('#name').val(response.data.name);
                 $('#addBtn').hide();
-                $('#editBtn').show()
-                  
+                $('#editBtn').show();
             } else {
-                swal("Error", response.message, "error");
+                Swal.fire({
+                    title: "Error",
+                    text: `${response.message}`,
+                    icon: "error"
+                });
             }
         },
-        error: function () {
-            swal("Error", "Failed to fetch muscle data!", "error");
-        }
     });
 }
 
-function updateMuscle() {
+function updateSpecialty() {
     var id = $('#Id').val();
-    var name = $('#Name').val();
-    var anatomyGroup = $('#AnatomyGroup').val();
+    var name = $('#name').val();
+    if (name === '') {
+        swal("Error", "Name is required!", "error");
 
-    if (name === '' || !anatomyGroup) {
-        swal("Error", "Name and Anatomy Group are required!", "error");
         return;
     }
-
     $.ajax({
-        url: '/Muscle/Update',
+        url: '/Specialty/Update',
         method: 'POST',
-        data: {
-            Id: id,
-            Name: name,
-            AnatomyId: anatomyGroup  
-        },
+        data: { id: id, name: name },
         success: function (response) {
-            console.log(response);
             if (response.success) {
-                swal("Updated!", response.message, "success");
+                swal("Good job!", `${response.message}`, "success");
+
                 $('#addBtn').show();
                 $('#editBtn').hide();
-                clearForm();
-                loadMuscles();
+                loadSpecialty();
+                $('#Id').val('');
+                $('#name').val('');
             } else {
-                swal("Error", response.message, "error");
+                swal("Error", `${response.message}`, "error");
+
             }
         },
-        error: function (xhr) {
-            console.log(xhr.responseText);
-            swal("Error", "Something went wrong!", "error");
-        }
-    });
+    })
 }
-
 
 function Delete(id) {
     swal({
         title: "Are you sure?",
-        text: "Once deleted, you will not be able to recover this muscle!",
+        text: "Once deleted, you will not be able to recover this !",
         icon: "warning",
         buttons: true,
         dangerMode: true,
-    }).then((willDelete) => {
-        if (willDelete) {
-            $.ajax({
-                url: '/Muscle/Delete?id=' + id,
-                method: 'POST',
-                success: function (response) {
-                    if (response.success) {
-                        swal("Deleted!", response.message, "success");
-                        loadMuscles();
-                    } else {
-                        swal("Error", response.message, "error");
-                    }
-                },
-                error: function () {
-                    swal("Error", "Failed to delete muscle!", "error");
-                }
-            });
-        } else {
-            swal("Action canceled!");
-        }
-    });
+    })
+        .then((willDelete) => {
+            if (willDelete) {
+                $.ajax({
+                    url: '/Specialty/Delete?id=' + id,
+                    method: 'POST',
+                    success: function (response) {
+                        if (response.success) {
+                            swal("Good job!", `${response.message}`, "success");
+                            loadSpecialty();
+                        } else {
+                            swal("Error", `${response.message}`, "error");
+                        }
+                    },
+                })
+
+            } else {
+                swal("Your imaginary file is safe!");
+            }
+        });
 }
 $(document).ready(function () {
-    loadMusclePaged();
+    loadSpecialtyPaged();
 
-    $('#searchMuscle').on('input', function () {
+    $('#searchSpecialty').on('input', function () {
         currentSearch = $(this).val().trim();
         currentPage = 1;
-        loadMusclePaged();
+        loadSpecialtyPaged();
     });
 });
 
-function loadMusclePaged() {
+function loadSpecialtyPaged() {
     $.ajax({
-        url: '/Muscle/GetPaged',
+        url: '/Specialty/GetPaged',
         method: 'GET',
         data: {
             page: currentPage,
@@ -226,11 +196,6 @@ function renderPagination(currentPage, totalPages) {
 function changePage(page) {
     if (page < 1) return;
     currentPage = page;
-    loadMusclePaged();
- 
-}
-function clearForm() {
-    $('#Id').val('');
-    $('#Name').val('');
-    $('#AnatomyGroup').val('');
+    loadSpecialtyPaged();
+    loadSpecialtyPaged();
 }

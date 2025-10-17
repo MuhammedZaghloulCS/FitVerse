@@ -12,8 +12,9 @@ namespace FitVerse.Core.ViewModels.Meuscle
        
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Anatomygroup { get; set; }
         public int AnatomyId { get; set; }
+        public string AnatomyName { get; set; }
+
 
 
     }

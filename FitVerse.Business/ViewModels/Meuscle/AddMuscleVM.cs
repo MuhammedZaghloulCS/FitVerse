@@ -9,7 +9,8 @@ namespace FitVerse.Core.ViewModels.Meuscle
     public class AddMuscleVM
     {
         public string Name { get; set; }
+        public int Anatomygroup { get; set; }
+        public string AnatomyName { get; set; }
         public string Description { get; set; }
-        public string Anatomygroup { get; set; }
     }
 }

@@ -37,6 +37,12 @@ namespace FitVerse.Data.UnitOfWork
         {
             _context = context;
 
+            Muscles = new MuscleRepository(_context);
+            Anatomies = new AnatomyRepository(_context);
+            Packages = new PackageRepository(_context);
+            Equipments = new EquipmentRepository(_context);
+            Coaches=new CoachRepository(_context);
+            Specialties=new SpecialityRepository(_context);
          
             //Coaches = coaches;
             //Clients = clients;
@@ -113,10 +119,15 @@ namespace FitVerse.Data.UnitOfWork
             }
         }
 
+        public IMuscleRepository Muscles { get; }
+        public IAnatomyRepository Anatomies { get; }
+        public IPackageRepository Packages { get; }
+        public IEquipmentRepository Equipments { get; }
 
-        //public IExercisePlanRepository ExercisePlans { get; }
-        //public IExercisePlanDetailRepository ExercisePlanDetails { get; }
-        //public ISpecialtiesRepository Specialties { get; }
+        public ICoachRepository Coaches { get; }
+
+        public ISpecialtiesRepository Specialties  { get; }
+
         public int Complete() => _context.SaveChanges();
         public void Dispose() => _context.Dispose();
     }

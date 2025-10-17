@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FitVerse.Core.Interfaces
+namespace FitVerse.Core.ViewModels.Specialist
 {
-    public interface ISpecialtiesRepository: IGenericRepository<Data.Models.Specialty>
+    public class AddSpecialtyVM
     {
+        public string Name { get; set; }
     }
 }

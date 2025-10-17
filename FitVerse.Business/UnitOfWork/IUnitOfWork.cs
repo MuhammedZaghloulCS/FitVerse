@@ -12,7 +12,7 @@ namespace FitVerse.Core.UnitOfWork
     {
 
         IMuscleRepository Muscles { get; }
-        //ICoachRepository Coaches { get; }
+        ICoachRepository Coaches { get; }
         //IClientRepository Clients { get; }
         IAnatomyRepository Anatomies { get; }
         //ICoachSpecialtiesRepository CoachSpecialties { get; }
@@ -28,7 +28,7 @@ namespace FitVerse.Core.UnitOfWork
         //INotificationRepository Notifications { get; }
         IPackageRepository Packages { get; }
         //IPaymentRepository Payments { get; }
-        //ISpecialtiesRepository Specialties { get; }
+        ISpecialtiesRepository Specialties { get; }
         int Complete();
     }
 }

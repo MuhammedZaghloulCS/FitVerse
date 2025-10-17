@@ -15,10 +15,10 @@ namespace FitVerse.Data.Models
         public string Title { get; set; }
 
         public string About { get; set; }
-        public string ImagePath { get; set; }
+        public string? ImagePath { get; set; }
         public bool IsActive { get; set; }
 
-        public Guid UserId { get; set; }
+        public Guid? UserId { get; set; }//لازم بعدين يتيغر ان ميقبلش null
         public IdentityUser User { get; set; }
         public virtual ICollection<CoachSpecialties>? CoachSpecialties { get; set; }=new HashSet<CoachSpecialties>();
         public virtual ICollection<Package>? Packages { get; set; }=new HashSet<Package>();
