@@ -43,6 +43,59 @@ namespace FitVerse.Data.Service
                     return (false, ex.Message);
                 }
             }
+
+            public List<AddCoachVM> GetAllCoaches()
+            {
+               var coaches= unitOfWork.Coaches.GetAll();
+                return mapper.Map<List<AddCoachVM>>(coaches);
+            }
+
+            public AddCoachVM GetCoachByIdGuid(Guid id)
+            {
+                var coach = unitOfWork.Coaches.GetCoachByIdGuid(id);
+                return mapper.Map<AddCoachVM>(coach);
+            }
+
+      
+
+            (bool Success, string Message) ICoachService.DeleteCoachById(Guid id)
+            {
+                var coaches = unitOfWork.Coaches.DeleteCoachById(id);
+
+                return coaches;
+            }
+
+            public (bool Success, string Message) UpdateCoach(AddCoachVM model)
+            {
+                try
+                {
+                    var existingCoach = unitOfWork.Coaches.GetCoachByIdGuid(model.Id);
+                    if (existingCoach == null)
+                        return (false, "Coach not found.");
+
+                    if (model.CoachImageFile != null && model.CoachImageFile.Length > 0)
+                    {
+                        string? imagePath = imageService.SaveImage(model.CoachImageFile);
+                        if (!string.IsNullOrEmpty(imagePath))
+                        {
+                            existingCoach.ImagePath = imagePath;
+                        }
+                    }
+                    existingCoach.Name = model.Name;
+                    existingCoach.Title = model.Title;
+                    existingCoach.About = model.About;
+                    existingCoach.IsActive = model.IsActive;
+
+                    unitOfWork.Coaches.Update(existingCoach);
+                    unitOfWork.Complete();
+                    return (true, "Coach updated successfully.");
+                }
+                catch (Exception ex)
+                {
+                    return (false, ex.Message);
+                }
+            }
+
         }
     }
 }

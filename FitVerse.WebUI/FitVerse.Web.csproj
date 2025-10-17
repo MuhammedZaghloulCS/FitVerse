@@ -27,12 +27,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FitVerse.Business\FitVerse.Core.csproj" />
-    <ProjectReference Include="..\FitVerse.Data\FitVerse.Data.csproj" />
+    <Folder Include="wwwroot\Images\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\Images\" />
+    <ProjectReference Include="..\FitVerse.Data\FitVerse.Data.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,26 +1,166 @@
 ﻿$(function () {
-    $("#coachForm").on("submit", function (e) {
-        e.preventDefault(); // Prevent default form submission (page reload)
+    $("#SaveCoach").click(function (e) {
+        e.preventDefault();
 
-        let formData = new FormData(this);
+        let formData = new FormData($('#coachForm')[0]);
+        formData.delete("IsActive");
+        formData.append("IsActive", $('#isActive').is(':checked'));
 
         $.ajax({
-            url: '/Coach/AddCoach', 
+            url: '/Coach/AddCoach',
             method: 'POST',
-            data: formData, 
-            processData: false, // Prevent jQuery from processing data automatically
-            contentType: false, // Prevent jQuery from setting the content type automatically
+            data: formData,
+            processData: false,
+            contentType: false,
             success: function (res) {
                 if (res.success) {
                     swal("✅ Success", res.message, "success");
-                    $("#coachForm")[0].reset(); // Reset the form after submission
+                    $("#coachForm")[0].reset();
+                    LoadCoaches();
                 } else {
-                    swal("❌ Error", res.message, "error"); 
+                    swal("❌ Error", res.message, "error");
                 }
             },
             error: function () {
-                swal("⚠️ Warning", "An error occurred while sending the request.", "error");
+                swal("⚠️ Warning", "An error occurred while adding coach.", "error");
+            }
+        });
+    });
+
+    $("#UpdateCoach").click(function (e) {
+        e.preventDefault();
+        let formData = new FormData($('#coachForm')[0]);
+        formData.delete("IsActive");
+        formData.append("IsActive", $('#isActive').is(':checked'));
+
+        $.ajax({
+            url: '/Coach/UpdateCoach', 
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                if (res.success) {
+                    swal("✅ Updated", res.message, "success");
+                    $("#coachForm")[0].reset();
+                    $('#UpdateCoach').hide();
+                    $('#SaveCoach').show();
+                    LoadCoaches();
+                } else {
+                    swal("❌ Error", res.message, "error");
+                }
+            },
+            error: function () {
+                swal("⚠️ Warning", "An error occurred while updating coach.", "error");
             }
         });
     });
 });
+
+
+
+
+$(document).ready(function () {
+    LoadCoaches();
+});
+
+function LoadCoaches() {
+    $.ajax({
+        url: '/Coach/GetAllCoaches',
+        method: 'GET',
+        success: function (res) {
+            $('#UpdateCoach').hide();
+            $('#SaveCoach').show();
+            if (res.success) {
+                let coaches = res.data;
+                let coachTableBody = $("#Data");
+                coachTableBody.empty();
+
+                coaches.forEach(coach => {
+                    let status = coach.isActive ? "✅ Active" : "❌ Inactive";
+                    let row = `
+                        <tr>
+                            <td>${coach.Name}</td>
+                            <td>${coach.Name}</td>
+
+                            <td>${coach.Title}</td>
+                            <td>${coach.About}</td>
+                            <td><img src="${coach.ImagePath}" alt="${coach.Name}" width="80"/></td>
+                            <td>${status}</td>
+
+                            <td class="actions">
+                                <button type="button" onclick="getById('${coach.Id}')" class="btn-icon" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" onclick="DeleteCoach('${coach.Id}')" class="btn-icon text-danger" title="Delete">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </td>
+                        </tr>`;
+                    coachTableBody.append(row);
+                });
+            } else {
+                swal("❌ Error", res.message, "error");
+            }
+        },
+        error: function () {
+            swal("⚠️ Warning", "An error occurred while fetching coaches.", "error");
+        }
+    });
+}
+
+function getById(id) {
+    $.ajax({
+        url: '/Coach/GetCoachById?id=' + id,
+        method: 'GET',
+        success: function (response) {
+            if (response.success) {
+                let coach = response.data;
+                console.log("IsActive value:", response.data.IsActive, typeof coach.IsActive);
+                $('#coachId').val(coach.Id);
+                $('#coachName').val(coach.Name);
+                $('#coachTitle').val(coach.Title);
+                $('#coachAbout').val(coach.About);
+                $('#IsActive').prop('checked', coach.IsActive);
+                $('#UpdateCoach').show();
+                $('#SaveCoach').hide();
+            } else {
+                swal("❌ Error", response.message, "error");
+            }
+        },
+        error: function () {
+            swal("⚠️ Warning", "Could not load coach details.", "error");
+        }
+    });
+}
+
+
+
+function DeleteCoach(id) {
+    swal({
+        title: "Are you sure?",
+        text: "Once deleted, you will not be able to recover this coach!",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then((willDelete) => {
+        if (willDelete) {
+            $.ajax({
+                url: '/Coach/DeleteCoach?id=' + id,
+                method: 'DELETE',
+                success: function (res) {
+                    if (res.success) {
+                        swal("✅ Success", res.message, "success");
+                        LoadCoaches();
+                    } else {
+                        swal("❌ Error", res.message, "error");
+                    }
+                },
+                error: function () {
+                    swal("⚠️ Warning", "An error occurred while deleting the coach.", "error");
+                }
+            });
+        }
+    });
+
+}

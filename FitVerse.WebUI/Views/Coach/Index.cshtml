@@ -10,6 +10,8 @@
 
     <!-- Coach Form Section -->
         <div class="form-card">
+            <input type="hidden" id="coachId" name="Id"/>
+
             <div class="form-header">
                 <h3><i class="fas fa-user-tie"></i> Coach Information</h3>
                 <p>Fill in the details below to add a new coach to the system</p>
@@ -56,14 +58,13 @@
                     </div>
                 </div>
 
-                <!-- IsActive -->
-                <div class="form-group switch-group">
-                    <label class="switch">
-                        <input type="checkbox" id="isActive" name="IsActive" checked>
-                        <span class="slider round"></span>
-                    </label>
-                    <label for="isActive" class="switch-label">Active Coach</label>
-                </div>
+            <div class="form-group">
+                <label for="isActive">
+                    <input type="checkbox" id="IsActive" name="IsActive" value="true" />
+                    Active Coach
+                </label>
+            </div>
+
 
                 <!-- UserId -->
                 <div class="form-group">
@@ -80,17 +81,65 @@
                 </div>
 
                 <div class="form-actions">
-                    <button type="reset" class="btn btn-outline id="RestCoach">
+                    <button type="reset" class="btn btn-outline" id="RestCoach">
                         <i class="fas fa-undo"></i> Reset
                     </button>
-                    <button type="submit" class="btn btn-primary" id="SaveCoach">
-                        <i class="fas fa-save"></i> Save Coach
-                    </button>
+                <button type="submit" class="btn btn-primary" id="SaveCoach">Save Coach</button>
+                <button type="submit" class="btn btn-primary" id="UpdateCoach">Update Coach</button>
+
                 </div>
         </div>
     </div>
     </div>
 </form>
+
+
+<div class="table-actions">
+    <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchEquipment" placeholder="Search records...">
+    </div>
+</div>
+<button type="submit" class="btn btn-primary" id="GetCoahPages">Search</button>
+
+  <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                 <tr>
+                <th>Name</th>
+                <th>Name</th>
+                <th>Title</th>
+                <th>About</th>
+                <th>Image</th>
+                <th>Status</th>
+                <th>Actions</th>
+                 </tr>
+                </thead>
+
+                <tbody id="Data">
+
+                </tbody>
+
+            </table>
+        </div>
+
+        <div class="table-footer">
+            <div class="table-info">
+                Showing <span>1</span> to <span>3</span> of <span>3</span> entries
+            </div>
+            <div class="pagination">
+                <button class="btn-icon" disabled>
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="btn-icon active">1</button>
+                <button class="btn-icon" disabled>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script src="~/ViewJs/Coach.js"></script>
 }

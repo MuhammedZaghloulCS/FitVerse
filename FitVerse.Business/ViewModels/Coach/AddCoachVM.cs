@@ -11,11 +11,12 @@ namespace FitVerse.Core.ViewModels.Coach
 {
     public class AddCoachVM
     {
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public string Title { get; set; }
 
         public string About { get; set; }
-        public string CoachImagePath { get; set; }
+        public string ImagePath { get; set; }
         public IFormFile CoachImageFile { get; set; }
         public bool IsActive { get; set; }
         public Guid? UserId { get; set; } 

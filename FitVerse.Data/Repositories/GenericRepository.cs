@@ -1,5 +1,7 @@
 ﻿using FitVerse.Core.Interfaces;
+using FitVerse.Core.ViewModels.Equipment;
 using FitVerse.Data.Context;
+using FitVerse.Data.Service;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -17,7 +19,7 @@ namespace FitVerse.Data.Repositories
         public GenericRepository(FitVerseDbContext context)
         {
             this.context = context;
-            this.dbSet =context.Set<T>();
+            this.dbSet = context.Set<T>();
         }
         public T Add(T entity)
         {
@@ -60,5 +62,8 @@ namespace FitVerse.Data.Repositories
                 throw new ArgumentNullException(nameof(entity));
             dbSet.Update(entity);
         }
+
+
+
     }
 }
