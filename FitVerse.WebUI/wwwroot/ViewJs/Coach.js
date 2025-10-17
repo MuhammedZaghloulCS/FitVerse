@@ -3,8 +3,7 @@
         e.preventDefault();
 
         let formData = new FormData($('#coachForm')[0]);
-        formData.delete("IsActive");
-        formData.append("IsActive", $('#isActive').is(':checked'));
+        formData.set("IsActive", $('#IsActive').is(':checked') ? "true" : "false");
 
         $.ajax({
             url: '/Coach/AddCoach',
@@ -30,11 +29,10 @@
     $("#UpdateCoach").click(function (e) {
         e.preventDefault();
         let formData = new FormData($('#coachForm')[0]);
-        formData.delete("IsActive");
-        formData.append("IsActive", $('#isActive').is(':checked'));
+        formData.set("IsActive", $('#IsActive').is(':checked') ? "true" : "false");
 
         $.ajax({
-            url: '/Coach/UpdateCoach', 
+            url: '/Coach/UpdateCoach',
             method: 'POST',
             data: formData,
             processData: false,
@@ -58,8 +56,6 @@
 });
 
 
-
-
 $(document).ready(function () {
     LoadCoaches();
 });
@@ -77,12 +73,11 @@ function LoadCoaches() {
                 coachTableBody.empty();
 
                 coaches.forEach(coach => {
-                    let status = coach.isActive ? "✅ Active" : "❌ Inactive";
+                    let status = coach.IsActive ? "✅ Active" : "❌ Inactive";
                     let row = `
                         <tr>
                             <td>${coach.Name}</td>
                             <td>${coach.Name}</td>
-
                             <td>${coach.Title}</td>
                             <td>${coach.About}</td>
                             <td><img src="${coach.ImagePath}" alt="${coach.Name}" width="80"/></td>
