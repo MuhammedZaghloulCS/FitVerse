@@ -4,6 +4,7 @@ using FitVerse.Core.UnitOfWork;
 using FitVerse.Core.viewModels;
 using FitVerse.Core.ViewModels;
 using FitVerse.Core.ViewModels.Exercise;
+using FitVerse.Core.ViewModels.Meuscle;
 using FitVerse.Data.Models;
 using FitVerse.Data.UnitOfWork;
 using Microsoft.AspNetCore.Mvc;
@@ -31,6 +32,18 @@ namespace FitVerse.Web.Controllers
             var data = mapper.Map<ExerciseVM>(db.Exercises.GetAll());
             return Json(new { data });
             
+        }
+        public IActionResult GetAllMuscles()
+        {
+            var muscles=db.Muscles.GetAll();
+            var data = mapper.Map<MuscleVM>(muscles);
+            return Json(new { data });
+        }
+        public IActionResult GetAllEquipments()
+        {
+            var Equipments = db.Equipments.GetAll();
+            var data = mapper.Map<EquipmentVM>(Equipments);
+            return Json(new { data });
         }
 
         public IActionResult Create(AddExerciseVM exercise)

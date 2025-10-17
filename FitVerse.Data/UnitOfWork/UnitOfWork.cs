@@ -14,52 +14,13 @@ namespace FitVerse.Data.UnitOfWork
         MuscleRepository muscles;
         PackageRepository package;
         ExersiceRepository exersice;
-        public UnitOfWork(
-            FitVerseDbContext context
-            //IMuscleRepository muscles,
-            //ICoachRepository coaches,
-            //IClientRepository clients,
-            
-            //IMessageRepository messages,
-            //IChatRepository chats,
-            //IDietPlanRepository dietPlans,
-            //IExerciseRepository exercises,
-            //IPackageRepository packages,
-            //IPaymentRepository payments,
-            //INotificationRepository notifications,
-            //ICoachSpecialtiesRepository coachSpecialties,
-            //ICoachFeedbackRepository coachFeedbacks,
-            
-            //IExercisePlanRepository exercisePlans,
-            //IExercisePlanDetailRepository exercisePlanDetails,
-            //ISpecialtiesRepository specialties
-            )
+        CoachRepository coaches;
+        SpecialityRepository specialties;
+        public UnitOfWork(FitVerseDbContext context)
         {
             _context = context;
 
-            Muscles = new MuscleRepository(_context);
-            Anatomies = new AnatomyRepository(_context);
-            Packages = new PackageRepository(_context);
-            Equipments = new EquipmentRepository(_context);
-            Coaches=new CoachRepository(_context);
-            Specialties=new SpecialityRepository(_context);
-         
-            //Coaches = coaches;
-            //Clients = clients;
-           
-            //Messages = messages;
-            //Chats = chats;
-            //DietPlans = dietPlans;
-            //Exercises = exercises; 
-            //Packages = packages;
-            //Payments = payments;
-            //Notifications = notifications;
-            //CoachSpecialties = coachSpecialties;
-            //CoachFeedbacks = coachFeedbacks;
-            
-            //ExercisePlans = exercisePlans;
-            //ExercisePlanDetails = exercisePlanDetails;
-            //Specialties = specialties;
+
         }
 
         public IMuscleRepository Muscles
@@ -67,12 +28,10 @@ namespace FitVerse.Data.UnitOfWork
             get
             {
                 if (muscles == null)
-                muscles=new MuscleRepository(_context);
+                    muscles = new MuscleRepository(_context);
                 return muscles;
             }
         }
-        //public ICoachRepository Coaches { get; }
-        //public IClientRepository Clients { get; }
         public IAnatomyRepository Anatomies
         {
             get
@@ -82,15 +41,6 @@ namespace FitVerse.Data.UnitOfWork
                 return anatomies;
             }
         }
-        //public IMessageRepository Messages { get; }
-        //public IChatRepository Chats { get; }
-        //public IDietPlanRepository DietPlans { get; }
-        //public IExerciseRepository Exercises { get; }
-        //public IPackageRepository Packages { get; }
-        //public IPaymentRepository Payments { get; }
-        //public INotificationRepository Notifications { get; }
-        //public ICoachSpecialtiesRepository CoachSpecialties { get; }
-        //public ICoachFeedbackRepository CoachFeedbacks { get; }
         public IEquipmentRepository Equipments
         {
             get
@@ -104,7 +54,7 @@ namespace FitVerse.Data.UnitOfWork
         {
             get
             {
-                if(package==null)
+                if (package == null)
                     package = new PackageRepository(_context);
                 return package;
             }
@@ -113,20 +63,30 @@ namespace FitVerse.Data.UnitOfWork
         {
             get
             {
-                if(exersice==null)
+                if (exersice == null)
                     exersice = new ExersiceRepository(_context);
                 return exersice;
             }
         }
 
-        public IMuscleRepository Muscles { get; }
-        public IAnatomyRepository Anatomies { get; }
-        public IPackageRepository Packages { get; }
-        public IEquipmentRepository Equipments { get; }
 
-        public ICoachRepository Coaches { get; }
+        public ICoachRepository Coaches
+        {
+            get
+            {
+                if(coaches==null)
+                    coaches=new CoachRepository(_context);
+                return coaches;
+            }
+        }
 
-        public ISpecialtiesRepository Specialties  { get; }
+        public ISpecialtiesRepository Specialties { get
+            {
+                if (specialties == null)
+                    specialties = new SpecialityRepository(_context);
+                return specialties;
+            }
+        }
 
         public int Complete() => _context.SaveChanges();
         public void Dispose() => _context.Dispose();

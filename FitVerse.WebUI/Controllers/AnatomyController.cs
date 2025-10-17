@@ -9,12 +9,15 @@ namespace FitVerse.Web.Controllers
     public class AnatomyController : Controller
     {
         private readonly IUnitOfWork unitOfWork;
+        private readonly IUnitOFWorkService Service;
         private readonly IMapper mapper;
 
-        public AnatomyController(IUnitOfWork unitOfWork, IMapper mapper)
+
+        public AnatomyController(IUnitOfWork unitOfWork, IMapper mapper, IUnitOFWorkService service)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
+            Service = service;
         }
         public IActionResult Index()
         {
