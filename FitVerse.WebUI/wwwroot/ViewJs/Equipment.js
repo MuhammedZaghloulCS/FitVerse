@@ -6,7 +6,7 @@ $(document).ready(function () {
 });
 function loadEquipment() {
     $.ajax({
-        url: '/Equipment/GetAll',
+        url: '/Exercise/GetAll',
         method: 'GET',
         success: function (response) {
 

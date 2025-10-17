@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FitVerse.Core.UnitOfWork;
+using FitVerse.Core.viewModels;
 using FitVerse.Core.ViewModels.Anatomy;
 using FitVerse.Core.ViewModels.Equipment;
 using Microsoft.AspNetCore.Mvc;

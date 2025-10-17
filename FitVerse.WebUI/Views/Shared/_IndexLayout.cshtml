@@ -47,6 +47,18 @@
                             <span>Anatomy</span>
                         </a>
                     </li>
+                    <li class="@(activeRoute == "Package" ? "active" : "")">
+                        <a asp-action="index" asp-controller="Package">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>Package</span>
+                        </a>
+                    </li>
+                    <li class="@(activeRoute == "Exersice" ? "active" : "")">
+                        <a asp-action="index" asp-controller="Exersice">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>Exersice</span>
+                        </a>
+                    </li>
 
 
                     <li>

@@ -1,6 +1,7 @@
 ﻿using FitVerse.Core.Interfaces;
 using FitVerse.Core.UnitOfWork;
 using FitVerse.Data.Context;
+using FitVerse.Data.Models;
 using FitVerse.Data.Repositories;
 
 namespace FitVerse.Data.UnitOfWork
@@ -8,10 +9,11 @@ namespace FitVerse.Data.UnitOfWork
     public class UnitOfWork : IUnitOfWork
     {
         private readonly FitVerseDbContext _context;
-        AnatomyRepositroy anatomies;
+        AnatomyRepository anatomies;
         EquipmentRepository equipments;
         MuscleRepository muscles;
-       
+        PackageRepository package;
+        ExersiceRepository exersice;
         public UnitOfWork(
             FitVerseDbContext context
             //IMuscleRepository muscles,
@@ -70,7 +72,7 @@ namespace FitVerse.Data.UnitOfWork
             get
             {
                 if (anatomies == null)
-                    anatomies = new AnatomyRepositroy(_context);
+                    anatomies = new AnatomyRepository(_context);
                 return anatomies;
             }
         }
@@ -92,6 +94,26 @@ namespace FitVerse.Data.UnitOfWork
                 return equipments;
             }
         }
+        public IPackageRepository Packages
+        {
+            get
+            {
+                if(package==null)
+                    package = new PackageRepository(_context);
+                return package;
+            }
+        }
+        public IExerciseRepository Exercises
+        {
+            get
+            {
+                if(exersice==null)
+                    exersice = new ExersiceRepository(_context);
+                return exersice;
+            }
+        }
+
+
         //public IExercisePlanRepository ExercisePlans { get; }
         //public IExercisePlanDetailRepository ExercisePlanDetails { get; }
         //public ISpecialtiesRepository Specialties { get; }

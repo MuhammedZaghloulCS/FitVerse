@@ -1,17 +1,17 @@
 ﻿using AutoMapper;
 using FitVerse.Core.UnitOfWork;
 using FitVerse.Core.ViewModels.Anatomy;
+using FitVerse.Core.ViewModels.Package;
 using FitVerse.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FitVerse.Web.Controllers
 {
-    public class AnatomyController : Controller
+    public class PackageController : Controller
     {
         private readonly IUnitOfWork unitOfWork;
-        private readonly IMapper mapper;
-
-        public AnatomyController(IUnitOfWork unitOfWork, IMapper mapper)
+        public readonly IMapper mapper;
+        public PackageController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
@@ -20,78 +20,67 @@ namespace FitVerse.Web.Controllers
         {
             return View();
         }
-
         public IActionResult GetAll()
         {
-            if (unitOfWork == null)
-                throw new Exception("unitOfWork is NULL!");
+            
+            var packages = unitOfWork.Packages.GetAll().ToList();
+            var data = mapper.Map<List<PackageVM>>(packages);
+            return Json(new { data = data });
 
-            if (unitOfWork.Anatomies == null)
-                throw new Exception("unitOfWork.Anatomies is NULL!");
-
-            if (mapper == null)
-                throw new Exception("mapper is NULL!");
-
-            var allObj = unitOfWork.Anatomies.GetAll();
-            var data = mapper.Map<IEnumerable<AnatomyVM>>(allObj);
-            return Json(new { data });
         }
-
-
         public IActionResult GetById(int id)
         {
-            var anatomy = unitOfWork.Anatomies.GetById(id);
-            if (anatomy == null)
+            var package = unitOfWork.Packages.GetById(id);
+            if (package == null)
             {
                 return Json(new { success = false, message = "Somthing wrong!" });
             }
-            var model = mapper.Map<AnatomyVM>(anatomy);
+            var model = mapper.Map<PackageVM>(package);
             return Json(new { success = true, data = model });
-
         }
-        public IActionResult Create(AddAnatomyVM model)
+        public IActionResult Create(AddPackageVM package)
         {
-            var anatomy = mapper.Map<Anatomy>(model);
-            unitOfWork.Anatomies.Add(anatomy);
+            var pkg = mapper.Map<Package>(package);
+            unitOfWork.Packages.Add(pkg);
+            Console.WriteLine($"CoachId = {pkg.CoachId}");
             if (unitOfWork.Complete() > 0)
             {
-                return Json(new { success = true, message = "Anatomy created successfully" });
+                return Json(new { success = true, message = "Package created successfully" });
+            }
+            return Json(new { success = false, message = "Somthing wrong!" });
+        }
+        public IActionResult Update(PackageVM package)
+        {
+            var pkg = unitOfWork.Packages.GetById(package.Id);
+            if (pkg == null)
+            {
+                return Json(new { success = false, message = "Somthing wrong!" });
+            }
+            mapper.Map(package, pkg);
+            unitOfWork.Packages.Update(pkg);
+            if (unitOfWork.Complete() > 0)
+            {
+                return Json(new { success = true, message = "Package updated successfully" });
             }
             return Json(new { success = false, message = "Somthing wrong!" });
         }
         public IActionResult Delete(int id)
         {
-            var anatomy = unitOfWork.Anatomies.GetById(id);
-            if (anatomy == null)
+            var pkg = unitOfWork.Packages.GetById(id);
+            if (pkg == null)
             {
-                return Json(new { success = false, message = "Not Found!" });
+                return Json(new { success = false, message = "Somthing wrong!" });
             }
-            unitOfWork.Anatomies.Delete(anatomy);
+            unitOfWork.Packages.Delete(pkg);
             if (unitOfWork.Complete() > 0)
             {
-                return Json(new { success = true, message = "Anatomy deleted successfully" });
+                return Json(new { success = true, message = "Package deleted successfully" });
             }
             return Json(new { success = false, message = "Somthing wrong!" });
         }
-        public IActionResult Update(AnatomyVM model)
-        {
-            var anatomy = unitOfWork.Anatomies.GetById(model.Id);
-            if (anatomy == null)
-            {
-                return Json(new { success = false, message = "Not Found!" });
-            }
-            anatomy.Name = model.Name;
-            unitOfWork.Anatomies.Update(anatomy);
-            if (unitOfWork.Complete() > 0)
-            {
-                return Json(new { success = true, message = "Anatomy updated successfully" });
-            }
-            return Json(new { success = false, message = "Somthing wrong!" });
-        }
-
         public IActionResult GetPaged(int page = 1, int pageSize = 5, string? search = null)
         {
-            var query = unitOfWork.Anatomies.GetAll().AsQueryable();
+            var query = unitOfWork.Packages.GetAll().AsQueryable();
             if (!string.IsNullOrEmpty(search))
             {
 
@@ -105,7 +94,7 @@ namespace FitVerse.Web.Controllers
                 .Take(pageSize)
                 .ToList();
 
-            var mappedData = mapper.Map<IEnumerable<AnatomyVM>>(data);
+            var mappedData = mapper.Map<IEnumerable<PackageVM>>(data);
 
             return Json(new
             {
