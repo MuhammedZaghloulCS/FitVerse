@@ -25,8 +25,16 @@
     });
 });
 
+
+$.ajax({
+    method: "get",
+    url: "/",
+    success: function (data, status, xhr) { },
+    error:function(xhr,status,err)
+})
 function loadMuscles() {
     $.ajax({
+        
         url: '/Muscle/GetAll',
         method: 'GET',
         success: function (response) {

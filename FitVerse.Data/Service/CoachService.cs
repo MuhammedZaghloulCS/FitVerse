@@ -24,6 +24,7 @@ namespace FitVerse.Data.Service
 
             public (bool Success, string Message) AddCoach(AddCoachVM model)
             {
+                
                 try
                 {
                     string? imagePath = imageService.SaveImage(model.CoachImageFile);

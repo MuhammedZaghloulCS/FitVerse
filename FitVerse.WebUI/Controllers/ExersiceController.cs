@@ -31,11 +31,11 @@ namespace FitVerse.Web.Controllers
 
             var data = mapper.Map<ExerciseVM>(db.Exercises.GetAll());
             return Json(new { data });
-            
+
         }
         public IActionResult GetAllMuscles()
         {
-            var muscles=db.Muscles.GetAll();
+            var muscles = db.Muscles.GetAll();
             var data = mapper.Map<MuscleVM>(muscles);
             return Json(new { data });
         }
@@ -64,15 +64,15 @@ namespace FitVerse.Web.Controllers
 
         public IActionResult GetById(int id)
         {
-           var exe= db.Exercises.GetById(id);
+            var exe = db.Exercises.GetById(id);
             if (exe == null)
                 throw new NullReferenceException();
-            var exercise=mapper.Map<ExerciseVM>(exe);
-            return Json(new { success = true,  data =exercise } );
+            var exercise = mapper.Map<ExerciseVM>(exe);
+            return Json(new { success = true, data = exercise });
         }
 
 
-        public IActionResult Update(EquipmentVM model)
+        public IActionResult Update(ExerciseVM model)
         {
             var equipment = db.Exercises.GetById(model.Id);
             if (equipment == null)
