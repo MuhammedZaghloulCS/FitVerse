@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FitVerse.Core.IUnitOfWorkServices;
 using FitVerse.Core.UnitOfWork;
 using FitVerse.Core.ViewModels.Anatomy;
 using FitVerse.Data.Models;

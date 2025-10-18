@@ -14,6 +14,7 @@ using FitVerse.Data.UnitOfWork;
 
 using System;
 using FitVerse.Data.Service.FitVerse.Data.Service;
+using FitVerse.Core.IUnitOfWorkServices;
 
 namespace FitVerse.WebUI
 {
@@ -61,17 +62,15 @@ namespace FitVerse.WebUI
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddScoped<IUnitOFWorkService, UnitOfWorkService>();
             builder.Services.AddScoped<IEquipmentRepository, EquipmentRepository>();
             builder.Services.AddScoped<IAnatomyRepository, AnatomyRepository>();
             builder.Services.AddScoped<IMuscleRepository, MuscleRepository>();
             builder.Services.AddScoped<ICoachRepository, CoachRepository>();
-            builder.Services.AddScoped<IImageHandleService, ImageHandleService>();
-            builder.Services.AddScoped<ICoachService, CoachService>();
+            builder.Services.AddScoped<IUnitOFWorkService, UnitOfWorkService>();
 
 
 
- 
+
 
             builder.Services.AddAutoMapper(op=>op.AddProfile(typeof(MapperConfig)));
 

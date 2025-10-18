@@ -1,4 +1,4 @@
-/* Base Styles */
+﻿/* Base Styles */
 :root {
     --primary-color: #4a6cf7;
     --primary-light: #eef2ff;
@@ -406,6 +406,7 @@ button {
     font-family: 'Inter', sans-serif;
     letter-spacing: -0.3px;
 }
+
 
 .stat-info p {
     font-size: 14px;
@@ -1679,7 +1680,6 @@ input:checked + .slider:before {
 
 .table-responsive {
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
 }
 
 .data-table {

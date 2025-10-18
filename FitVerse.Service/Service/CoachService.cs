@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using FitVerse.Core.IService;
+using FitVerse.Core.viewModels;
+using FitVerse.Data.UnitOfWork;
 using global::FitVerse.Core.IService;
 using global::FitVerse.Core.UnitOfWork;
 using global::FitVerse.Core.ViewModels.Coach;
 using global::FitVerse.Data.Models;
-using FitVerse.Core.IService;
 
 namespace FitVerse.Data.Service
 {
@@ -46,7 +49,7 @@ namespace FitVerse.Data.Service
 
             public List<AddCoachVM> GetAllCoaches()
             {
-               var coaches= unitOfWork.Coaches.GetAll();
+                var coaches = unitOfWork.Coaches.GetAll();
                 return mapper.Map<List<AddCoachVM>>(coaches);
             }
 
@@ -56,7 +59,7 @@ namespace FitVerse.Data.Service
                 return mapper.Map<AddCoachVM>(coach);
             }
 
-      
+
 
             (bool Success, string Message) ICoachService.DeleteCoachById(Guid id)
             {
@@ -96,6 +99,29 @@ namespace FitVerse.Data.Service
                 }
             }
 
+
+
+public (List<AddCoachVM> Data, int TotalItems) GetPagedEquipments(int page, int pageSize, string? search)
+        {
+            var query = unitOfWork.Coaches.GetAll().AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+                query = query.Where(e => e.Name.ToLower().Contains(search.ToLower()));
+
+            var totalItems = query.Count();
+
+            // استخدام ProjectTo لتحويل الـ IQueryable مباشرة إلى الـ VM
+            var data = query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ProjectTo<AddCoachVM>(mapper.ConfigurationProvider)
+                .ToList();
+
+            return (data, totalItems);
         }
+
+
     }
 }
+}
+
