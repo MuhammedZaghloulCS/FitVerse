@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitVerse.Core", "FitVerse.B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitVerse.Data", "FitVerse.Data\FitVerse.Data.csproj", "{95F3A8C5-EA8F-4FD0-A941-27C008464CCD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitVerse.Service", "FitVerse.Service\FitVerse.Service.csproj", "{B77B3CED-7F25-4DA5-BA82-A11D930CBE16}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{95F3A8C5-EA8F-4FD0-A941-27C008464CCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95F3A8C5-EA8F-4FD0-A941-27C008464CCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95F3A8C5-EA8F-4FD0-A941-27C008464CCD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B77B3CED-7F25-4DA5-BA82-A11D930CBE16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B77B3CED-7F25-4DA5-BA82-A11D930CBE16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B77B3CED-7F25-4DA5-BA82-A11D930CBE16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B77B3CED-7F25-4DA5-BA82-A11D930CBE16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

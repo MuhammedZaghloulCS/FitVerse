@@ -31,7 +31,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FitVerse.Business\FitVerse.Core.csproj" />
     <ProjectReference Include="..\FitVerse.Data\FitVerse.Data.csproj" />
+    <ProjectReference Include="..\FitVerse.Service\FitVerse.Service.csproj" />
   </ItemGroup>
 
 </Project>

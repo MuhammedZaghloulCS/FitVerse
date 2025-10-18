@@ -1,7 +1,6 @@
 ﻿using FitVerse.Core.Interfaces;
 using FitVerse.Core.ViewModels.Equipment;
 using FitVerse.Data.Context;
-using FitVerse.Data.Service;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

@@ -1,4 +1,5 @@
 ﻿using FitVerse.Core.UnitOfWork;
+using FitVerse.Core.viewModels;
 using FitVerse.Core.ViewModels.Coach;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,8 @@ namespace FitVerse.Core.IService
         public AddCoachVM GetCoachByIdGuid(Guid id);
         (bool Success, string Message) DeleteCoachById(Guid id);
         (bool Success, string Message) UpdateCoach(AddCoachVM model);
+        public (List<AddCoachVM> Data, int TotalItems) GetPagedEquipments(int page, int pageSize, string? search);
+
 
 
     }

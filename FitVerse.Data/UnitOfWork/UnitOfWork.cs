@@ -8,7 +8,7 @@ namespace FitVerse.Data.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly FitVerseDbContext _context;
+        public readonly FitVerseDbContext _context;
         AnatomyRepository anatomies;
         EquipmentRepository equipments;
         MuscleRepository muscles;

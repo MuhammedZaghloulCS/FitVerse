@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FitVerse.Core.IService;
+using FitVerse.Core.IUnitOfWorkServices;
 using FitVerse.Core.UnitOfWork;
 using FitVerse.Core.ViewModels.Coach;
 using FitVerse.Core.ViewModels.Equipment;
@@ -12,12 +13,13 @@ namespace FitVerse.Web.Controllers
 {
     public class CoachController : Controller
     {
+        private readonly IUnitOFWorkService unitOFWorkService;
 
-        private readonly ICoachService coachService;
+        //private readonly ICoachService coachService;
 
-        public CoachController(ICoachService coachService)
+        public CoachController(IUnitOFWorkService unitOFWorkService)
         {
-            this.coachService = coachService;
+            this.unitOFWorkService = unitOFWorkService;
 
         }
         public IActionResult Index()
@@ -29,7 +31,7 @@ namespace FitVerse.Web.Controllers
         [HttpGet]
         public IActionResult GetAllCoaches()
         {
-            var coaches = coachService.GetAllCoaches();
+            var coaches = unitOFWorkService.CoachService.GetAllCoaches();
             if (coaches == null || !coaches.Any())
             {
                 return Json(new { success = false, message = "No coaches found." });
@@ -40,7 +42,7 @@ namespace FitVerse.Web.Controllers
         [HttpPost]
         public IActionResult AddCoach([FromForm] AddCoachVM model)
         {
-            var result = coachService.AddCoach(model);
+            var result = unitOFWorkService.CoachService.AddCoach(model);
 
             if (result.Success)
                 return Json(new { success = true, message = result.Message });
@@ -53,7 +55,7 @@ namespace FitVerse.Web.Controllers
             if (!Guid.TryParse(Id, out Guid guidId))
                 return Json(new { success = false, message = "Invalid GUID format." });
 
-            var coach = coachService.GetCoachByIdGuid(guidId);
+            var coach = unitOFWorkService.CoachService.GetCoachByIdGuid(guidId);
             if (coach == null)
                 return Json(new { success = false, message = "Coach not found." });
 
@@ -66,7 +68,7 @@ namespace FitVerse.Web.Controllers
         {
             if (!Guid.TryParse(Id, out Guid guidId))
                 return Json(new { success = false, message = "Invalid GUID format." });
-            var coach = coachService.DeleteCoachById(guidId);
+            var coach = unitOFWorkService.CoachService.DeleteCoachById(guidId);
             if (coach.Success)
                 return Json(new { success = true, message = coach.Message });
             else
@@ -77,7 +79,7 @@ namespace FitVerse.Web.Controllers
         [HttpPost]
         public IActionResult UpdateCoach([FromForm] AddCoachVM model)
         {
-            var result = coachService.UpdateCoach(model);
+            var result = unitOFWorkService.CoachService.UpdateCoach(model);
             if (result.Success)
                 return Json(new { success = true, message = result.Message });
             else
@@ -86,7 +88,19 @@ namespace FitVerse.Web.Controllers
 
 
 
-}
+        [HttpGet]
+        public IActionResult GetPaged(int page = 1, int pageSize = 5, string? search = null)
+        {
+            var (data, totalItems) = unitOFWorkService.CoachService.GetPagedEquipments(page, pageSize, search);
+
+            return Json(new
+            {
+                data = data,
+                totalPages = (int)Math.Ceiling((double)totalItems / pageSize)
+            });
+        }
+
+    }
 
 }
 
