@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FitVerse.Core.ViewModels.Exercise
+namespace FitVerse.Core.ViewModels.ExerciseVM
 {
     public class AddExerciseVM
     {
@@ -13,8 +13,8 @@ namespace FitVerse.Core.ViewModels.Exercise
         public string? VideoLink { get; set; }
         public string Description { get; set; }
 
-        public  Muscle? Muscle { get; set; }
+        public  int MuscleId { get; set; }
 
-        public FitVerse.Data.Models.Equipment Equipment { get; set; }
+        public int EquipmentId { get; set; }
     }
 }

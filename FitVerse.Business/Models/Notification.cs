@@ -14,11 +14,11 @@ namespace FitVerse.Data.Models
 
         public Guid ReciverId { get; set; }
 
-        public IdentityUser? Reciver { get; set; }
+        public virtual IdentityUser? Reciver { get; set; }
         public string Content { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public int RefId { get; set; }
-        public NotificationType Type { get; set; }
+        public virtual NotificationType Type { get; set; }
         public bool IsRead { get; set; } = false;
     }
 

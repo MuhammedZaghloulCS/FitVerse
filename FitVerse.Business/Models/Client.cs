@@ -22,7 +22,7 @@ namespace FitVerse.Data.Models
 
 
         public Guid UserId { get; set; }
-        public IdentityUser User { get; set; }
+        public virtual IdentityUser User { get; set; }
 
         public Guid CoachId { get; set; }
         public virtual Coach? Coach { get; set; }
