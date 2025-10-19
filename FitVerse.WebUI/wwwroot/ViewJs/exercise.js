@@ -136,19 +136,19 @@ function addExercise() {
     });
 }
 
-function getExerciseById(id) {
+function getExerciseById(Id) {
     $.ajax({
-        url: '/Exercise/GetById?id=' + id,
+        url: '/Exercise/GetById?id=' + Id,
         method: 'GET',
         success: function (response) {
             if (response.success) {
                 let data = response.data;
-                $('#exerciseId').val(data.id);
-                $('#exerciseName').val(data.name);
-                $('#muscleId').val(data.muscleId);
-                $('#equipmentId').val(data.equipmentId);
-                $('#videoLink').val(data.videoLink);
-                $('#description').val(data.description);
+                $('#exerciseId').val(data.Id);
+                $('#Name').val(data.Name);
+                $('#muscleId').val(data.MuscleId);
+                $('#equipmentId').val(data.EquipmentId);
+                $('#videoLink').val(data.VideoLink);
+                $('#description').val(data.Description);
                 $('#saveBtn').html('<i class="fas fa-save"></i> Update Exercise');
             } else {
                 swal("Error", response.message, "error");
@@ -163,7 +163,7 @@ function getExerciseById(id) {
 function updateExercise() {
     let exercise = {
         Id: $('#exerciseId').val(),
-        Name: $('#exerciseName').val(),
+        Name: $('#Name').val(),
         MuscleId: $('#muscleId').val(),
         EquipmentId: $('#equipmentId').val(),
         VideoLink: $('#videoLink').val(),
@@ -190,7 +190,7 @@ function updateExercise() {
     });
 }
 
-function deleteExercise(id) {
+function deleteExercise(Id) {
     swal({
         title: "Are you sure?",
         text: "This exercise will be permanently deleted!",
@@ -200,7 +200,7 @@ function deleteExercise(id) {
     }).then((willDelete) => {
         if (willDelete) {
             $.ajax({
-                url: '/Exercise/Delete?id=' + id,
+                url: '/Exercise/Delete?id=' + Id,
                 method: 'POST',
                 success: function (response) {
                     if (response.success) {
@@ -220,7 +220,7 @@ function deleteExercise(id) {
 
 function clearForm() {
     $('#exerciseId').val('');
-    $('#exerciseName').val('');
+    $('#Name').val('');
     $('#muscleId').val('');
     $('#equipmentId').val('');
     $('#videoLink').val('');
