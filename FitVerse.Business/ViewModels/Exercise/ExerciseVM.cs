@@ -1,4 +1,5 @@
-﻿using FitVerse.Data.Models;
+﻿using FitVerse.Core.ViewModels;
+using FitVerse.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

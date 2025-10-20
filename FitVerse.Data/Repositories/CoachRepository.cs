@@ -106,7 +106,6 @@ namespace FitVerse.Data.Repositories
                 {
 
                     Name = x.Client.Name,
-                    Image = x.Client.Image,
                     IsActive = x.Client.IsActive,
                     LastPaymentAgo = GetTimeAgo(x.JoinDate) // 👈 نحسب الوقت هنا
                 })
@@ -115,7 +114,7 @@ namespace FitVerse.Data.Repositories
            return recentClients;
         }
         
-           private string GetTimeAgo(DateTime date)
+           private static string GetTimeAgo(DateTime date)
         {
             var diff = DateTime.Now - date;
 
@@ -137,8 +136,29 @@ namespace FitVerse.Data.Repositories
             Console.WriteLine("Plans Found: " + count);
             return count;
         }
+        public List<ClientDashVM> GetAllClientsByCoach(Guid coachId)
+        {
+            var clientsList = Clients
+             .Where(c => c.CoachId == coachId)
+             .Include(c => c.Payments)
+             //.AsNoTracking()
+             .ToList(); // تنفيذ الاستعلام
 
-       
+            var clientVMs = clientsList.Select(c => new ClientDashVM
+            {
+                Name = c.Name,
+               
+                IsActive = c.IsActive,
+                LastPaymentAgo = c.Payments.Any()
+                    ? GetTimeAgo(c.Payments.Max(p => p.PaymentDate))
+                    : "No payment"
+            }).ToList();
+
+            return clientVMs;
+        }
+
+
+
     }
 
 }

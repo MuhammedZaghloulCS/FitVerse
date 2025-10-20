@@ -138,6 +138,7 @@ public (List<AddCoachVM> Data, int TotalItems) GetPagedEquipments(int page, int 
 
                 return dashboard;
             }
+            
 
 
 

@@ -3,7 +3,6 @@
     loadMuscles();
     loadEquipments();
 
-    // Handle form submit (Add / Update)
     $('#exerciseForm').on('submit', function (e) {
         e.preventDefault();
         let id = $('#exerciseId').val();
@@ -107,7 +106,6 @@ function loadExercises() {
         }
     });
 }
- 
 function addExercise() {
     let exercise = {
         Name: $('#Name').val(),
@@ -123,18 +121,27 @@ function addExercise() {
         data: exercise,
         success: function (response) {
             if (response.success) {
-                swal("Added!", response.message, "success");
-                clearForm();
-                loadExercises();
+                // إظهار رسالة نجاح
+                swal({
+                    title: "✅ Added Successfully!",
+                    icon: "success",
+                }).then(() => {
+                    // لما يضغط OK، نخفي المودال ونفض الفورم
+                    $('#addExerciseModal').modal('hide');
+                    clearForm();
+                    // تحديث الجدول
+                    loadExercises();
+                });
             } else {
                 swal("Error", response.message, "error");
             }
         },
-        error: function (err) {
-            swal("Error", "Failed to add exercise!" , "error");
+        error: function () {
+            swal("Error", "Failed to add exercise!", "error");
         }
     });
 }
+
 
 function getExerciseById(Id) {
     $.ajax({
@@ -217,6 +224,50 @@ function deleteExercise(Id) {
         }
     });
 }
+$('#viewAllClientsBtn').on('click', function () {
+    $('#allClientsContainer').html('<div class="text-center text-muted">Loading...</div>');
+
+    $.ajax({
+        url: '/Coach/GetAllClients',
+        method: 'GET',
+        success: function (response) {
+            let clients = response.data;
+            let html = '';
+
+            if (clients.length > 0) {
+                clients.forEach(client => {
+                    html += `
+                        <div class="d-flex align-items-center justify-content-between mb-3 pb-3 border-bottom">
+                            <div class="d-flex align-items-center gap-3">
+                                <div>
+                                    <div class="fw-semibold">${client.Name}</div>
+                                    <div class="text-muted small">Last payment: ${client.LastPaymentAgo}</div>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="badge-custom ${client.IsActive ? 'badge-success' : 'badge-warning'}">
+                                    ${client.IsActive ? 'Active' : 'Inactive'}
+                                </span>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                html = '<div class="text-center text-muted">No clients found.</div>';
+            }
+
+            $('#allClientsContainer').html(html);
+        },
+        error: function () {
+            $('#allClientsContainer').html('<div class="text-center text-danger">Failed to load clients.</div>');
+        }
+    });
+
+    $('#viewAllClientsModal').modal('show');
+});
+
+
+
 
 function clearForm() {
     $('#exerciseId').val('');

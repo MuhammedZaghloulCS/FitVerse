@@ -21,6 +21,7 @@ namespace FitVerse.Core.Interfaces
         public double GetAverageRating(Guid coachId);
 
         public List<ClientDashVM> GetRecentClients(Guid coachId);
+        public List<ClientDashVM> GetAllClientsByCoach(Guid coachId);
 
 
     }

@@ -22,14 +22,14 @@ namespace FitVerse.Web.Controllers
             return View();
         }
 
-        [HttpGet("GetAll")]
+        
         public IActionResult GetAll()
         {
             var clients = unitOFWorkService.ClientService.GetAllClients();
             return Json(new { data = clients });
         }
 
-        [HttpPost("Add")]
+      
         public IActionResult Add(AddClientVM model)
         {
             var result = unitOFWorkService.ClientService.AddClient(model);

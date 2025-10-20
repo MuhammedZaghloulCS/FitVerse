@@ -54,11 +54,14 @@ namespace FitVerse.Service.Service
 
         }
 
-        public List<AddClientVM> GetAllClients()
+        public List<ClientDashVM> GetAllClients()
         {
+            //Guid coachId = Guid.Parse("11111111-1111-1111-1111-111111111111");// Coach logged in ID
+
             var clients = unitOfWork.Clients.GetAll();
-            return mapper.Map<List<AddClientVM>>(clients);
+            return mapper.Map<List<ClientDashVM>>(clients);
         }
+        
     
 
 }

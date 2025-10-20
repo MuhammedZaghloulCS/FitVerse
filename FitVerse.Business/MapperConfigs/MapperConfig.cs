@@ -5,8 +5,11 @@ using FitVerse.Core.ViewModels.Anatomy;
 using FitVerse.Core.ViewModels.Client;
 using FitVerse.Core.ViewModels.Meuscle;
 using FitVerse.Core.ViewModels.Package;
-using FitVerse.Core.ViewModels.ExerciseVM;
+
 using FitVerse.Data.Models;
+using FitVerse.Core.ViewModels;
+using FitVerse.Core.ViewModels.Coach;
+using FitVerse.Core.ViewModels.ExerciseVM;
 
 
 namespace FitVerse.Core.MapperConfigs
@@ -19,7 +22,7 @@ namespace FitVerse.Core.MapperConfigs
             CreateMap<Equipment,EquipmentVM>().ReverseMap();
             CreateMap<AddAnatomyVM, Anatomy>().ReverseMap();
             CreateMap<AddAnatomyVM, Equipment>().ReverseMap();
-            CreateMap<Coach, Core.ViewModels.Coach.AddCoachVM>().ReverseMap();
+            CreateMap<Coach,AddCoachVM>().ReverseMap();
             CreateMap <Package,PackageVM>().ReverseMap();
             CreateMap<Muscle, MuscleVM>().ReverseMap();
             CreateMap<Muscle, AddMuscleVM>().ReverseMap();
@@ -28,7 +31,7 @@ namespace FitVerse.Core.MapperConfigs
             CreateMap<Exercise, ExerciseVM>().
                 ForMember(dest => dest.EquipmentName, opt => opt.MapFrom(s => s.Equipment.Name)).
                 ForMember(dest => dest.MuscleName, opt => opt.MapFrom(s => s.Muscle.Name))
-                .ReverseMap() ;
+                .ReverseMap();
             CreateMap<AddExerciseVM, Exercise>().ReverseMap();
             CreateMap<AddClientVM, Client>().ReverseMap();
             CreateMap<Client, ClientDashVM>().ReverseMap();
