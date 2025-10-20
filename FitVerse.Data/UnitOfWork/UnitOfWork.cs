@@ -16,11 +16,10 @@ namespace FitVerse.Data.UnitOfWork
         ExersiceRepository exersice;
         CoachRepository coaches;
         SpecialityRepository specialties;
+
         public UnitOfWork(FitVerseDbContext context)
         {
             _context = context;
-
-
         }
 
         public IMuscleRepository Muscles
@@ -50,6 +49,7 @@ namespace FitVerse.Data.UnitOfWork
                 return equipments;
             }
         }
+
         public IPackageRepository Packages
         {
             get
@@ -59,6 +59,7 @@ namespace FitVerse.Data.UnitOfWork
                 return package;
             }
         }
+
         public IExerciseRepository Exercises
         {
             get
@@ -68,7 +69,6 @@ namespace FitVerse.Data.UnitOfWork
                 return exersice;
             }
         }
-
 
         public ICoachRepository Coaches
         {

@@ -14,9 +14,9 @@ namespace FitVerse.Data.Models
         public string Comments { get; set; }              
         public int Rate{ get; set; }
 
-
         public Guid ClientId { get; set; }
         public virtual Client? Client { get; set; }
+
 
         public Guid CoachId { get; set; }
         public virtual Coach? Coach { get; set; }

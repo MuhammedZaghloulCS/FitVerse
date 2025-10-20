@@ -1,10 +1,14 @@
-﻿<!-- Coach Form Section -->
+﻿@{
+    Layout = "~/Areas/Coach/Views/Shared/_CoachLayout.cshtml";
+}
+<!-- Coach Form Section -->
 <form enctype="multipart/form-data" id="coachForm">
     <div class="content-area">
         <div class="page-header">
             <h1>Add New Coach</h1>
             <div class="breadcrumb">
                 <a href="index.html">Home</a> / <span>Coaches</span> / <span>Add New</span>
+
             </div>
         </div>
 
@@ -22,8 +26,16 @@
                 <div class="input-group">
                     <i class="fas fa-user"></i>
                     <input type="text" id="coachName" name="Name" placeholder="Enter coach's full name" required>
+             
                 </div>
             </div>
+            <a class="button" asp-area="Coach" asp-controller="Coach" asp-action="Index">
+                ToCoachArea
+            </a>
+            <br/>
+            <a class="button" asp-area="Client" asp-controller="Client" asp-action="Index">
+                ToClientArea
+            </a>
 
             <!-- Title -->
             <div class="form-group">

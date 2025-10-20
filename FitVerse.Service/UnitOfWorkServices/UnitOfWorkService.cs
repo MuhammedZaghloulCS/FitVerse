@@ -16,7 +16,6 @@ namespace FitVerse.Data.UnitOfWork
         private readonly IMapper mapper;
         private readonly FitVerseDbContext context;
 
-
         // Lazy-loaded services
         private ICoachService coachService;
         private IImageHandleService imageHandleService;
