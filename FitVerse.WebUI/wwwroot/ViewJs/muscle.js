@@ -13,14 +13,14 @@ function loadMuscles() {
             response.data.forEach(function (item) {
                 $('#Data').append(`
                     <tr>
-                        <td>#${item.id}</td>
-                        <td>${item.name}</td>
-                        <td>${item.anatomyName}</td>
+                        <td>#${item.Id}</td>
+                        <td>${item.Name}</td>
+                        <td>${item.AnatomyName}</td>
                         <td class="actions">
-                            <button type="button" onclick="getById(${item.id})" class="btn-icon" title="Edit">
+                            <button type="button" onclick="getById(${item.Id})" class="btn-icon" title="Edit">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button type="button" onclick="Delete(${item.id})" class="btn-icon text-danger" title="Delete">
+                            <button type="button" onclick="Delete(${item.Id})" class="btn-icon text-danger" title="Delete">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         </td>

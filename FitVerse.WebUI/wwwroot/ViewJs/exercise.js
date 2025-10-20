@@ -9,6 +9,8 @@
         let id = $('#exerciseId').val();
         if (id) updateExercise();
         else addExercise();
+
+        e.target.reset();
     });
 
     // Reset button
@@ -26,22 +28,17 @@
 });
 
 
-$.ajax({
-    method: "get",
-    url: "/",
-    success: function (data, status, xhr) { },
-    error:function(xhr,status,err)
-})
+
 function loadMuscles() {
     $.ajax({
         
-        url: '/Muscle/GetAll',
+        url: 'Muscle/GetAll',
         method: 'GET',
         success: function (response) {
             let dropdown = $('#muscleId');
             dropdown.empty().append('<option value="" disabled selected>Select muscle</option>');
             response.data.forEach(function (m) {
-                dropdown.append(`<option value="${m.id}">${m.name}</option>`);
+                dropdown.append(`<option value="${m.Id}">${m.Name}</option>`);
             });
         },
         error: function () {
@@ -58,7 +55,7 @@ function loadEquipments() {
             let dropdown = $('#equipmentId');
             dropdown.empty().append('<option value="" disabled selected>Select equipment</option>');
             response.data.forEach(function (eq) {
-                dropdown.append(`<option value="${eq.id}">${eq.name}</option>`);
+                dropdown.append(`<option value="${eq.Id}">${eq.Name}</option>`);
             });
         },
         error: function () {
@@ -75,19 +72,21 @@ function loadExercises() {
             let table = $('#exerciseTable tbody');
             table.empty();
             response.data.forEach(function (item) {
+                console.log(item.MuscleName)
+
                 table.append(`
                     <tr>
-                        <td>#${item.id}</td>
-                        <td>${item.name}</td>
-                        <td>${item.muscleName || '-'}</td>
-                        <td>${item.equipmentName || '-'}</td>
-                        <td><a href="${item.videoLink || '#'}" target="_blank">View</a></td>
-                        <td>${item.description || ''}</td>
+                        <td>#${item.Id}</td>
+                        <td>${item.Name}</td>
+                        <td>${item.MuscleName}</td>
+                        <td>${item.EquipmentName}</td>
+                        <td><a href="${item.VideoLink}" target="_blank">View</a></td>
+                        <td>${item.Description}</td>
                         <td class="actions">
-                            <button type="button" onclick="getExerciseById(${item.id})" class="btn-icon" title="Edit">
+                            <button type="button" onclick="getExerciseById(${item.Id})" class="btn-icon" title="Edit">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button type="button" onclick="deleteExercise(${item.id})" class="btn-icon text-danger" title="Delete">
+                            <button type="button" onclick="deleteExercise(${item.Id})" class="btn-icon text-danger" title="Delete">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         </td>
@@ -95,15 +94,23 @@ function loadExercises() {
                 `);
             });
         },
-        error: function () {
-            swal("Error", "Failed to load exercises!", "error");
+        
+        error: function (xhr, status, error) {
+            // Try to extract detailed message
+            let errMsg =
+                xhr.responseJSON?.message ||
+                xhr.responseText ||
+                error ||
+                "An unknown error occurred.";
+
+            swal("Error", "Failed to load exercises!\n" + errMsg, "error");
         }
     });
 }
-
+ 
 function addExercise() {
     let exercise = {
-        Name: $('#exerciseName').val(),
+        Name: $('#Name').val(),
         MuscleId: $('#muscleId').val(),
         EquipmentId: $('#equipmentId').val(),
         VideoLink: $('#videoLink').val(),
@@ -123,25 +130,25 @@ function addExercise() {
                 swal("Error", response.message, "error");
             }
         },
-        error: function () {
-            swal("Error", "Failed to add exercise!", "error");
+        error: function (err) {
+            swal("Error", "Failed to add exercise!" , "error");
         }
     });
 }
 
-function getExerciseById(id) {
+function getExerciseById(Id) {
     $.ajax({
-        url: '/Exercise/GetById?id=' + id,
+        url: '/Exercise/GetById?id=' + Id,
         method: 'GET',
         success: function (response) {
             if (response.success) {
                 let data = response.data;
-                $('#exerciseId').val(data.id);
-                $('#exerciseName').val(data.name);
-                $('#muscleId').val(data.muscleId);
-                $('#equipmentId').val(data.equipmentId);
-                $('#videoLink').val(data.videoLink);
-                $('#description').val(data.description);
+                $('#exerciseId').val(data.Id);
+                $('#Name').val(data.Name);
+                $('#muscleId').val(data.MuscleId);
+                $('#equipmentId').val(data.EquipmentId);
+                $('#videoLink').val(data.VideoLink);
+                $('#description').val(data.Description);
                 $('#saveBtn').html('<i class="fas fa-save"></i> Update Exercise');
             } else {
                 swal("Error", response.message, "error");
@@ -156,7 +163,7 @@ function getExerciseById(id) {
 function updateExercise() {
     let exercise = {
         Id: $('#exerciseId').val(),
-        Name: $('#exerciseName').val(),
+        Name: $('#Name').val(),
         MuscleId: $('#muscleId').val(),
         EquipmentId: $('#equipmentId').val(),
         VideoLink: $('#videoLink').val(),
@@ -183,7 +190,7 @@ function updateExercise() {
     });
 }
 
-function deleteExercise(id) {
+function deleteExercise(Id) {
     swal({
         title: "Are you sure?",
         text: "This exercise will be permanently deleted!",
@@ -193,7 +200,7 @@ function deleteExercise(id) {
     }).then((willDelete) => {
         if (willDelete) {
             $.ajax({
-                url: '/Exercise/Delete?id=' + id,
+                url: '/Exercise/Delete?id=' + Id,
                 method: 'POST',
                 success: function (response) {
                     if (response.success) {
@@ -213,7 +220,7 @@ function deleteExercise(id) {
 
 function clearForm() {
     $('#exerciseId').val('');
-    $('#exerciseName').val('');
+    $('#Name').val('');
     $('#muscleId').val('');
     $('#equipmentId').val('');
     $('#videoLink').val('');
