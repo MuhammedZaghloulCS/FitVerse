@@ -3,7 +3,7 @@ using FitVerse.Core.Interfaces;
 using FitVerse.Core.IService;
 using FitVerse.Core.UnitOfWork;
 using FitVerse.Core.viewModels;
-using FitVerse.Core.ViewModels.Exercise;
+using FitVerse.Core.ViewModels.ExerciseVM;
 using FitVerse.Data.Models;
 using System;
 using System.Collections.Generic;

@@ -47,6 +47,18 @@ namespace FitVerse.Data.Repositories
             return dbSet.ToList();
 
         }
+        public IEnumerable<T> GetAll(params string[] includes)
+        {
+            IQueryable<T> query = dbSet;
+
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+
+            return query.ToList();
+        }
+
 
         public T GetById(int id)
         {
