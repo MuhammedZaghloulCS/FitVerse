@@ -13,7 +13,6 @@ namespace FitVerse.Core.IUnitOfWorkServices
         // 🧩 Services
         ICoachService CoachService { get; }
         IImageHandleService ImageHandleService { get; }
-        IClientService ClientService { get; }
 
         // 🧩 Repositories (اختياري، لو محتاج توصل ليها مباشرة)
         IEquipmentRepository EquipmentRepository { get; }
