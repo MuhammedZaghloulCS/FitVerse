@@ -2,6 +2,7 @@
 using FitVerse.Core.viewModels;
 
 using FitVerse.Core.ViewModels.Anatomy;
+using FitVerse.Core.ViewModels.Client;
 using FitVerse.Core.ViewModels.Meuscle;
 using FitVerse.Core.ViewModels.Package;
 using FitVerse.Data.Models;
@@ -23,8 +24,10 @@ namespace FitVerse.Core.MapperConfigs
             CreateMap<Muscle, AddMuscleVM>().ReverseMap();
             CreateMap<AddPackageVM, Package>().ReverseMap();
             CreateMap<AddMuscleVM, MuscleVM>().ReverseMap();
-           // CreateMap<Exercise, ExersiceVM>().ReverseMap();
-          //  CreateMap<AddExersiceVM, Exercise>().ReverseMap();
+            CreateMap<AddClientVM, Client>().ReverseMap();
+            CreateMap<Client, ClientDashVM>().ReverseMap();
+            // CreateMap<Exercise, ExersiceVM>().ReverseMap();
+            //  CreateMap<AddExersiceVM, Exercise>().ReverseMap();
 
         }
 

@@ -24,9 +24,13 @@ namespace FitVerse.Web.Controllers
         }
         public IActionResult Index()
         {
-            return View();
+            Guid coachId = Guid.Parse("11111111-1111-1111-1111-111111111111");// Coach logged in ID
+            var model = unitOFWorkService.CoachService.GetDashboardData(coachId);
+            return View(model);
+          
         }
-
+         
+        
 
         [HttpGet]
         public IActionResult GetAllCoaches()

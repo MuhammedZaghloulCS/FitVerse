@@ -169,7 +169,6 @@ namespace FitVerse.Data.Migrations
                         .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("ImagePath")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
@@ -186,7 +185,7 @@ namespace FitVerse.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UserId1")

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitVerse.Data.Migrations
 {
     [DbContext(typeof(FitVerseDbContext))]
-    [Migration("20251013232410_V1")]
-    partial class V1
+    [Migration("20251019133853_InitalCreate")]
+    partial class InitalCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -172,7 +172,6 @@ namespace FitVerse.Data.Migrations
                         .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("ImagePath")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
@@ -189,7 +188,7 @@ namespace FitVerse.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UserId1")
@@ -609,7 +608,7 @@ namespace FitVerse.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<Guid>("CoachId")
+                    b.Property<Guid?>("CoachId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
@@ -1134,8 +1133,7 @@ namespace FitVerse.Data.Migrations
                     b.HasOne("FitVerse.Data.Models.Coach", "Coach")
                         .WithMany("Packages")
                         .HasForeignKey("CoachId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Coach");
                 });
