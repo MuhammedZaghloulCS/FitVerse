@@ -1,6 +1,4 @@
-﻿@{
-    Layout = "~/Areas/Coach/Views/Shared/_CoachLayout.cshtml";
-}
+﻿
 <!-- Coach Form Section -->
 <form enctype="multipart/form-data" id="coachForm">
     <div class="content-area">
@@ -74,20 +72,6 @@
                     <input type="checkbox" id="IsActive" name="IsActive" />
                     Active Coach
                 </label>
-            </div>
-
-            <!-- User Account -->
-            <div class="form-group">
-                <label for="userId">User Account <span class="required">*</span></label>
-                <div class="input-group">
-                    <i class="fas fa-user-circle"></i>
-                    <select id="userId" name="UserId" class="form-select" required>
-                        <option value="" disabled selected>Select user account</option>
-                        <option value="1">john.doe@example.com</option>
-                        <option value="2">jane.smith@example.com</option>
-                        <option value="3">mike.johnson@example.com</option>
-                    </select>
-                </div>
             </div>
 
             <!-- Form Actions -->
