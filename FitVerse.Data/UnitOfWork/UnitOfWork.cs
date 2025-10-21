@@ -3,6 +3,7 @@ using FitVerse.Core.UnitOfWork;
 using FitVerse.Data.Context;
 using FitVerse.Data.Models;
 using FitVerse.Data.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace FitVerse.Data.UnitOfWork
 {
@@ -15,6 +16,7 @@ namespace FitVerse.Data.UnitOfWork
         PackageRepository package;
         ExersiceRepository exersice;
         CoachRepository coaches;
+        ClientRepository clients;
         SpecialityRepository specialties;
 
         public UnitOfWork(FitVerseDbContext context)
@@ -59,7 +61,17 @@ namespace FitVerse.Data.UnitOfWork
                 return package;
             }
         }
+        public IClientRepository Clients 
+        {
+            get
+            {
+                if (clients == null)
+                    clients = new ClientRepository(_context);
+                return Clients;
 
+            }
+
+        }
         public IExerciseRepository Exercises
         {
             get
@@ -74,8 +86,8 @@ namespace FitVerse.Data.UnitOfWork
         {
             get
             {
-                if(coaches==null)
-                    coaches=new CoachRepository(_context);
+                if (coaches == null)
+                    coaches = new CoachRepository(_context);
                 return coaches;
             }
         }
@@ -87,6 +99,10 @@ namespace FitVerse.Data.UnitOfWork
                 return specialties;
             }
         }
+
+
+
+
 
         public int Complete() => _context.SaveChanges();
         public void Dispose() => _context.Dispose();

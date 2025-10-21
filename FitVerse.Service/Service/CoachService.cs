@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using FitVerse.Core.IService;
 using FitVerse.Core.viewModels;
+using FitVerse.Core.ViewModels.Client;
 using FitVerse.Data.UnitOfWork;
 using global::FitVerse.Core.IService;
 using global::FitVerse.Core.UnitOfWork;
@@ -121,8 +122,28 @@ public (List<AddCoachVM> Data, int TotalItems) GetPagedEquipments(int page, int 
             return (data, totalItems);
         }
 
+            public CoachDashboardViewModel GetDashboardData(Guid coachId)
+            {
+                var dashboard = new CoachDashboardViewModel
+                {
+                    ActiveClientsCount = unitOfWork.Coaches.GetActiveClientsCount(),
+                    TotalPlans = unitOfWork.Coaches.GetTotalPlans(coachId),
+                    TotalExercises = unitOfWork.Coaches.GetTotalExercises(),
+                    AverageRating = unitOfWork.Coaches.GetAverageRating(coachId),
+                    RecentClients = unitOfWork.Coaches
+                    .GetRecentClients(coachId)
+                    .Select(c => mapper.Map <ClientDashVM >(c))
+                    .ToList()
+                };
 
-    }
+                return dashboard;
+            }
+            
+
+
+
+
+        }
 }
 }
 

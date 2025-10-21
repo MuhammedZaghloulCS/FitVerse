@@ -2,18 +2,21 @@
 using FitVerse.Core.IService;
 using FitVerse.Core.IUnitOfWorkServices;
 using FitVerse.Core.UnitOfWork;
+using FitVerse.Core.ViewModels.Client;
 using FitVerse.Core.ViewModels.Coach;
 using FitVerse.Core.ViewModels.Equipment;
 using FitVerse.Data.Models;
 using FitVerse.Data.Service.FitVerse.Data.Service;
 using FitVerse.Data.UnitOfWork;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace FitVerse.Web.Controllers
 {
     public class CoachController : Controller
     {
         private readonly IUnitOFWorkService unitOFWorkService;
+        private readonly IMapper mapper;
 
         //private readonly ICoachService coachService;
 
@@ -24,9 +27,13 @@ namespace FitVerse.Web.Controllers
         }
         public IActionResult Index()
         {
-            return View();
+            Guid coachId = Guid.Parse("11111111-1111-1111-1111-111111111111");// Coach logged in ID
+            var model = unitOFWorkService.CoachService.GetDashboardData(coachId);
+            return View(model);
+          
         }
-
+         
+        
 
         [HttpGet]
         public IActionResult GetAllCoaches()
@@ -99,6 +106,17 @@ namespace FitVerse.Web.Controllers
                 totalPages = (int)Math.Ceiling((double)totalItems / pageSize)
             });
         }
+        [HttpGet]
+        public IActionResult GetAllClients()
+        {
+            //var coachId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            Guid coachId = Guid.Parse("11111111-1111-1111-1111-111111111111");// Coach logged in ID
+
+            var clients = unitOFWorkService.CoachRepository.GetAllClientsByCoach(coachId);
+
+            return Json(new { data = clients });
+        }
+
 
     }
 

@@ -2,7 +2,6 @@
 using AutoMapper;
 using FitVerse.Core.UnitOfWork;
 using FitVerse.Core.viewModels;
-using FitVerse.Core.ViewModels;
 using FitVerse.Core.ViewModels.ExerciseVM;
 using FitVerse.Core.ViewModels.Meuscle;
 using FitVerse.Data.Models;
@@ -43,8 +42,8 @@ namespace FitVerse.Web.Controllers
         }
         public IActionResult GetAllEquipments()
         {
-            var Equipments = db.Equipments.GetAll();
-            var data = mapper.Map<EquipmentVM>(Equipments);
+            var Exercises = db.Equipments.GetAll();
+            var data = mapper.Map<ExerciseVM>(Exercises);
             return Json(new { data });
         }
 
@@ -76,31 +75,31 @@ namespace FitVerse.Web.Controllers
 
         public IActionResult Update(ExerciseVM model)
         {
-            var equipment = db.Exercises.GetById(model.Id);
-            if (equipment == null)
+            var exercise = db.Exercises.GetById(model.Id);
+            if (exercise == null)
             {
                 return Json(new { success = false, message = "Not Found!" });
             }
-            equipment.Name = model.Name;
-            db.Exercises.Update(equipment);
+            exercise.Name = model.Name;
+            db.Exercises.Update(exercise);
             if (db.Complete() > 0)
             {
-                return Json(new { success = true, message = "Equipment updated successfully" });
+                return Json(new { success = true, message = "Exercise updated successfully" });
             }
             return Json(new { success = false, message = "Somthing wrong!" });
 
         }
         public IActionResult Delete(int id)
         {
-            var equipment = db.Exercises.GetById(id);
-            if (equipment == null)
+            var exercise = db.Exercises.GetById(id);
+            if (exercise == null)
             {
                 return Json(new { success = false, message = "Not Found!" });
             }
-            db.Exercises.Delete(equipment);
+            db.Exercises.Delete(exercise);
             if (db.Complete() > 0)
             {
-                return Json(new { success = true, message = "Equipment deleted successfully" });
+                return Json(new { success = true, message = "Exercise deleted successfully" });
             }
             return Json(new { success = false, message = "Somthing wrong!" });
         }
@@ -120,7 +119,7 @@ namespace FitVerse.Web.Controllers
                 .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToList();
-            var mappedData = data.Select(e => new EquipmentVM { Id = e.Id, Name = e.Name }).ToList();
+            var mappedData = data.Select(e => new ExerciseVM { Id = e.Id, Name = e.Name }).ToList();
 
 
             return Json(new
