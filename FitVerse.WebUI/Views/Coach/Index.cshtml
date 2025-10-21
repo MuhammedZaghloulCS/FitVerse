@@ -1,422 +1,134 @@
-﻿@model FitVerse.Core.ViewModels.Coach.CoachDashboardViewModel
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coach Dashboard - FitVerse</title>
-
-<!-- Coach Form Section -->
+﻿@{
+    ViewData["Title"] = "Add New Coach";
+    Layout = "~/Views/Shared/_CoachLayout.cshtml";
+}
+<!-- ===========================
+     Coach Form Section
+=========================== -->
 <form enctype="multipart/form-data" id="coachForm">
     <div class="content-area">
+        <!-- Page Header -->
         <div class="page-header">
             <h1>Add New Coach</h1>
             <div class="breadcrumb">
-                <a href="index.html">Home</a> / <span>Coaches</span> / <span>Add New</span>
-
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="~/css/style.css">
-</head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
-        <div class="container-fluid px-4">
-            <a class="navbar-brand" href="index.html">
-                <div class="logo-icon">💪</div>
-                FitVerse
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="coach-dashboard.html">
-                            <i class="bi bi-speedometer2"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="coach-exercises.html">
-                            <i class="bi bi-lightning"></i> Exercises
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="coach-plans.html">
-                            <i class="bi bi-calendar-check"></i> Plans
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="coach-clients.html">
-                            <i class="bi bi-people"></i> Clients
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="chat.html">
-                            <i class="bi bi-chat-dots"></i> Chat
-                        </a>
-                    </li>
-
-                    <!-- Notifications -->
-                    <li class="nav-item">
-                        <a class="nav-link notification-bell position-relative" href="notifications.html">
-                            <i class="bi bi-bell fs-5"></i>
-                            <span class="notification-badge">3</span>
-                        </a>
-                    </li>
-
-                    <!-- User Profile -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
-                            <img src="https://ui-avatars.com/api/?name=Alex+Turner&background=10b981&color=fff" alt="Coach" class="user-avatar">
-                            <span>Alex Turner</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i> Profile</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i> Settings</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="login.html"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
-                        </ul>
-                    </li>
-                </ul>
+                <a href="index.html">Home</a> /
+                <span>Coaches</span> /
+                <span>Add New</span>
             </div>
         </div>
-    </nav>
 
-    <!-- Main Content -->
-    <div class="container-fluid px-4 py-4">
-        <!-- Page Header -->
-        <h2 class="fw-bold mb-1">Welcome back, Coach 👋</h2>
-        <p class="text-muted mb-4">Here's an overview of your coaching activities</p>
+        <!-- Form Card -->
+        <div class="form-card">
+            <input type="hidden" id="coachId" name="Id" />
 
-        <div class="row g-4 mb-4">
-            <div class="col-xl-3 col-md-6">
-                <div class="stat-card primary">
-                    <div class="stat-icon primary"><i class="bi bi-people"></i></div>
-                    <div class="stat-value">@Model.ActiveClientsCount</div>
-                    <div class="stat-label">Active Clients</div>
-                </div>
+            <!-- Form Header -->
+            <div class="form-header">
+                <h3><i class="fas fa-user-tie"></i> Coach Information</h3>
+                <p>Fill in the details below to add a new coach to the system</p>
             </div>
-            <div class="col-xl-3 col-md-6">
-                <div class="stat-card success">
-                    <div class="stat-icon success"><i class="bi bi-calendar-check"></i></div>
-                    <div class="stat-value">@Model.TotalPlans</div>
-                    <div class="stat-label">Workout Plans</div>
-                </div>
+
+            <!-- Navigation Buttons -->
+            <div class="mb-3">
+                <a class="button" asp-area="Coach" asp-controller="Coach" asp-action="Index">To Coach Area</a>
+                <a class="button" asp-area="Client" asp-controller="Client" asp-action="Index">To Client Area</a>
             </div>
-            <div class="col-xl-3 col-md-6">
-                <div class="stat-card warning">
-                    <div class="stat-icon warning"><i class="bi bi-lightning"></i></div>
-                    <div class="stat-value">@Model.TotalExercises</div>
-                    <div class="stat-label">Total Exercises</div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-md-6">
-                <div class="stat-card danger">
-                    <div class="stat-icon danger"><i class="bi bi-star"></i></div>
-                    <div class="stat-value">@Model.AverageRating.ToString("0.0")</div>
-                    <div class="stat-label">Average Rating</div>
-                </div>
-            </div>
-        </div>
 
             <!-- Name -->
             <div class="form-group">
                 <label for="coachName">Full Name <span class="required">*</span></label>
                 <div class="input-group">
                     <i class="fas fa-user"></i>
-                    <input type="text" id="coachName" name="Name" placeholder="Enter coach's full name" required>
+                    <input type="text" id="coachName" name="Name" placeholder="Enter coach's full name" required />
                 </div>
             </div>
 
-            <!-- Quick Actions -->
-            <div class="col-lg-4">
-                <div class="card-custom">
-                    <div class="card-header-custom">
-                        <i class="bi bi-lightning-charge me-2"></i> Quick Actions
-                    </div>
-                    <div class="card-body-custom">
-                        <div class="d-grid gap-3">
-                            <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#createPlanModal">
-                                <i class="bi bi-plus-circle me-2"></i> Create Workout Plan
-                            </button>
-                            <button class="btn btn-success-custom" data-bs-toggle="modal" data-bs-target="#addExerciseModal">
-                                <i class="bi bi-lightning me-2"></i> Add Exercise
-                            </button>
-                        <button class="btn btn-outline-custom" id="viewAllClientsBtn">
-                            <i class="bi bi-people me-2"></i> View All Clients
-                        </button>
-                            <button class="btn btn-outline-custom">
-                                <i class="bi bi-chat-dots me-2"></i> Open Messages
-                            </button>
-                        </div>
-
-                        <div class="divider"></div>
-
-                        <div class="text-center">
-                            <h6 class="fw-bold mb-3">Your Performance</h6>
-                            <canvas id="performanceChart"></canvas>
-                        </div>
-                    </div>
+            <!-- Title -->
+            <div class="form-group">
+                <label for="coachTitle">Title <span class="required">*</span></label>
+                <div class="input-group">
+                    <i class="fas fa-id-badge"></i>
+                    <input type="text" id="coachTitle" name="Title" placeholder="e.g., Head Trainer, Yoga Instructor" required />
                 </div>
             </div>
-        </div>
 
-        <!-- Recent Clients & Pending Tasks -->
-    <div class="col-lg-6">
-        <div class="card-custom">
-            <div class="card-header-custom d-flex justify-content-between align-items-center">
-                <span><i class="bi bi-people me-2"></i> Recent Clients</span>
-                <a href="coach/index.html" class="text-white text-decoration-none small">View All</a>
-            </div>
-            <div class="card-body-custom">
-                @if (Model.RecentClients != null && Model.RecentClients.Any())
-                {
-                    foreach (var client in Model.RecentClients)
-                    {
-                        <div class="d-flex align-items-center justify-content-between mb-3 pb-3 border-bottom">
-                            <div class="d-flex align-items-center gap-3">
-                                <div>
-                                    
-                                    <div class="fw-semibold">@client.Name</div>
-                                    <div class="text-muted small">Last payment: @client.LastPaymentAgo</div>
-                                </div>
-                            </div>
-                            <div class="text-end">
-                                <span class="badge-custom @(client.IsActive ? "badge-success" : "badge-warning")">
-                                    @(client.IsActive ? "Active" : "Inactive")
-                                </span>
-                                
-                            </div>
-                        </div>
-                    }
-                }
-                else
-                {
-                    <div class="text-center text-muted">No clients found.</div>
-                }
-            </div>
-        </div>
-    </div>
-    
-
-    <!-- Create Plan Modal -->
-    <div class="modal fade" id="createPlanModal" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content" style="border-radius: 16px; border: none;">
-                <div class="modal-header" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none;">
-                    <h5 class="modal-title fw-bold">Create Workout Plan</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <form>
-                        <div class="mb-3">
-                            <label class="form-label-custom">Plan Name</label>
-                            <input type="text" class="form-control-custom" placeholder="e.g., Full Body Strength Training" required>
-                        </div>
-
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label-custom">Assign to Client</label>
-                                <select class="form-control-custom" required>
-                                    <option value="">Select Client</option>
-                                    <option>Sarah Miller</option>
-                                    <option>John Smith</option>
-                                    <option>Emma Davis</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label-custom">Duration (weeks)</label>
-                                <input type="number" class="form-control-custom" placeholder="8" required>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label-custom">Description</label>
-                            <textarea class="form-control-custom" rows="3" placeholder="Describe the workout plan goals and approach..."></textarea>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label-custom">Difficulty Level</label>
-                            <select class="form-control-custom" required>
-                                <option>Beginner</option>
-                                <option>Intermediate</option>
-                                <option>Advanced</option>
-                            </select>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary-custom">Create Plan</button>
+            <!-- About -->
+            <div class="form-group">
+                <label for="coachAbout">About Coach <span class="required">*</span></label>
+                <div class="input-group">
+                    <i class="fas fa-align-left"></i>
+                    <textarea id="coachAbout" name="About" rows="4" placeholder="Write something about coach experience..." required></textarea>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Add Exercise Modal -->
-    <!-- Add Exercise Modal -->
-    <div class="modal fade" id="addExerciseModal" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content" style="border-radius: 16px; border: none;">
-                <div class="modal-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none;">
-                    <h5 class="modal-title fw-bold">Add New Exercise</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            <!-- Image Upload -->
+            <div class="form-group">
+                <label for="coachImage">Profile Image</label>
+                <div class="file-upload">
+                    <input type="file" id="coachImage" name="CoachImageFile" class="file-input" />
+                    <label for="coachImage" class="file-upload-label">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span>Choose an image file</span>
+                    </label>
+                    <div id="fileName" class="file-name">No file chosen</div>
                 </div>
-                <div class="modal-body p-4">
-                    <form id="exerciseForm">
-                        <div class="mb-3">
-                            <label class="form-label-custom">Exercise Name</label>
-                            <input type="text" id="Name" name="Name" class="form-control-custom" placeholder="e.g., Barbell Bench Press" required>
-                        </div>
+            </div>
 
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label-custom">Muscle Group</label>
-                                <select name="muscleId" id="muscleId" class="form-control-custom" required>
-                                    <option value="">Select Muscle </option>
-                                </select>
-                            </div>
-                        </div>
+            <!-- Is Active -->
+            <div class="form-group">
+                <label for="IsActive">
+                    <input type="checkbox" id="IsActive" name="IsActive" />
+                    Active Coach
+                </label>
+            </div>
+
             <!-- Form Actions -->
             <div class="form-actions">
                 <button type="reset" class="btn btn-outline" id="RestCoach">
                     <i class="fas fa-undo"></i> Reset
                 </button>
-                <button type="submit" class="btn btn-primary" id="SaveCoach">Save Coach</button>
-                <button type="submit" class="btn btn-primary" id="UpdateCoach">Update Coach</button>
+                <button type="submit" class="btn btn-primary" id="SaveCoach">
+                    Save Coach
+                </button>
+                <button type="submit" class="btn btn-primary" id="UpdateCoach">
+                    Update Coach
+                </button>
             </div>
         </div>
     </div>
 </form>
 
-                        <div class="mb-3">
-                            <label class="form-label-custom">Equipment Group</label>
-                            <select name="equipmentId" id="equipmentId" class="form-control-custom" required>
-                                <option value="">Select Equipment </option>
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label-custom">Description</label>
-                            <textarea id="description" name="Description" class="form-control-custom" rows="4" placeholder="Detailed instructions..."></textarea>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label-custom">Video URL (Optional)</label>
-                            <input type="url" id="videoLink" name="VideoUrl" class="form-control-custom" placeholder="https://youtube.com/...">
-                        </div>
-                        <div class="modal-footer border-0">
-                            <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-success-custom" id="saveExerciseBtn">Add Exercise</button>
-                        </div>
-                    </form>
-                </div>
-                
-            </div>
-        </div>
-    </div>
-    <!-- View All Clients Modal -->
-    <div class="modal fade" id="viewAllClientsModal" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content" style="border-radius: 16px; border: none;">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title fw-bold">All Clients</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <div id="allClientsContainer">
-                        <!-- هنا هيتحط كل العملاء بالAjax -->
-                        <div class="text-center text-muted">Loading...</div>
-                    </div>
-                </div>
-                <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
+<!-- ===========================
+     Search & Table Section
+=========================== -->
+<div class="container-fluid mt-4">
+    <!-- Search -->
+    <div class="d-flex justify-content-end mb-3">
+        <input type="text" class="form-control w-25" id="searchInput" placeholder="Search records..." />
     </div>
 
+    <!-- Data Table -->
+    <div class="table-responsive">
+        <table class="table table-bordered data-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Title</th>
+                    <th>About</th>
+                    <th>Image</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="Data"></tbody>
+        </table>
+    </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <script src="/ViewJs/exercise.js"></script>
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Pagination -->
+    <nav>
+        <ul class="pagination" id="pagination"></ul>
+    </nav>
+</div>
 
-    <!-- Chart.js Configuration -->
-    <script>
-        // Activity Chart
-        const activityCtx = document.getElementById('activityChart').getContext('2d');
-        new Chart(activityCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                datasets: [{
-                    label: 'Workouts Completed',
-                    data: [45, 52, 48, 61, 58, 42, 38],
-                    backgroundColor: 'rgba(99, 102, 241, 0.8)',
-                    borderRadius: 8
-                }, {
-                    label: 'Clients Active',
-                    data: [38, 45, 42, 55, 50, 35, 32],
-                    backgroundColor: 'rgba(16, 185, 129, 0.8)',
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top'
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-
-        // Performance Chart
-        const performanceCtx = document.getElementById('performanceChart').getContext('2d');
-        new Chart(performanceCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Completed', 'In Progress', 'Pending'],
-                datasets: [{
-                    data: [75, 15, 10],
-                    backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'bottom'
-                    }
-                },
-                cutout: '65%'
-            }
-        });
-    </script>
-   
-</body>
-</html>
+@section Scripts {
+    <script src="~/ViewJs/Coach.js"></script>
+}

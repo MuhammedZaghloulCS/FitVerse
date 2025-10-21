@@ -27,7 +27,6 @@ namespace FitVerse.Data.UnitOfWork
         private IMuscleRepository muscleRepository;
         private ICoachRepository coachRepository;
         private IClientRepository clientRepository;
-
         public UnitOfWorkService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
@@ -38,7 +37,6 @@ namespace FitVerse.Data.UnitOfWork
         // Services
         public IImageHandleService ImageHandleService => imageHandleService ??= new ImageHandleService();
         public ICoachService CoachService => coachService ??= new CoachService(unitOfWork, mapper, ImageHandleService);
-        public IClientService ClientService => clientService ??= new ClientService(unitOfWork, mapper, ImageHandleService);
 
         // Repositories
         public IEquipmentRepository EquipmentRepository => equipmentRepository ??= new EquipmentRepository(context);
@@ -46,5 +44,7 @@ namespace FitVerse.Data.UnitOfWork
         public IMuscleRepository MuscleRepository => muscleRepository ??= new MuscleRepository(context);
         public ICoachRepository CoachRepository => coachRepository ??= new CoachRepository(context);
         public IClientRepository ClientRepository => clientRepository ??= new ClientRepository(context);
+
+        public IClientService ClientServices  => clientService ??= new ClientService(unitOfWork, mapper, ImageHandleService);
     }
 }

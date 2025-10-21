@@ -1,6 +1,5 @@
 ﻿@* Views/Shared/_CoachLayout.cshtml *@
 @{
-    Layout = null;
     var title = ViewBag.Title ?? "Coach Dashboard - FitVerse";
 }
 <!DOCTYPE html>
@@ -20,6 +19,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
     <!-- ✅ Custom CSS -->
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+
     <link rel="stylesheet" href="~/css/style2.css" asp-append-version="true" />
 
     <style>
@@ -168,17 +169,23 @@
     </nav>
 
     <!-- ✅ Main Content -->
-    <main class="container-fluid mt-4 px-4">
-        @RenderBody()
-    </main>
-
+    <div class="container-fluid">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
     <!-- ✅ Footer -->
     <footer>
         © @DateTime.Now.Year FitVerse. All Rights Reserved.
     </footer>
 
-    <!-- ✅ Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    @RenderSection("Scripts", required: false)
+    <!-- Chart.js -->
+    <script src="~/jquery/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="~/js/script.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

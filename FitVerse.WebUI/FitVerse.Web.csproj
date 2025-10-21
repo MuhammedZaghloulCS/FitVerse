@@ -26,9 +26,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
+	
   <ItemGroup>
-    <Folder Include="Areas\Admin\Controllers\" />
     <Folder Include="wwwroot\Images\" />
   </ItemGroup>
 

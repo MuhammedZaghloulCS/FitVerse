@@ -20,5 +20,6 @@ namespace FitVerse.Core.IUnitOfWorkServices
         IMuscleRepository MuscleRepository { get; }
         ICoachRepository CoachRepository { get; }
         IClientRepository ClientRepository { get; }
+        IClientService ClientServices { get; }
     }
 }
