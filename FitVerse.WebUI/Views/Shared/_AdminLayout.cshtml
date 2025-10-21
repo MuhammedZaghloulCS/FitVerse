@@ -10,12 +10,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@title</title>
 
-    <!-- ✅ Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
+    <!-- ✅ Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- ✅ Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+
+    <!-- ✅ Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- ✅ Custom CSS -->
     <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
 </head>
+
 <body>
     <!-- ✅ Navigation -->
     <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
@@ -31,37 +38,43 @@
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
+
+                    <!-- 🧭 Main Links -->
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Admin" asp-action="Dashboard"><i class="bi bi-speedometer2"></i> Dashboard</a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Admin" asp-action="Users"><i class="bi bi-people"></i> Users</a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Admin" asp-action="Coaches"><i class="bi bi-person-badge"></i> Coaches</a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Admin" asp-action="Clients"><i class="bi bi-person-check"></i> Clients</a>
                     </li>
 
-                    <!-- 🔧 System Dropdown -->
+                    <!-- ⚙️ System Dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="systemDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-gear"></i> System
                         </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" asp-controller="Admin" asp-action="Equipment"><i class="bi bi-tools me-2"></i>Equipment</a></li>
-                            <li><a class="dropdown-item" asp-controller="Admin" asp-action="Exercises"><i class="bi bi-lightning me-2"></i>Exercises</a></li>
-                            <li><a class="dropdown-item" asp-controller="Admin" asp-action="Anatomy"><i class="bi bi-person-arms-up me-2"></i>Anatomy</a></li>
-                            <li><a class="dropdown-item" asp-controller="Admin" asp-action="Muscles"><i class="bi bi-heart-pulse me-2"></i>Muscles</a></li>
-                            <li><a class="dropdown-item" asp-controller="Admin" asp-action="Specialties"><i class="bi bi-award me-2"></i>Specialties</a></li>
-                            <li><a class="dropdown-item" asp-controller="Admin" asp-action="Packages"><i class="bi bi-box2-heart me-2"></i>Packages</a></li>
+                        <ul class="dropdown-menu" aria-labelledby="systemDropdown">
+                            <li><a class="dropdown-item" asp-controller="Admin" asp-action="Equipment"><i class="bi bi-tools me-2"></i> Equipment</a></li>
+                            <li><a class="dropdown-item" asp-controller="Admin" asp-action="Exercises"><i class="bi bi-lightning me-2"></i> Exercises</a></li>
+                            <li><a class="dropdown-item" asp-controller="Admin" asp-action="Anatomy"><i class="bi bi-person-arms-up me-2"></i> Anatomy</a></li>
+                            <li><a class="dropdown-item" asp-controller="Admin" asp-action="Muscles"><i class="bi bi-heart-pulse me-2"></i> Muscles</a></li>
+                            <li><a class="dropdown-item" asp-controller="Admin" asp-action="Specialties"><i class="bi bi-award me-2"></i> Specialties</a></li>
+                            <li><a class="dropdown-item" asp-controller="Admin" asp-action="Packages"><i class="bi bi-box-seam me-2"></i> Packages</a></li>
                         </ul>
                     </li>
 
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Admin" asp-action="Payments"><i class="bi bi-cash-coin"></i> Payments</a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Admin" asp-action="Reports"><i class="bi bi-graph-up"></i> Reports</a>
                     </li>
@@ -74,13 +87,13 @@
                         </a>
                     </li>
 
-                    <!-- 👤 User Profile -->
+                    <!-- 👤 User Dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <img src="https://ui-avatars.com/api/?name=Admin&background=6366f1&color=fff" alt="Admin" class="user-avatar" />
                             <span>Admin</span>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item" asp-controller="Admin" asp-action="Profile"><i class="bi bi-person me-2"></i> Profile</a></li>
                             <li><a class="dropdown-item" asp-controller="Admin" asp-action="Settings"><i class="bi bi-gear me-2"></i> Settings</a></li>
                             <li><hr class="dropdown-divider" /></li>
@@ -92,12 +105,17 @@
         </div>
     </nav>
 
-    <!-- ✅ Main Body -->
-    <div class="container-fluid">
+    <!-- ✅ Page Body -->
+    <div class="container-fluid mt-4">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-3 border-top small text-muted mt-auto">
+        © @DateTime.Now.Year FitVerse. All Rights Reserved.
+    </footer>
 
     <!-- Chart.js -->
     <script src="~/jquery/jquery.min.js"></script>
