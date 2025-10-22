@@ -2,18 +2,13 @@
 
 namespace FitVerse.Web.Controllers
 {
-    public class AccountController : Controller
+    public class AdminController : Controller
     {
         public IActionResult Index()
         {
             return View();
         }
-
-        public IActionResult LogIn()
-        {
-            return View();
-        }
-        public IActionResult Register()
+        public IActionResult AdminDashboard()
         {
             return View();
         }
