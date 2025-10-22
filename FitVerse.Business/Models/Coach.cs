@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using FitVerse.Core.Models;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -19,7 +20,7 @@ namespace FitVerse.Data.Models
         public bool IsActive { get; set; }
 
         public Guid? UserId { get; set; }//لازم بعدين يتيغر ان ميقبلش null
-        public virtual IdentityUser User { get; set; }
+        public virtual ApplicationUser User { get; set; }
         public virtual ICollection<CoachSpecialties>? CoachSpecialties { get; set; }=new HashSet<CoachSpecialties>();
         public virtual ICollection<Package>? Packages { get; set; }=new HashSet<Package>();
         public virtual ICollection<Client>? Clients { get; set; }=new HashSet<Client>();

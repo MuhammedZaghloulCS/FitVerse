@@ -1,4 +1,5 @@
 ﻿using FitVerse.Core.Enums;
+using FitVerse.Core.Models;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace FitVerse.Data.Models
 
         public Guid ReciverId { get; set; }
 
-        public virtual IdentityUser? Reciver { get; set; }
+        public virtual ApplicationUser? Reciver { get; set; }
         public string Content { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public int RefId { get; set; }
