@@ -10,6 +10,8 @@ using FitVerse.Data.Models;
 using FitVerse.Core.ViewModels;
 using FitVerse.Core.ViewModels.Coach;
 using FitVerse.Core.ViewModels.ExerciseVM;
+using FitVerse.Core.ViewModels.User;
+using FitVerse.Core.Models;
 
 
 namespace FitVerse.Core.MapperConfigs
@@ -35,8 +37,7 @@ namespace FitVerse.Core.MapperConfigs
             CreateMap<AddExerciseVM, Exercise>().ReverseMap();
             CreateMap<AddClientVM, Client>().ReverseMap();
             CreateMap<Client, ClientDashVM>().ReverseMap();
-            // CreateMap<Exercise, ExersiceVM>().ReverseMap();
-            //  CreateMap<AddExersiceVM, Exercise>().ReverseMap();
+            CreateMap<ApplicationUser, GetAllUsersViewModel>().ReverseMap();
 
         }
 

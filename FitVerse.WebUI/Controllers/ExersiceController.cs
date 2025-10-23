@@ -103,7 +103,7 @@ namespace FitVerse.Web.Controllers
             }
             return Json(new { success = false, message = "Somthing wrong!" });
         }
-        public IActionResult GetPaged(int page = 1, int pageSize = 5, string? search = null)
+        public IActionResult GetPaged(int page = 1, int pageSize = 6, string? search = null)
         {
             var query = db.Exercises.GetAll().AsQueryable();
 

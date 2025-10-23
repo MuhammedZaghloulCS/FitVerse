@@ -1,152 +1,106 @@
-﻿using FitVerse.Core.UnitOfWork;
+﻿using FitVerse.Core.IService;
+using FitVerse.Core.UnitOfWork;
+using FitVerse.Core.ViewModels.ExerciseVM;
 using FitVerse.Core.ViewModels.Meuscle;
+using FitVerse.Data.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FitVerse.Web.Controllers
 {
     public class MuscleController : Controller
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IMuscleService _muscleService;
 
-        public MuscleController(IUnitOfWork unitOfWork)
+        public MuscleController(IMuscleService muscleService)
         {
-            this.unitOfWork = unitOfWork;
+            _muscleService = muscleService;
         }
 
+      
         public IActionResult Index()
         {
             return View();
         }
 
-
+ 
         [HttpGet]
         public IActionResult GetAll()
         {
-            var allobj = unitOfWork.Muscles.GetAllWithAnatomy();
-
-            var data = allobj.Select(m => new MuscleVM
-            {
-                Id = m.Id,
-                Name = m.Name,
-                AnatomyName = m.Anatomy != null ? m.Anatomy.Name : "N/A"
-            }).ToList();
-
-            return Json(new { data = data });
-        }
-        public IActionResult GetAnatomyGroups()
-        {
-            var anatomies = unitOfWork.Anatomies.GetAll();
-            var data = anatomies.Select(a => new
-            {
-                id = a.Id,
-                name = a.Name
-            }).ToList();
-
-            return Json(new { data });
+            var data = _muscleService.GetAllMuscles();
+            return Json(new { Success = true, Data = data });
         }
 
-        [HttpPost]
-        public IActionResult Create(AddMuscleVM model)
-        {
-            var anatomy = unitOfWork.Anatomies.GetAll()
-                .FirstOrDefault(a => a.Name.ToLower() == model.AnatomyName.ToLower());
-            if (anatomy == null)
-            {
-                return Json(new { success = false, message = "Anatomy group not found!" });
-            }
-            unitOfWork.Muscles.Add(new Data.Models.Muscle { Name = model.Name, AnatomyId = anatomy.Id });
-
-            if (unitOfWork.Complete() > 0)
-            {
-                return Json(new { success = true, message = "Muscle created successfully" });
-            }
-            else
-            {
-                return Json(new { success = false, message = "Somthing wrong!" });
-            }
-        }
-
+  
         [HttpGet]
         public IActionResult GetById(int id)
         {
-            var muscle = unitOfWork.Muscles.GetById(id);
+            var muscle = _muscleService.GetMuscleById(id);
             if (muscle == null)
-                return Json(new { success = false, message = "Muscle not found!" });
+                return Json(new { Success = false, Message = "Muscle not found!" });
 
-            var model = new MuscleVM
-            {
-                Id = muscle.Id,
-                Name = muscle.Name,
-                AnatomyId = muscle.AnatomyId,
-                AnatomyName = muscle.Anatomy != null ? muscle.Anatomy.Name : "N/A"
-            };
-
-            return Json(new { success = true, data = model });
+            return Json(new { Success = true, Data = muscle });
         }
 
-      
+    
+        [HttpPost]
+        public IActionResult Create(AddMuscleVM model)
+        {
+            var result = _muscleService.AddMuscle(model);
+            return Json(new { Success = result.Success, Message = result.Message });
+        }
+
         [HttpPost]
         public IActionResult Update(MuscleVM model)
         {
-            var muscle = unitOfWork.Muscles.GetById(model.Id);
-            if (muscle == null)
-                return Json(new { success = false, message = "Muscle not found!" });
-
-            muscle.Name = model.Name;
-            if (model.AnatomyId != 0)
-                muscle.AnatomyId = model.AnatomyId;
-
-            unitOfWork.Muscles.Update(muscle);
-            if (unitOfWork.Complete() > 0)
-                return Json(new { success = true, message = "Muscle updated successfully" });
-
-            return Json(new { success = false, message = "Something went wrong!" });
+            var result = _muscleService.UpdateMuscle(model);
+            return Json(new { Success = result.Success, Message = result.Message });
         }
 
-     
+
         [HttpPost]
         public IActionResult Delete(int id)
         {
-            var muscle = unitOfWork.Muscles.GetById(id);
-            if (muscle == null)
-                return Json(new { success = false, message = "Muscle not found!" });
-
-            unitOfWork.Muscles.Delete(muscle);
-            if (unitOfWork.Complete() > 0)
-                return Json(new { success = true, message = "Muscle deleted successfully" });
-
-            return Json(new { success = false, message = "Something went wrong!" });
+            var result = _muscleService.DeleteMuscle(id);
+            return Json(new { Success = result.Success, Message = result.Message });
         }
+
 
         [HttpGet]
-        public IActionResult GetPaged(int page = 1, int pageSize = 5, string? search = null)
+        public IActionResult GetPaged(int page = 1, int pageSize = 6, string? search = null, int? anatomyId = null)
         {
-             var query = unitOfWork.Muscles.GetAllWithAnatomy();
-
-           if (!string.IsNullOrEmpty(search))
-        {
-        string lowerSearch = search.ToLower();
-        query = query.Where(m => m.Name.ToLower().Contains(lowerSearch));
-        }
-
-            var totalItems = query.Count();
-            var data = query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
-
-            var mappedData = data.Select(m => new MuscleVM
-            {
-                Id = m.Id,
-                Name = m.Name,
-                AnatomyName = m.Anatomy != null ? m.Anatomy.Name : "N/A"
-            }).ToList();
-
+            var (data, totalItems) = _muscleService.GetPagedMuscles(page, pageSize, search, anatomyId);
             return Json(new
             {
-                data = mappedData,
+                data = data,
                 currentPage = page,
                 totalPages = (int)Math.Ceiling((double)totalItems / pageSize)
+            });
+        }
+
+   
+        [HttpGet]
+        public IActionResult GetAnatomyGroups()
+        {
+            var anatomies = _muscleService.GetAllMuscles()
+                .Select(m => new { Id = m.AnatomyId, Name = m.AnatomyName })
+                .Distinct()
+                .ToList();
+
+            return Json(new { success = true, data = anatomies });
+        }
+
+        // ==========================
+
+        [HttpGet]
+        public IActionResult GetStats()
+        {
+            var (totalMuscles, totalAnatomyGroups, totalExercises) = _muscleService.GetStats();
+            return Json(new
+            {
+                TotalMuscles = totalMuscles,
+                TotalAnatomyGroups = totalAnatomyGroups,
+                TotalExercises = totalExercises
             });
         }
     }

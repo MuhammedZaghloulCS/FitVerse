@@ -1,4 +1,5 @@
 ﻿using FitVerse.Core.Enums;
+using FitVerse.Core.Models;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -14,9 +15,9 @@ namespace FitVerse.Data.Models
         public int ChatId { get; set; }
         public virtual Chat? Chat { get; set; }
         public string SenderId { get; set; }
-        public virtual IdentityUser? Sender { get; set; }
+        public virtual ApplicationUser? Sender { get; set; }
         public string ReciverId { get; set; }
-        public virtual IdentityUser? Reciver { get; set; }
+        public virtual ApplicationUser? Reciver { get; set; }
 
         public string Content { get; set; }
         public DateTime SentAt { get; set; }
