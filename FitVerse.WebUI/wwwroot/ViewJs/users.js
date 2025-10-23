@@ -281,24 +281,45 @@ function DeleteUser() {
         const userIndex = (currentPage - 1) * rowsPerPage + index;
         const user = filteredData.length ? filteredData[userIndex] : allData[userIndex];
 
-        if (!confirm(`Are you sure you want to delete ${user.UserName}?`)) return;
-
-        $.ajax({
-            url: `/Admin/Users/DeleteUser/${user.Id}`, 
-            method: 'GET', 
-            success: function () {
-                alert('User deleted successfully!');
-                filteredData = filteredData.filter(u => u.Id !== user.Id);
-                allData = allData.filter(u => u.Id !== user.Id);
-                renderUsersPaginated(filteredData, currentPage);
-                renderPagination(filteredData);
-            },
-            error: function () {
-                alert('Error deleting user!');
+        Swal.fire({
+            title: `Are you sure?`,
+            text: `Do you want to delete ${user.UserName}?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `/Admin/Users/DeleteUser/${user.Id}`,
+                    method: 'GET', // أو 'POST' حسب إعدادات السيرفر
+                    success: function () {
+                        Swal.fire(
+                            'Deleted!',
+                            `${user.UserName} has been deleted.`,
+                            'success'
+                        );
+                        // تحديث البيانات
+                        filteredData = filteredData.filter(u => u.Id !== user.Id);
+                        allData = allData.filter(u => u.Id !== user.Id);
+                        renderUsersPaginated(filteredData, currentPage);
+                        renderPagination(filteredData);
+                    },
+                    error: function () {
+                        Swal.fire(
+                            'Error!',
+                            'There was an error deleting the user.',
+                            'error'
+                        );
+                    }
+                });
             }
         });
     });
 }
+
 
 function ExportData() {
     $('#exportExcelBtn').on('click', function () {
