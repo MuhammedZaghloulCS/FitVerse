@@ -14,6 +14,9 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
+using FitVerse.Data.Service.FitVerse.Data.Service;
+using FitVerse.Core.IUnitOfWorkServices;
+using FitVerse.Core.Models;
 
 namespace FitVerse.WebUI
 {
@@ -29,7 +32,7 @@ namespace FitVerse.WebUI
             builder.Services.AddAutoMapper(op=>op.AddProfile(typeof(MapperConfig)));
 
 
-            builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
                 // Default Password settings.
                 options.Password.RequireDigit = false;
@@ -40,7 +43,7 @@ namespace FitVerse.WebUI
                 options.User.AllowedUserNameCharacters = null;
                 options.Password.RequiredUniqueChars = 0;
             }).AddEntityFrameworkStores<FitVerseDbContext>()
-            .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>(TokenOptions.DefaultProvider);
+            .AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>(TokenOptions.DefaultProvider);
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,
               options =>
@@ -88,8 +91,8 @@ namespace FitVerse.WebUI
             app.UseHttpsRedirection();
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
-
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "areas",

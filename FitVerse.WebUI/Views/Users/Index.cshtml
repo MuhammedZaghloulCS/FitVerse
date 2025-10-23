@@ -1,0 +1,296 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "_AdminLayout";
+}
+@model AddUserByAdmin
+<!-- Main Content -->
+<!-- Main Content -->
+
+
+<div class="container-fluid px-4 py-4">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">User Management</h2>
+            <p class="text-muted mb-0">Manage all coaches and clients in the system</p>
+        </div>
+        <div>
+            <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                <i class="bi bi-plus-circle"></i> Add New User
+            </button>
+        </div>
+    </div>
+
+    <!-- Filter & Search -->
+    <div class="card-custom mb-4">
+        <div class="card-body-custom">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" id="search-by" class="form-control-custom" placeholder="Search by name or email...">
+                </div>
+                <div class="col-md-2">
+                    <select class="form-control-custom" id="selected-role">
+                        <option value="0">All Roles</option>
+                        <option value="3">Admin</option>
+                        <option value="1">Coaches</option>
+                        <option value="2">Clients</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-control-custom" id="activation">
+                        <option value="0">All Status</option>
+                        <option value="1">Active</option>
+                        <option value="2">Inactive</option>
+                    </select>
+                </div>
+
+            
+                <div class="col-md-2">
+                    <button class="btn btn-outline-custom w-100" id="reset">
+                        <i class="bi bi-arrow-clockwise"></i> Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="card-custom">
+        <div class="card-header-custom d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-people me-2"></i> All Users (<span id="no-of-users2"></span>)</span>
+            <div class="d-flex gap-2">
+                <button id="exportExcelBtn" class="btn btn-sm btn-light">
+                    <i class="bi bi-download"></i> Export
+                </button>
+            </div>
+        </div>
+        <div class="card-body-custom p-0">
+            <div class="table-responsive">
+                <table class="table table-custom mb-0">
+                    <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" class="form-check-input">
+                            </th>
+                            <th>User</th>
+                            <th>Role</th>
+                            <th>Email</th>
+                            <th>Joined Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="all-users">
+                      
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="d-flex justify-content-between align-items-center p-3 border-top">
+                <div class="text-muted" >
+                    Showing <span id="p-first-row-number"></span> to <span id="p-last-row-number"></span> of <span id="no-of-users"></span> entries
+                </div>
+                <nav>
+                    <ul class="pagination mb-0">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#">Previous</a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item"><a class="page-link" href="#">...</a></li>
+                        <li class="page-item"><a class="page-link" href="#">509</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add User Modal -->
+<div class="modal fade" id="addUserModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" style="border-radius: 16px; border: none;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none;">
+                <h5 class="modal-title fw-bold">Add New User</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form asp-action="AddUser" asp-controller="Users" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="row g-3">
+                        <input asp-for="Id" hidden class="form-control-custom" />
+
+                        <div class="col-12">
+                            <label asp-for="FirstName" class="form-label-custom"></label>
+                            <input asp-for="FirstName" class="form-control-custom" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="LastName" class="form-label-custom"></label>
+                            <input asp-for="LastName" class="form-control-custom" />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Email" class="form-label-custom"></label>
+                            <input asp-for="Email" class="form-control-custom" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+
+                        <div class="col-12">
+                            <label asp-for="Password" class="form-label-custom"></label>
+                            <input asp-for="Password" class="form-control-custom" type="password" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="ConfirmPassword" class="form-label-custom"></label>
+                            <input asp-for="ConfirmPassword" class="form-control-custom" type="password" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="PhoneNumber" class="form-label-custom"></label>
+                            <input asp-for="PhoneNumber" class="form-control-custom"  />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Role" class="form-label-custom"></label>
+                            <select asp-for="Role" class="form-control-custom">
+                                <option hidden selected>Select Role</option>
+                                <option value="Admin">Admin</option>
+                                <option value="Coach">Coach</option>
+                                <option value="Client">Client</option>
+                            </select>
+                            <span asp-validation-for="Role" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Status" class="form-label-custom"></label>
+                            <select asp-for="Status" class="form-control-custom">
+                                <option hidden selected>Select Status</option>
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                            <span asp-validation-for="Role" class="text-danger"></span>
+                        </div>
+                
+                    </div>
+
+                    <div class="modal-footer border-0">
+                        <button type="reset" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary-custom">Create User</button>
+                    </div>
+                </form>
+            </div>
+            
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="UpdateUserModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" style="border-radius: 16px; border: none;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none;">
+                <h5 class="modal-title fw-bold">Update User</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form asp-action="UpdateUser" asp-controller="Users" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="row g-3">
+                        <input asp-for="Id" id="UpdateId" hidden class="form-control-custom" />
+
+                        <div class="col-12">
+                            <label asp-for="FirstName" class="form-label-custom"></label>
+                            <input asp-for="FirstName" id="UpdateFirstName" class="form-control-custom" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="LastName"  class="form-label-custom"></label>
+							<input asp-for="LastName"  id="UpdateLastName" class="form-control-custom" />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Email"  class="form-label-custom"></label>
+							<input asp-for="Email" id="UpdateEmail" class="form-control-custom" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+
+
+                        <div class="col-12">
+                            <label asp-for="PhoneNumber" class="form-label-custom"></label>
+                            <input asp-for="PhoneNumber" id="UpdatePhoneNumber" class="form-control-custom" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Role" class="form-label-custom"></label>
+                            <select asp-for="Role" id="UpdateRole" class="form-control-custom">
+                                <option hidden selected>Select Role</option>
+                                <option value="Admin">Admin</option>
+                                <option value="Coach">Coach</option>
+                                <option value="Client">Client</option>
+                            </select>
+                            <span asp-validation-for="Role" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Status" class="form-label-custom"></label>
+                            <select asp-for="Status" id="UpdateStatus" class="form-control-custom">
+                                <option hidden selected>Select Status</option>
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer border-0">
+                        <button type="reset" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary-custom">Update User</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <!--for exporting data-->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="~/ViewJs/users.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var showModal = '@(ViewBag.ShowAddUserModal ?? false)'.toLowerCase() === 'true';
+            if (showModal) {
+                var modal = new bootstrap.Modal(document.getElementById('addUserModal'));
+                modal.show();
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var showModal = '@(ViewBag.ShowUpdateUserModal ?? false)'.toLowerCase() === 'true';
+            if (showModal) {
+                var modal = new bootstrap.Modal(document.getElementById('UpdateUserModal'));
+                modal.show();
+            }
+        });
+    </script>
+}

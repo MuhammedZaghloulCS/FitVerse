@@ -1,17 +1,20 @@
-﻿using FitVerse.Data.Models;
+﻿using FitVerse.Core.Models;
+using FitVerse.Data.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using System.IO;
+
 
 namespace FitVerse.Data.Context
 {
-    public class FitVerseDbContext :IdentityDbContext
+    public class FitVerseDbContext :IdentityDbContext<ApplicationUser>
     {
         public FitVerseDbContext(DbContextOptions<FitVerseDbContext> options)
             : base(options)
@@ -37,7 +40,7 @@ namespace FitVerse.Data.Context
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Specialty> Specialties { get; set; }
 
-    
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
