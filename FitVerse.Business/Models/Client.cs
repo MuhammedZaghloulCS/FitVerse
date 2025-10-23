@@ -5,8 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace FitVerse.Data.Models
 {
+
     public class Client
     {
         public Guid Id { get; set; }

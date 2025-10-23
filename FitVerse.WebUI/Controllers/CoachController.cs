@@ -38,11 +38,13 @@ namespace FitVerse.Web.Controllers
         }
 
 
-
         [HttpGet]
         public IActionResult GetAllCoaches()
         {
             var coaches = unitOFWorkService.CoachService.GetAllCoaches();
+
+
+
             if (coaches == null || !coaches.Any())
             {
                 return Json(new { success = false, message = "No coaches found." });
@@ -67,6 +69,8 @@ namespace FitVerse.Web.Controllers
                 return Json(new { success = false, message = "Invalid GUID format." });
 
             var coach = unitOFWorkService.CoachService.GetCoachByIdGuid(guidId);
+      
+           
             if (coach == null)
                 return Json(new { success = false, message = "Coach not found." });
 

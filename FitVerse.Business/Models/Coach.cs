@@ -5,9 +5,17 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BuilderGenerator;
+
+
+
 
 namespace FitVerse.Data.Models
 {
+    [BuilderFor(typeof(Coach))]
+    public partial class CoachBuilder
+    {
+    }
     public class Coach
     {
         public Guid Id { get; set; }
