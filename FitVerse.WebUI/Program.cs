@@ -1,20 +1,19 @@
-using FitVerse.Core.IService;
-using FitVerse.Data.Service;
 using FitVerse.Core.Interfaces;
+using FitVerse.Core.IService;
+using FitVerse.Core.IUnitOfWorkServices;
 using FitVerse.Core.MapperConfigs;
 using FitVerse.Core.UnitOfWork;
 using FitVerse.Data.Context;
 using FitVerse.Data.Repositories;
+using FitVerse.Data.Service;
+using FitVerse.Data.Service.FitVerse.Data.Service;
 using FitVerse.Data.UnitOfWork;
+using FitVerse.Data.UnitOfWork;
+using FitVerse.Service.Service;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using FitVerse.Data.UnitOfWork;
-
-
 using System;
-using FitVerse.Data.Service.FitVerse.Data.Service;
-using FitVerse.Core.IUnitOfWorkServices;
 
 namespace FitVerse.WebUI
 {
@@ -67,6 +66,7 @@ namespace FitVerse.WebUI
             builder.Services.AddScoped<IMuscleRepository, MuscleRepository>();
             builder.Services.AddScoped<ICoachRepository, CoachRepository>();
             builder.Services.AddScoped<IUnitOFWorkService, UnitOfWorkService>();
+            builder.Services.AddScoped<IMuscleService, MuscleService>();
 
 
 
