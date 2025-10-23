@@ -1,115 +1,149 @@
 ﻿var allData;
+var filteredData = [];
 var currentPage = 1;
 var rowsPerPage = 5;
 
 $(function () {
     GetAllUsers();
-    SearchByNameOrEmail();
-    searchByRole();
-    searchByActivation(); // <-- call this
-    reset();
+    setupSearch();
+    setupRoleFilter();
+    setupActivationFilter();
+    setupResetButton();
+    setupAddUserModalReset();
+    EditUser();
+    DeleteUser();
+    ExportData();
 });
 
+// ============================
+// Fetch All Users
+// ============================
 function GetAllUsers() {
     $.ajax({
         method: 'get',
-        url: '/Users/GetAllUsers',
+        url: '/Admin/Users/GetAllUsers',
         success: function (data) {
             allData = data.data;
+            filteredData = allData;
             currentPage = 1;
-            renderUsersPaginated(allData, currentPage);
-            renderPagination(allData);
+            renderUsersPaginated(filteredData, currentPage);
+            renderPagination(filteredData);
         },
         error: function (xhr, status, err) {
-            console.log("err: " + err);
+            console.log("Error fetching users: " + err);
         }
     });
 }
 
-function SearchByNameOrEmail() {
+// ============================
+// Search by name or email
+// ============================
+function setupSearch() {
     $('#search-by').on('input', function () {
-        var value = $('#search-by').val();
-        let filtered = allData;
-        if (value) {
-            filtered = allData.filter(u =>
-                u.UserName.toLowerCase().includes(value.toLowerCase()) ||
-                u.Email.toLowerCase().includes(value.toLowerCase())
-            );
-        }
-        currentPage = 1;
-        renderUsersPaginated(filtered, currentPage);
-        renderPagination(filtered);
+        filterAll();
     });
 }
 
-function searchByRole() {
+// ============================
+// Filter by role
+// ============================
+function setupRoleFilter() {
     $('#selected-role').on('change', function () {
         filterAll();
     });
 }
 
-function searchByActivation() {
+// ============================
+// Filter by activation status
+// ============================
+function setupActivationFilter() {
     $('#activation').on('change', function () {
         filterAll();
     });
 }
 
-// Combine filters
+// ============================
+// Combine all filters together
+// ============================
 function filterAll() {
     let role = $('#selected-role').val();
     let status = $('#activation').val();
     let searchVal = $('#search-by').val().toLowerCase();
 
-    let filtered = allData;
+    filteredData = allData;
 
-    // Filter by search
+    // Search filter
     if (searchVal) {
-        filtered = filtered.filter(u =>
+        filteredData = filteredData.filter(u =>
             u.UserName.toLowerCase().includes(searchVal) ||
             u.Email.toLowerCase().includes(searchVal)
         );
     }
 
-    // Filter by role
-    if (role === '1') filtered = filtered.filter(u => u.Role.toLowerCase() === 'coach');
-    if (role === '2') filtered = filtered.filter(u => u.Role.toLowerCase() === 'client');
+    // Role filter
+    if (role === '1') filteredData = filteredData.filter(u => u.Role.toLowerCase() === 'coach');
+    if (role === '2') filteredData = filteredData.filter(u => u.Role.toLowerCase() === 'client');
+    if (role === '3') filteredData = filteredData.filter(u => u.Role.toLowerCase() === 'admin');
 
-    // Filter by status
-    if (status === '1') filtered = filtered.filter(u => u.Status.toLowerCase() === 'active');
-    if (status === '2') filtered = filtered.filter(u => u.Status.toLowerCase() === 'inactive');
+    // Status filter
+    if (status === '1') filteredData = filteredData.filter(u => u.Status.toLowerCase() === 'active');
+    if (status === '2') filteredData = filteredData.filter(u => u.Status.toLowerCase() === 'inactive');
 
     currentPage = 1;
-    renderUsersPaginated(filtered, currentPage);
-    renderPagination(filtered);
+    renderUsersPaginated(filteredData, currentPage);
+    renderPagination(filteredData);
 }
 
-function reset() {
-    $('#search-by').val('');
-    $('#selected-role').val('0');
-    $('#activation').val('0');
+// ============================
+// Reset filters
+// ============================
+function setupResetButton() {
     $('#reset').on('click', function () {
+        $('#search-by').val('');
+        $('#selected-role').val('0');
+        $('#activation').val('0');
+        filteredData = allData;
         currentPage = 1;
         renderUsersPaginated(allData, currentPage);
         renderPagination(allData);
     });
 }
 
+// ============================
+// Render users for current page
+// ============================
 function renderUsersPaginated(users, page) {
     $('#all-users').empty();
+ 
+    if (users.length === 0) {
+        $('#all-users').append(`
+            <tr>
+                <td colspan="7" class="text-center text-muted py-4">
+                    No users found
+                </td>
+            </tr>
+        `);
+        $('#no-of-users').text(0);
+        $('#no-of-users2').text(0);
+        return;
+    }
+
     let start = (page - 1) * rowsPerPage;
     let end = start + rowsPerPage;
     let paginatedUsers = users.slice(start, end);
-
+    $('#p-first-row-number').text(`${start+1}`)
+    $('#p-last-row-number').text(`${end}`)
     paginatedUsers.forEach(user => {
         $('#all-users').append(`
             <tr>
                 <td><input type="checkbox" class="form-check-input"></td>
                 <td>
                     <div class="d-flex align-items-center gap-3">
-                        <img src="https://ui-avatars.com/api/?name=${user.UserName}&background=6366f1&color=fff" alt="User" style="width: 40px; height: 40px; border-radius: 50%;">
+                        <img src="https://ui-avatars.com/api/?name=${user.UserName}&background=6366f1&color=fff" 
+                             alt="User" style="width: 40px; height: 40px; border-radius: 50%;">
                         <div>
                             <div class="fw-semibold">${user.UserName}</div>
-                            <small class="text-muted">ID: #${user.Id}</small>
+                            <small class="text-muted">Phone: ${user.PhoneNumber}</small>
                         </div>
                     </div>
                 </td>
@@ -121,26 +155,19 @@ function renderUsersPaginated(users, page) {
                     ${user.Status}
                   </span>
                 </td>
-                                                <td>
+                  <td>
                                     <div class="d-flex gap-2">
-                                        <button class="btn btn-sm btn-outline-custom" title="View Details">
-                                            <i class="bi bi-eye"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-custom" title="Edit">
+
+                                        <button id="edit" class="btn btn-sm btn-outline-custom" title="Edit">
                                             <i class="bi bi-pencil"></i>
                                         </button>
                                         <div class="dropdown">
-                                            <button class="btn btn-sm btn-outline-custom" data-bs-toggle="dropdown">
-                                                <i class="bi bi-three-dots-vertical"></i>
-                                            </button>
-                                            <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="#"><i class="bi bi-check-circle me-2"></i>Activate</a></li>
-                                                <li><a class="dropdown-item" href="#"><i class="bi bi-x-circle me-2"></i>Deactivate</a></li>
-                                                <li><a class="dropdown-item" href="#"><i class="bi bi-arrow-repeat me-2"></i>Change Role</a></li>
-                                                <li><hr class="dropdown-divider"></li>
-                                                <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-trash me-2"></i>Delete</a></li>
-                                            </ul>
-                                        </div>
+                                        <button id="delete" class="btn btn-sm btn-danger" " >
+                                              <i class="bi bi-trash"></i>
+                                        </button>
+                                        
+                                    </div>
+
                                     </div>
                                 </td>
             </tr>
@@ -151,6 +178,9 @@ function renderUsersPaginated(users, page) {
     $('#no-of-users2').text(users.length);
 }
 
+// ============================
+// Render pagination controls (Fixed scroll issue)
+// ============================
 function renderPagination(users) {
     const totalPages = Math.ceil(users.length / rowsPerPage);
     const paginationEl = $('.pagination');
@@ -160,29 +190,139 @@ function renderPagination(users) {
 
     paginationEl.append(`
         <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
-            <a class="page-link" href="#" onclick="goToPage(${currentPage - 1})">Previous</a>
+            <a class="page-link" href="#" data-page="${currentPage - 1}">Previous</a>
         </li>
     `);
 
     for (let i = 1; i <= totalPages; i++) {
         paginationEl.append(`
             <li class="page-item ${currentPage === i ? 'active' : ''}">
-                <a class="page-link" href="#" onclick="goToPage(${i})">${i}</a>
+                <a class="page-link" href="#" data-page="${i}">${i}</a>
             </li>
         `);
     }
 
     paginationEl.append(`
         <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
-            <a class="page-link" href="#" onclick="goToPage(${currentPage + 1})">Next</a>
+            <a class="page-link" href="#" data-page="${currentPage + 1}">Next</a>
         </li>
     `);
+
+    // Attach click events dynamically
+    $('.page-link').off('click').on('click', function (e) {
+        e.preventDefault(); // <-- prevents scrolling to top
+        const page = parseInt($(this).data('page'));
+        goToPage(page);
+    });
 }
 
+// ============================
+// Pagination handler
+// ============================
 function goToPage(page) {
-    const totalPages = Math.ceil(allData.length / rowsPerPage);
+    const data = filteredData.length ? filteredData : allData;
+    const totalPages = Math.ceil(data.length / rowsPerPage);
+
     if (page < 1) page = 1;
     if (page > totalPages) page = totalPages;
+  
+
     currentPage = page;
-    filterAll(); // keep filters applied when changing page
+    renderUsersPaginated(data, currentPage);
+    renderPagination(data);
 }
+
+    // Reset when Cancel button is clicked
+function setupAddUserModalReset(name) {
+    if (name) {
+        $(name).on('click', 'button[type="reset"]', function (e) {
+            e.preventDefault(); // Prevent Bootstrap from interfering
+            const form = $(this).closest('form')[0]; // Get the form element
+            form.reset(); // Reset all inputs
+            $(form).find('.text-danger').text(''); // Clear validation messages if any
+        });
+    }
+    else {
+        $('#addUserModal').on('click', 'button[type="reset"]', function (e) {
+            e.preventDefault(); // Prevent Bootstrap from interfering
+            const form = $(this).closest('form')[0]; // Get the form element
+            form.reset(); // Reset all inputs
+            $(form).find('.text-danger').text(''); // Clear validation messages if any
+        });
+    }
+
+}
+function EditUser() {
+    $('#all-users').on('click', 'button#edit', function () {
+        const row = $(this).closest('tr');
+        const index = row.index();
+        const userIndex = (currentPage - 1) * rowsPerPage + index;
+        const user = filteredData.length ? filteredData[userIndex] : allData[userIndex];
+
+        $('#UpdateUserModal').modal('show');
+
+        // Split full name into first and last
+        const names = user.UserName.split(' ');
+        $('#UpdateId').val(user.Id);
+        $('#UpdateFirstName').val(names[0] || '');
+        $('#UpdateLastName').val(names.slice(1).join(' ') || '');
+        $('#UpdateEmail').val(user.Email);
+        $('#UpdatePhoneNumber').val(user.PhoneNumber);
+        $('#UpdateRole').val(user.Role);
+        $('#UpdateStatus').val(user.Status);
+        setupAddUserModalReset('#UpdateUserModal')
+    });
+}
+
+function DeleteUser() {
+    $('#all-users').on('click', 'button#delete', function () {
+        const row = $(this).closest('tr');
+        const index = row.index();
+        const userIndex = (currentPage - 1) * rowsPerPage + index;
+        const user = filteredData.length ? filteredData[userIndex] : allData[userIndex];
+
+        if (!confirm(`Are you sure you want to delete ${user.UserName}?`)) return;
+
+        $.ajax({
+            url: `/Admin/Users/DeleteUser/${user.Id}`, 
+            method: 'GET', 
+            success: function () {
+                alert('User deleted successfully!');
+                filteredData = filteredData.filter(u => u.Id !== user.Id);
+                allData = allData.filter(u => u.Id !== user.Id);
+                renderUsersPaginated(filteredData, currentPage);
+                renderPagination(filteredData);
+            },
+            error: function () {
+                alert('Error deleting user!');
+            }
+        });
+    });
+}
+
+function ExportData() {
+    $('#exportExcelBtn').on('click', function () {
+        const dataToExport = filteredData.length ? filteredData : allData;
+
+        if (!dataToExport || dataToExport.length === 0) {
+            alert("No data to export!");
+            return;
+        }
+
+        const exportData = dataToExport.map(u => ({
+            "ID": u.Id,
+            "Name": u.UserName,
+            "Email": u.Email,
+            "Role": u.Role,
+            "Status": u.Status,
+            "Joined Date": new Date(u.JoinedDate).toLocaleDateString('en-US')
+        }));
+
+        const ws = XLSX.utils.json_to_sheet(exportData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Users");
+
+        XLSX.writeFile(wb, `Users-${new Date().toISOString().slice(0, 10)}.xlsx`);
+    });
+}
+

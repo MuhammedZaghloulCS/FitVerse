@@ -377,7 +377,7 @@ document.addEventListener('DOMContentLoaded', function () {
 // ==========================
 function handleResize() {
     if (window.innerWidth > 992) {
-        sidebar.classList.remove('active');
+       // sidebar.classList.remove('active');
     }
 }
 
