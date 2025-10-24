@@ -17,6 +17,7 @@ namespace FitVerse.Core.IUnitOfWorkServices
         ICoachService CoachService { get; }
         IImageHandleService ImageHandleService { get; }
         IUsers UsersService { get; }
+        IAdminService AdminService { get; }
 
 
         // 🧩 Repositories (اختياري، لو محتاج توصل ليها مباشرة)
@@ -25,6 +26,7 @@ namespace FitVerse.Core.IUnitOfWorkServices
         IMuscleRepository MuscleRepository { get; }
         ICoachRepository CoachRepository { get; }
         IClientRepository ClientRepository { get; }
+
         //Identity
         UserManager<ApplicationUser> UserManager { get; }
 

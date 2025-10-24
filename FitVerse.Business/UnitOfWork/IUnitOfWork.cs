@@ -16,7 +16,7 @@ namespace FitVerse.Core.UnitOfWork
         IClientRepository Clients { get; }
         IAnatomyRepository Anatomies { get; }
         //ICoachSpecialtiesRepository CoachSpecialties { get; }
-        //ICoachFeedbackRepository CoachFeedbacks { get; }
+        ICoachFeedbackRepository CoachFeedbacks { get; }
         //IDietPlanRepository DietPlans { get; }
         IEquipmentRepository Equipments { get; }
         IExerciseRepository Exercises { get; }
@@ -27,7 +27,7 @@ namespace FitVerse.Core.UnitOfWork
         //IExercisePlanDetailRepository ExercisePlanDetails { get; }
         //INotificationRepository Notifications { get; }
         IPackageRepository Packages { get; }
-        //IPaymentRepository Payments { get; }
+        IPaymentRepository Payments { get; }
         ISpecialtiesRepository Specialties { get; }
         int Complete();
     }

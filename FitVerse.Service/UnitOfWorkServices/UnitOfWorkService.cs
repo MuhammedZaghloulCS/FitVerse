@@ -26,6 +26,7 @@ namespace FitVerse.Data.UnitOfWork
         private IImageHandleService imageHandleService;
         private IClientService clientService;
         private IUsers users;
+        private IAdminService adminService;
 
         // Lazy-loaded repositories
         private IEquipmentRepository equipmentRepository;
@@ -51,6 +52,8 @@ namespace FitVerse.Data.UnitOfWork
         public ICoachService CoachService => coachService ??= new CoachService(unitOfWork, mapper, ImageHandleService);
         public IClientService ClientService => clientService ??= new ClientService(unitOfWork, mapper, ImageHandleService);
         public IUsers UsersService => users ??= new UsersService(userManager, mapper);
+        public IAdminService AdminService => adminService ??= new AdminService(unitOfWork, userManager);
+
 
         // Repositories
         public IEquipmentRepository EquipmentRepository => equipmentRepository ??= new EquipmentRepository(context);
@@ -58,6 +61,6 @@ namespace FitVerse.Data.UnitOfWork
         public IMuscleRepository MuscleRepository => muscleRepository ??= new MuscleRepository(context);
         public ICoachRepository CoachRepository => coachRepository ??= new CoachRepository(context);
         public IClientRepository ClientRepository => clientRepository ??= new ClientRepository(context);
-       
+
     }
 }

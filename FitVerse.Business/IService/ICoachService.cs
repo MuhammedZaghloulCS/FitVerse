@@ -20,6 +20,8 @@ namespace FitVerse.Core.IService
         (bool Success, string Message) UpdateCoach(AddCoachVM model);
         public (List<AddCoachVM> Data, int TotalItems) GetPagedEquipments(int page, int pageSize, string? search);
         CoachDashboardViewModel GetDashboardData(string coachId);
+
+
         
        
 
