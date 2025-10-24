@@ -53,11 +53,14 @@ namespace FitVerse.Web.Controllers
 
             if (!success)
             {
-                ModelState.AddModelError("ModelOnly", message);
+                TempData["AddUserStatus"] = "error";
+                TempData["AddUserMessage"] = message;
                 ViewBag.ShowAddUserModal = true;
                 return View("Index", newUser);
             }
 
+            TempData["AddUserStatus"] = "success";
+            TempData["AddUserMessage"] = "User added successfully!";
             return RedirectToAction("Index");
         }
         [HttpPost("UpdateUser")]

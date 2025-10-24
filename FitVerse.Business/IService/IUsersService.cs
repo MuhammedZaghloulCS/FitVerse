@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FitVerse.Core.IService
 {
-    public interface IUsers
+    public interface IUsersService:IService
     {
         public  Task<List<GetAllUsersViewModel>> GetAllUsers();
         public  List<GetAllUsersViewModel> SearchBy(string nameOrEmail);

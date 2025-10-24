@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 namespace FitVerse.Service.Service
 {
-    internal class UsersService : IUsers
+    internal class UsersService : IUsersService
     {
         UserManager<ApplicationUser> userManager;
 
@@ -65,7 +65,9 @@ namespace FitVerse.Service.Service
                 PhoneNumber = newUser.PhoneNumber,
                 joinedDate = DateTime.Now
             };
-
+            var oldUser = await userManager.FindByEmailAsync(newUser.Email);
+            if(oldUser!=null)
+                return (false, "User Alreday created Before!");
             // Create user
             var result = await userManager.CreateAsync(user, newUser.Password);
             if (!result.Succeeded)
