@@ -149,13 +149,13 @@
 
                         <div class="col-12">
                             <label asp-for="Password" class="form-label-custom"></label>
-                            <input asp-for="Password" class="form-control-custom" type="password" />
+                            <input asp-for="Password" class="form-control-custom" type="password" autocomplete="new-password" />
                             <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
 
                         <div class="col-12">
                             <label asp-for="ConfirmPassword" class="form-label-custom"></label>
-                            <input asp-for="ConfirmPassword" class="form-control-custom" type="password" />
+                            <input asp-for="ConfirmPassword" class="form-control-custom" type="password" autocomplete="new-password" />
                             <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                         </div>
                         <div class="col-12">
@@ -293,4 +293,29 @@
             }
         });
     </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var addUserStatus = '@TempData["AddUserStatus"]';
+            var addUserMessage = '@TempData["AddUserMessage"]';
+
+            if (addUserStatus && addUserMessage) {
+                if (addUserStatus === "success") {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: addUserMessage,
+                        confirmButtonColor: '#4f46e5'
+                    });
+                } else if (addUserStatus === "error") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops!',
+                        text: addUserMessage,
+                        confirmButtonColor: '#d33'
+                    });
+                }
+            }
+        });
+    </script>
+
 }

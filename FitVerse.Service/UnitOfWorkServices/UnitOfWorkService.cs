@@ -19,13 +19,16 @@ namespace FitVerse.Data.UnitOfWork
         private readonly IMapper mapper;
         private readonly FitVerseDbContext context;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly SignInManager<ApplicationUser> signInManager;
+
 
 
         // Lazy-loaded services
         private ICoachService coachService;
         private IImageHandleService imageHandleService;
         private IClientService clientService;
-        private IUsers users;
+        private IUsersService users;
+        private IAccountService account;
 
         // Lazy-loaded repositories
         private IEquipmentRepository equipmentRepository;
@@ -35,12 +38,13 @@ namespace FitVerse.Data.UnitOfWork
         private IClientRepository clientRepository;
 
 
-        public UnitOfWorkService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<ApplicationUser> userManager)
+        public UnitOfWorkService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
             this.context = ((UnitOfWork)unitOfWork)._context; 
             this.userManager = userManager;
+            this.signInManager = signInManager;
         }
         //Identity
         public UserManager<ApplicationUser> UserManager => userManager;
@@ -50,7 +54,8 @@ namespace FitVerse.Data.UnitOfWork
         public IImageHandleService ImageHandleService => imageHandleService ??= new ImageHandleService();
         public ICoachService CoachService => coachService ??= new CoachService(unitOfWork, mapper, ImageHandleService);
         public IClientService ClientService => clientService ??= new ClientService(unitOfWork, mapper, ImageHandleService);
-        public IUsers UsersService => users ??= new UsersService(userManager, mapper);
+        public IUsersService UsersService => users ??= new UsersService(userManager, mapper);
+        public IAccountService AccountService => account ??= new AccountService(userManager, mapper,signInManager);
 
         // Repositories
         public IEquipmentRepository EquipmentRepository => equipmentRepository ??= new EquipmentRepository(context);
@@ -58,6 +63,6 @@ namespace FitVerse.Data.UnitOfWork
         public IMuscleRepository MuscleRepository => muscleRepository ??= new MuscleRepository(context);
         public ICoachRepository CoachRepository => coachRepository ??= new CoachRepository(context);
         public IClientRepository ClientRepository => clientRepository ??= new ClientRepository(context);
-       
+
     }
 }
