@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FitVerse.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class _0 : Migration
+    public partial class v5 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -46,6 +46,7 @@ namespace FitVerse.Data.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     joinedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -99,6 +100,7 @@ namespace FitVerse.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AnatomyId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -571,7 +573,8 @@ namespace FitVerse.Data.Migrations
                     NumOfSets = table.Column<int>(type: "int", nullable: false),
                     NumOfRepeats = table.Column<int>(type: "int", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsCompleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -633,13 +636,13 @@ namespace FitVerse.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "Muscles",
-                columns: new[] { "Id", "AnatomyId", "Name" },
+                columns: new[] { "Id", "AnatomyId", "Description", "Name" },
                 values: new object[,]
                 {
-                    { 1, 1, "Biceps" },
-                    { 2, 1, "Triceps" },
-                    { 3, 2, "Quadriceps" },
-                    { 4, 3, "Abs" }
+                    { 1, 1, null, "Biceps" },
+                    { 2, 1, null, "Triceps" },
+                    { 3, 2, null, "Quadriceps" },
+                    { 4, 3, null, "Abs" }
                 });
 
             migrationBuilder.InsertData(
