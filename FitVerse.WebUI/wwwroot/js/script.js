@@ -375,10 +375,10 @@ document.addEventListener('DOMContentLoaded', function () {
 // ==========================
 // Responsive Adjustments
 // ==========================
-function handleResize() {
-    if (window.innerWidth > 992) {
-       // sidebar.classList.remove('active');
-    }
-}
+//function handleResize() {
+//    if (window.innerWidth > 992) {
+//        sidebar.classList.remove('active');
+//    }
+//}
 
-window.addEventListener('resize', debounce(handleResize, 250));
+//window.addEventListener('resize', debounce(handleResize, 250));

@@ -16,7 +16,7 @@ namespace FitVerse.Data.Models
 
         public int PackageId { get; set; }
         public virtual Package? Package { get; set; }
-        public Guid ClientId { get; set; }
+        public string ClientId { get; set; }
         public virtual Client? Client { get; set; }
     }
 }

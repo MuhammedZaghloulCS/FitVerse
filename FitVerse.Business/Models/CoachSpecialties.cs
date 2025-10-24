@@ -8,7 +8,7 @@ namespace FitVerse.Data.Models
 {
     public class CoachSpecialties
     {
-        public Guid CoachId { get; set; }
+        public string CoachId { get; set; }
         public virtual Coach? Coach { get; set; }
         public int SpecialtyId { get; set; }
         public virtual Specialty? Specialty { get; set; }
