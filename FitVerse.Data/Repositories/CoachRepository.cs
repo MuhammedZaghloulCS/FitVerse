@@ -1,49 +1,39 @@
 ﻿using AutoMapper;
 using FitVerse.Core.Interfaces;
-using FitVerse.Core.UnitOfWork;
+using FitVerse.Core.Models;
 using FitVerse.Core.ViewModels.Client;
-using FitVerse.Core.ViewModels.Coach;
-using FitVerse.Core.ViewModels.Equipment;
 using FitVerse.Data.Models;
-using FitVerse.Data.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FitVerse.Data.Repositories
 {
-    public class CoachRepository : GenericRepository<Data.Models.Coach>, FitVerse.Core.Interfaces.ICoachRepository
+    public class CoachRepository : GenericRepository<Coach>, ICoachRepository
     {
         public DbSet<Coach> Coaches => context.Set<Coach>();
         public DbSet<Client> Clients => context.Set<Client>();
         public DbSet<Exercise> Exercises => context.Set<Exercise>();
         public DbSet<ExercisePlan> ExercisePlans => context.Set<ExercisePlan>();
+        public DbSet<ClientSubscription> ClientSubscriptions => context.Set<ClientSubscription>();
         public DbSet<Payment> Payments => context.Set<Payment>();
 
+        public CoachRepository(Context.FitVerseDbContext context) : base(context) { }
 
-        public CoachRepository(Context.FitVerseDbContext context) : base(context)
+        public Coach GetCoachByIdGuid(string id)
         {
-        }
-        public Coach GetCoachByIdGuid(Guid id) {
-            var coach =Coaches.FirstOrDefault(c => c.Id == id); 
-            if (coach == null)
-                return null;
-            return coach;
-
+            return Coaches.FirstOrDefault(c => c.Id == id);
         }
 
-
-
-        (bool Success, string Message) ICoachRepository.DeleteCoachById(Guid id)
+        (bool Success, string Message) ICoachRepository.DeleteCoachById(string id)
         {
             try
             {
                 var coach = Coaches.FirstOrDefault(c => c.Id == id);
                 if (coach == null)
                     return (false, "Coach not found.");
+
                 Coaches.Remove(coach);
                 context.SaveChanges();
                 return (true, "Coach deleted successfully.");
@@ -52,7 +42,6 @@ namespace FitVerse.Data.Repositories
             {
                 return (false, ex.Message);
             }
-
         }
 
         public int GetActiveClientsCount()
@@ -60,15 +49,12 @@ namespace FitVerse.Data.Repositories
             return Clients.Count(c => c.IsActive);
         }
 
-    
-
         public int GetTotalExercises()
         {
             return Exercises.Count();
         }
 
-
-        public double GetAverageRating(Guid coachId)
+        public double GetAverageRating(string coachId)
         {
             var avg = Coaches
                 .Include(c => c.CoachFeedbacks)
@@ -79,42 +65,28 @@ namespace FitVerse.Data.Repositories
 
             return avg ?? 0.0;
         }
-        public List<ClientDashVM> GetRecentClients(Guid coachId)
+
+        // ✅ تعديل لاستخدام ClientSubscription بدل Payments
+        public List<ClientDashVM> GetRecentClients(string coachId)
         {
-            var clientJoinDates = Payments
-                .Where(p => p.Package.CoachId == coachId)
-                .GroupBy(p => p.ClientId)
-                .Select(g => new
-                {
-                    ClientId = g.Key,
-                    JoinDate = g.Max(p => p.PaymentDate)
-                })
-            .ToList();
-
-            var recentClients = Clients
-                .AsEnumerable()
-                .Join(clientJoinDates,
-                      c => c.Id,
-                      j => j.ClientId,
-                      (c, j) => new
-                      {
-                          Client = c,
-                          JoinDate = j.JoinDate
-                      })
-                .OrderByDescending(x => x.JoinDate)
-                .Select(x => new ClientDashVM
-                {
-
-                    Name = x.Client.Name,
-                    IsActive = x.Client.IsActive,
-                    LastPaymentAgo = GetTimeAgo(x.JoinDate) // 👈 نحسب الوقت هنا
-                })
+            var recentSubs = ClientSubscriptions
+                .Include(cs => cs.Client)
+                .Where(cs => cs.CoachId == coachId)
+                .OrderByDescending(cs => cs.StartDate)
+                .Take(10)
                 .ToList();
-        
-           return recentClients;
+
+            var recentClients = recentSubs.Select(cs => new ClientDashVM
+            {
+                Name = cs.Client.Name,
+                IsActive = cs.Client.IsActive,
+                LastPaymentAgo = GetTimeAgo(cs.StartDate)
+            }).ToList();
+
+            return recentClients;
         }
-        
-           private static string GetTimeAgo(DateTime date)
+
+        private static string GetTimeAgo(DateTime date)
         {
             var diff = DateTime.Now - date;
 
@@ -127,38 +99,36 @@ namespace FitVerse.Data.Repositories
 
             return "Just now";
         }
-        
 
-        public int GetTotalPlans(Guid coachId)
+        public int GetTotalPlans(string coachId)
         {
-            Console.WriteLine("CoachId Received: " + coachId);
-            var count = ExercisePlans.Count(ep => ep.CoachId == coachId);
-            Console.WriteLine("Plans Found: " + count);
-            return count;
+            return ExercisePlans.Count(ep => ep.CoachId==coachId);
         }
-        public List<ClientDashVM> GetAllClientsByCoach(Guid coachId)
+
+        // ✅ تعديل لاستخدام ClientSubscription بدل Client.CoachId
+        public List<ClientDashVM> GetAllClientsByCoach(string coachId)
         {
-            var clientsList = Clients
-             .Where(c => c.CoachId == coachId)
-             .Include(c => c.Payments)
-             //.AsNoTracking()
-             .ToList(); // تنفيذ الاستعلام
+            var clientsList = ClientSubscriptions
+                .Include(cs => cs.Client)
+                .Where(cs => cs.CoachId == coachId)
+                .Select(cs => cs.Client)
+                .Distinct()
+                .ToList();
 
             var clientVMs = clientsList.Select(c => new ClientDashVM
             {
                 Name = c.Name,
-               
                 IsActive = c.IsActive,
-                LastPaymentAgo = c.Payments.Any()
-                    ? GetTimeAgo(c.Payments.Max(p => p.PaymentDate))
-                    : "No payment"
+                LastPaymentAgo = c.ClientSubscriptions
+                    .Where(cs => cs.CoachId == coachId)
+                    .OrderByDescending(cs => cs.StartDate)
+                    .Select(cs => GetTimeAgo(cs.StartDate))
+                    .FirstOrDefault() ?? "No subscription"
             }).ToList();
 
             return clientVMs;
         }
 
-
-
+      
     }
-
 }

@@ -1,11 +1,6 @@
 ﻿using FitVerse.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FitVerse.Data.Configurations
 {
@@ -19,24 +14,11 @@ namespace FitVerse.Data.Configurations
                    .IsRequired()
                    .HasMaxLength(100);
 
-            builder.Property(c => c.Title)
-                   .HasMaxLength(100);
-
             builder.Property(c => c.About)
                    .HasMaxLength(1000);
 
             builder.Property(c => c.ImagePath)
                    .HasMaxLength(255);
-
-            builder.HasMany(c => c.Clients)
-                   .WithOne(c => c.Coach)
-                   .HasForeignKey(c => c.CoachId)
-                   .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasMany(c => c.Packages)
-                   .WithOne(p => p.Coach)
-                   .HasForeignKey(p => p.CoachId)
-                   .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasMany(c => c.CoachSpecialties)
                    .WithOne(cs => cs.Coach)
@@ -48,6 +30,15 @@ namespace FitVerse.Data.Configurations
                    .HasForeignKey(ch => ch.CoachId)
                    .OnDelete(DeleteBehavior.Cascade);
 
+            builder.HasMany(c => c.ClientSubscriptions)
+                   .WithOne(cs => cs.Coach)
+                   .HasForeignKey(cs => cs.CoachId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasMany(c => c.CoachPackages)
+                   .WithOne(cp => cp.Coach)
+                   .HasForeignKey(cp => cp.CoachId)
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

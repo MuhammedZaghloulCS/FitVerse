@@ -3,12 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace FitVerse.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitalCreate : Migration
+    public partial class inital : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -45,6 +43,8 @@ namespace FitVerse.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    joinedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -79,6 +79,23 @@ namespace FitVerse.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Packages",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Price = table.Column<double>(type: "float", nullable: false),
+                    DurationInDays = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Packages", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Specialties",
                 columns: table => new
                 {
@@ -98,6 +115,7 @@ namespace FitVerse.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AnatomyId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -218,24 +236,50 @@ namespace FitVerse.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Clients",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Age = table.Column<int>(type: "int", nullable: false),
+                    Height = table.Column<double>(type: "float", nullable: false),
+                    StartWeight = table.Column<double>(type: "float", nullable: false),
+                    Goal = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Gender = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    JoinDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Clients", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Clients_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Coaches",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ExperienceYears = table.Column<int>(type: "int", nullable: false),
                     About = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     ImagePath = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    UserId1 = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Coaches", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Coaches_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_Coaches_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                 });
@@ -246,8 +290,7 @@ namespace FitVerse.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ReciverId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ReciverId1 = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ReciverId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     RefId = table.Column<int>(type: "int", nullable: false),
@@ -258,10 +301,11 @@ namespace FitVerse.Data.Migrations
                 {
                     table.PrimaryKey("PK_Notifications", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Notifications_AspNetUsers_ReciverId1",
-                        column: x => x.ReciverId1,
+                        name: "FK_Notifications_AspNetUsers_ReciverId",
+                        column: x => x.ReciverId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -272,7 +316,7 @@ namespace FitVerse.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     VideoLink = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     MuscleId = table.Column<int>(type: "int", nullable: false),
                     EquipmentId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -294,10 +338,156 @@ namespace FitVerse.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Payments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Amount = table.Column<double>(type: "float", nullable: false),
+                    PaymentMethod = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PaymentStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PackageId = table.Column<int>(type: "int", nullable: false),
+                    ClientId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Payments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Payments_Clients_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Payments_Packages_PackageId",
+                        column: x => x.PackageId,
+                        principalTable: "Packages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Chats",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClientId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CoachId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Chats", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Chats_Clients_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Chats_Coaches_CoachId",
+                        column: x => x.CoachId,
+                        principalTable: "Coaches",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ClientSubscription",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClientId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PackageId = table.Column<int>(type: "int", nullable: false),
+                    CoachId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PriceAtPurchase = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, defaultValue: "Active")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ClientSubscription", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ClientSubscription_Clients_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ClientSubscription_Coaches_CoachId",
+                        column: x => x.CoachId,
+                        principalTable: "Coaches",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ClientSubscription_Packages_PackageId",
+                        column: x => x.PackageId,
+                        principalTable: "Packages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CoachFeedbacks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FeedbackDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Comments = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    Rate = table.Column<int>(type: "int", nullable: false),
+                    ClientId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CoachId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CoachFeedbacks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CoachFeedbacks_Clients_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CoachFeedbacks_Coaches_CoachId",
+                        column: x => x.CoachId,
+                        principalTable: "Coaches",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CoachPackage",
+                columns: table => new
+                {
+                    CoachId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PackageId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CoachPackage", x => new { x.CoachId, x.PackageId });
+                    table.ForeignKey(
+                        name: "FK_CoachPackage_Coaches_CoachId",
+                        column: x => x.CoachId,
+                        principalTable: "Coaches",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CoachPackage_Packages_PackageId",
+                        column: x => x.PackageId,
+                        principalTable: "Packages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CoachSpecialties",
                 columns: table => new
                 {
-                    CoachId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CoachId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     SpecialtyId = table.Column<int>(type: "int", nullable: false),
                     Certification = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
@@ -319,123 +509,6 @@ namespace FitVerse.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Packages",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Price = table.Column<double>(type: "float", nullable: false),
-                    Sessions = table.Column<int>(type: "int", nullable: false),
-                    CoachId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Packages", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Packages_Coaches_CoachId",
-                        column: x => x.CoachId,
-                        principalTable: "Coaches",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Clients",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Age = table.Column<int>(type: "int", nullable: false),
-                    Height = table.Column<double>(type: "float", nullable: false),
-                    StartWeight = table.Column<double>(type: "float", nullable: false),
-                    Goal = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Gender = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    Image = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId1 = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    CoachId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PackageId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Clients", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Clients_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Clients_Coaches_CoachId",
-                        column: x => x.CoachId,
-                        principalTable: "Coaches",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Clients_Packages_PackageId",
-                        column: x => x.PackageId,
-                        principalTable: "Packages",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Chats",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ClientId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CoachId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Chats", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Chats_Clients_ClientId",
-                        column: x => x.ClientId,
-                        principalTable: "Clients",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Chats_Coaches_CoachId",
-                        column: x => x.CoachId,
-                        principalTable: "Coaches",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CoachFeedbacks",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FeedbackDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Comments = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
-                    Rate = table.Column<int>(type: "int", nullable: false),
-                    ClientId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CoachId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CoachFeedbacks", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CoachFeedbacks_Clients_ClientId",
-                        column: x => x.ClientId,
-                        principalTable: "Clients",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CoachFeedbacks_Coaches_CoachId",
-                        column: x => x.CoachId,
-                        principalTable: "Coaches",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "DietPlans",
                 columns: table => new
                 {
@@ -445,8 +518,8 @@ namespace FitVerse.Data.Migrations
                     ProteinInGrams = table.Column<double>(type: "float", nullable: false),
                     CarbInGrams = table.Column<double>(type: "float", nullable: false),
                     FatsInGrams = table.Column<double>(type: "float", nullable: false),
-                    ClientId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CoachId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    ClientId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CoachId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -475,8 +548,8 @@ namespace FitVerse.Data.Migrations
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DurationInDays = table.Column<int>(type: "int", nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClientId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CoachId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    ClientId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CoachId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -491,36 +564,6 @@ namespace FitVerse.Data.Migrations
                         name: "FK_ExercisePlans_Coaches_CoachId",
                         column: x => x.CoachId,
                         principalTable: "Coaches",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Payments",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Amount = table.Column<double>(type: "float", nullable: false),
-                    PaymentMethod = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PaymentStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PackageId = table.Column<int>(type: "int", nullable: false),
-                    ClientId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Payments", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Payments_Clients_ClientId",
-                        column: x => x.ClientId,
-                        principalTable: "Clients",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Payments_Packages_PackageId",
-                        column: x => x.PackageId,
-                        principalTable: "Packages",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -570,7 +613,8 @@ namespace FitVerse.Data.Migrations
                     NumOfSets = table.Column<int>(type: "int", nullable: false),
                     NumOfRepeats = table.Column<int>(type: "int", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsCompleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -587,81 +631,6 @@ namespace FitVerse.Data.Migrations
                         principalTable: "Exercises",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.InsertData(
-                table: "Anatomies",
-                columns: new[] { "Id", "Name" },
-                values: new object[,]
-                {
-                    { 1, "Upper Body" },
-                    { 2, "Lower Body" },
-                    { 3, "Core" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Coaches",
-                columns: new[] { "Id", "About", "ImagePath", "IsActive", "Name", "Title", "UserId", "UserId1" },
-                values: new object[] { new Guid("11111111-1111-1111-1111-111111111111"), "Experienced trainer specializing in strength and conditioning.", "coach1.jpg", true, "John Smith", "Certified Personal Trainer", new Guid("00000000-0000-0000-0000-000000000000"), null });
-
-            migrationBuilder.InsertData(
-                table: "Equipments",
-                columns: new[] { "Id", "Name" },
-                values: new object[,]
-                {
-                    { 1, "Dumbbell" },
-                    { 2, "Barbell" },
-                    { 3, "Machine" },
-                    { 4, "Bodyweight" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Notifications",
-                columns: new[] { "Id", "Content", "CreatedAt", "IsRead", "ReciverId", "ReciverId1", "RefId", "Type" },
-                values: new object[] { 1, "Welcome to FitVerse!", new DateTime(2025, 10, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), false, new Guid("00000000-0000-0000-0000-000000000000"), null, 0, 0 });
-
-            migrationBuilder.InsertData(
-                table: "Specialties",
-                columns: new[] { "Id", "Name" },
-                values: new object[,]
-                {
-                    { 1, "Strength Training" },
-                    { 2, "Cardio" },
-                    { 3, "Nutrition" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Muscles",
-                columns: new[] { "Id", "AnatomyId", "Name" },
-                values: new object[,]
-                {
-                    { 1, 1, "Biceps" },
-                    { 2, 1, "Triceps" },
-                    { 3, 2, "Quadriceps" },
-                    { 4, 3, "Abs" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Packages",
-                columns: new[] { "Id", "CoachId", "Name", "Price", "Sessions" },
-                values: new object[,]
-                {
-                    { 1, new Guid("11111111-1111-1111-1111-111111111111"), "Basic Package", 100.0, 8 },
-                    { 2, new Guid("11111111-1111-1111-1111-111111111111"), "Premium Package", 250.0, 20 }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Clients",
-                columns: new[] { "Id", "Age", "CoachId", "Gender", "Goal", "Height", "Image", "IsActive", "Name", "PackageId", "StartWeight", "UserId", "UserId1" },
-                values: new object[] { new Guid("22222222-2222-2222-2222-222222222222"), 28, new Guid("11111111-1111-1111-1111-111111111111"), "Male", "Lose 10kg", 180.0, "client1.jpg", true, "Ahmed Ali", 1, 85.0, new Guid("00000000-0000-0000-0000-000000000000"), null });
-
-            migrationBuilder.InsertData(
-                table: "Exercises",
-                columns: new[] { "Id", "Description", "EquipmentId", "MuscleId", "Name", "VideoLink" },
-                values: new object[,]
-                {
-                    { 1, "Perform curls using dumbbells to target biceps.", 1, 1, "Bicep Curl", null },
-                    { 2, "Cable exercise for triceps.", 3, 2, "Triceps Pushdown", null }
                 });
 
             migrationBuilder.CreateIndex(
@@ -714,24 +683,29 @@ namespace FitVerse.Data.Migrations
                 column: "CoachId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Clients_CoachId",
+                name: "IX_Clients_UserId",
                 table: "Clients",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ClientSubscription_ClientId",
+                table: "ClientSubscription",
+                column: "ClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ClientSubscription_CoachId",
+                table: "ClientSubscription",
                 column: "CoachId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Clients_PackageId",
-                table: "Clients",
+                name: "IX_ClientSubscription_PackageId",
+                table: "ClientSubscription",
                 column: "PackageId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Clients_UserId1",
-                table: "Clients",
-                column: "UserId1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Coaches_UserId1",
+                name: "IX_Coaches_UserId",
                 table: "Coaches",
-                column: "UserId1");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CoachFeedbacks_ClientId",
@@ -743,6 +717,11 @@ namespace FitVerse.Data.Migrations
                 name: "IX_CoachFeedbacks_CoachId",
                 table: "CoachFeedbacks",
                 column: "CoachId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CoachPackage_PackageId",
+                table: "CoachPackage",
+                column: "PackageId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CoachSpecialties_SpecialtyId",
@@ -805,14 +784,9 @@ namespace FitVerse.Data.Migrations
                 column: "AnatomyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Notifications_ReciverId1",
+                name: "IX_Notifications_ReciverId",
                 table: "Notifications",
-                column: "ReciverId1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Packages_CoachId",
-                table: "Packages",
-                column: "CoachId");
+                column: "ReciverId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Payments_ClientId",
@@ -844,7 +818,13 @@ namespace FitVerse.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "ClientSubscription");
+
+            migrationBuilder.DropTable(
                 name: "CoachFeedbacks");
+
+            migrationBuilder.DropTable(
+                name: "CoachPackage");
 
             migrationBuilder.DropTable(
                 name: "CoachSpecialties");
@@ -880,6 +860,9 @@ namespace FitVerse.Data.Migrations
                 name: "Chats");
 
             migrationBuilder.DropTable(
+                name: "Packages");
+
+            migrationBuilder.DropTable(
                 name: "Equipments");
 
             migrationBuilder.DropTable(
@@ -889,13 +872,10 @@ namespace FitVerse.Data.Migrations
                 name: "Clients");
 
             migrationBuilder.DropTable(
-                name: "Anatomies");
-
-            migrationBuilder.DropTable(
-                name: "Packages");
-
-            migrationBuilder.DropTable(
                 name: "Coaches");
+
+            migrationBuilder.DropTable(
+                name: "Anatomies");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

@@ -1,5 +1,7 @@
 ﻿using FitVerse.Core.Interfaces;
 using FitVerse.Core.IService;
+using FitVerse.Core.Models;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +13,12 @@ namespace FitVerse.Core.IUnitOfWorkServices
     public interface IUnitOFWorkService
     {
         // 🧩 Services
+        IClientService ClientService { get; }
         ICoachService CoachService { get; }
         IImageHandleService ImageHandleService { get; }
         IAnatomyService AnatomyService { get; }
+        IUsers UsersService { get; }
+
 
         // 🧩 Repositories (اختياري، لو محتاج توصل ليها مباشرة)
         IEquipmentRepository EquipmentRepository { get; }
@@ -21,6 +26,8 @@ namespace FitVerse.Core.IUnitOfWorkServices
         IMuscleRepository MuscleRepository { get; }
         ICoachRepository CoachRepository { get; }
         IClientRepository ClientRepository { get; }
-        IClientService ClientServices { get; }
+        //Identity
+        UserManager<ApplicationUser> UserManager { get; }
+
     }
 }

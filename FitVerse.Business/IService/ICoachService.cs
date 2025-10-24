@@ -15,11 +15,11 @@ namespace FitVerse.Core.IService
     {
         (bool Success, string Message) AddCoach(AddCoachVM model); //برتجع تابل tuble    }
         List<AddCoachVM> GetAllCoaches();
-        public AddCoachVM GetCoachByIdGuid(Guid id);
-        (bool Success, string Message) DeleteCoachById(Guid id);
+        public AddCoachVM GetCoachByIdGuid(string id);
+        (bool Success, string Message) DeleteCoachById(string id);
         (bool Success, string Message) UpdateCoach(AddCoachVM model);
         public (List<AddCoachVM> Data, int TotalItems) GetPagedEquipments(int page, int pageSize, string? search);
-        CoachDashboardViewModel GetDashboardData(Guid coachId);
+        CoachDashboardViewModel GetDashboardData(string coachId);
         
        
 

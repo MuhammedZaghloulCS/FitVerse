@@ -34,8 +34,7 @@ namespace FitVerse.Data.Service
                     string? imagePath = imageService.SaveImage(model.CoachImageFile);
 
                     var coach = mapper.Map<Coach>(model);
-                    coach.Id = Guid.NewGuid();
-                    coach.UserId = Guid.Parse("6A29B02B-7643-48C3-9B47-6ECF12F4B9F9");
+                    coach.UserId ="6A29B02B-7643-48C3-9B47-6ECF12F4B9F9";
                     coach.ImagePath = imagePath ?? "/Images/default.jpg";
 
                     unitOfWork.Coaches.Add(coach);
@@ -55,7 +54,7 @@ namespace FitVerse.Data.Service
                 return mapper.Map<List<AddCoachVM>>(coaches);
             }
 
-            public AddCoachVM GetCoachByIdGuid(Guid id)
+            public AddCoachVM GetCoachByIdGuid(string id)
             {
                 var coach = unitOfWork.Coaches.GetCoachByIdGuid(id);
                 return mapper.Map<AddCoachVM>(coach);
@@ -63,7 +62,7 @@ namespace FitVerse.Data.Service
 
 
 
-            (bool Success, string Message) ICoachService.DeleteCoachById(Guid id)
+            (bool Success, string Message) ICoachService.DeleteCoachById(string id)
             {
                 var coaches = unitOfWork.Coaches.DeleteCoachById(id);
 
@@ -87,7 +86,7 @@ namespace FitVerse.Data.Service
                         }
                     }
                     existingCoach.Name = model.Name;
-                    existingCoach.Title = model.Title;
+                    existingCoach.ExperienceYears = model.ExperienceYears;
                     existingCoach.About = model.About;
                     existingCoach.IsActive = model.IsActive;
 
@@ -122,7 +121,7 @@ public (List<AddCoachVM> Data, int TotalItems) GetPagedEquipments(int page, int 
             return (data, totalItems);
         }
 
-            public CoachDashboardViewModel GetDashboardData(Guid coachId)
+            public CoachDashboardViewModel GetDashboardData(string coachId)
             {
                 var dashboard = new CoachDashboardViewModel
                 {

@@ -10,10 +10,10 @@ namespace FitVerse.Data.Models
     {
         public int Id { get; set; }
 
-        public Guid ClientId { get; set; }
+        public string ClientId { get; set; }
         public virtual Client? Client { get; set; }
 
-        public Guid CoachId { get; set; }
+        public string CoachId { get; set; }
         public virtual Coach? Coach { get; set; }
 
         public virtual ICollection<Message>? Messages { get; set; }= new HashSet<Message>();

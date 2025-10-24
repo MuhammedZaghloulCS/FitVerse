@@ -28,15 +28,10 @@ namespace FitVerse.Data.Configurations
             builder.Property(c => c.Image)
                    .HasMaxLength(255);
 
-            builder.HasOne(c => c.Coach)
-                   .WithMany(c => c.Clients)
-                   .HasForeignKey(c => c.CoachId)
-                   .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasOne(c => c.Package)
-                   .WithMany(c=>c.Clients)
-                   .HasForeignKey(c => c.PackageId)
-                   .OnDelete(DeleteBehavior.Restrict);
+            builder.HasMany(c => c.ClientSubscriptions)
+                        .WithOne(s => s.Client)
+                        .HasForeignKey(s => s.ClientId)
+                        .OnDelete(DeleteBehavior.Cascade);
 
 
             builder.HasMany(c => c.ExercisePlans)
