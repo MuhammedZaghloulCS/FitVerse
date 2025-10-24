@@ -38,8 +38,7 @@ namespace FitVerse.Service.Service
                 }
 
                 var client = mapper.Map<Client>(model);
-                client.Id = Guid.NewGuid();
-                client.UserId = Guid.Parse("6A29B02B-7643-48C3-9B47-6ECF12F4B9F9");
+                client.UserId = "6A29B02B-7643-48C3-9B47-6ECF12F4B9F9";
                 client.Image = imagePath ?? "/Images/default.jpg";
 
                 unitOfWork.Clients.Add(client);

@@ -13,7 +13,7 @@ namespace FitVerse.Data.Models
     {
         public int Id { get; set; }
 
-        public Guid ReciverId { get; set; }
+        public string ReciverId { get; set; }
 
         public virtual ApplicationUser? Reciver { get; set; }
         public string Content { get; set; }

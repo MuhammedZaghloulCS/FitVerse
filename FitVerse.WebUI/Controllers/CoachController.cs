@@ -32,7 +32,7 @@ namespace FitVerse.Web.Controllers
 
 
         public IActionResult Dashboard() {
-            Guid coachId = Guid.Parse("11111111-1111-1111-1111-111111111111");// Coach logged in ID
+            string coachId ="11111111-1111-1111-1111-111111111111";
             var model = unitOFWorkService.CoachService.GetDashboardData(coachId);
             return View(model);
         }
@@ -65,10 +65,9 @@ namespace FitVerse.Web.Controllers
         [HttpGet]
         public IActionResult GetCoachById(string Id)
         {
-            if (!Guid.TryParse(Id, out Guid guidId))
-                return Json(new { success = false, message = "Invalid GUID format." });
+    
 
-            var coach = unitOFWorkService.CoachService.GetCoachByIdGuid(guidId);
+            var coach = unitOFWorkService.CoachService.GetCoachByIdGuid(Id);
       
            
             if (coach == null)
@@ -81,9 +80,8 @@ namespace FitVerse.Web.Controllers
         [HttpDelete]
         public IActionResult DeleteCoach(string Id)
         {
-            if (!Guid.TryParse(Id, out Guid guidId))
-                return Json(new { success = false, message = "Invalid GUID format." });
-            var coach = unitOFWorkService.CoachService.DeleteCoachById(guidId);
+
+            var coach = unitOFWorkService.CoachService.DeleteCoachById(Id);
             if (coach.Success)
                 return Json(new { success = true, message = coach.Message });
             else
@@ -118,7 +116,7 @@ namespace FitVerse.Web.Controllers
         public IActionResult GetAllClients()
         {
             //var coachId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            Guid coachId = Guid.Parse("11111111-1111-1111-1111-111111111111");// Coach logged in ID
+            string coachId = "11111111-1111-1111-1111-111111111111";// Coach logged in ID
 
             var clients = unitOFWorkService.CoachRepository.GetAllClientsByCoach(coachId);
 

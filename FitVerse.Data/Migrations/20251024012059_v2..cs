@@ -5,14 +5,21 @@
 namespace FitVerse.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class adduserstatustoappuser : Migration
+    public partial class v2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "Status",
-                table: "AspNetUsers",
+                name: "Image",
+                table: "Equipments",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
+
+            migrationBuilder.AddColumn<string>(
+                name: "Image",
+                table: "Anatomies",
                 type: "nvarchar(max)",
                 nullable: false,
                 defaultValue: "");
@@ -22,8 +29,12 @@ namespace FitVerse.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Status",
-                table: "AspNetUsers");
+                name: "Image",
+                table: "Equipments");
+
+            migrationBuilder.DropColumn(
+                name: "Image",
+                table: "Anatomies");
         }
     }
 }
