@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace FitVerse.Core.ViewModels.Anatomy
 {
-    public class AddAnatomyVM
+    public class AnatomyDashboardVM
     {
-        public string Name { get; set; }
 
-        
+        public int AnatomyCount { get; set; }
+        public int MuscleCount { get; set; }
+        public int ExerciseCount { get; set; }
+
     }
 }

@@ -21,6 +21,7 @@ namespace FitVerse.Data.UnitOfWork
         private ICoachService coachService;
         private IImageHandleService imageHandleService;
         private IClientService clientService;
+        private IAnatomyService anatomyService;
         // Lazy-loaded repositories
         private IEquipmentRepository equipmentRepository;
         private IAnatomyRepository anatomyRepository;
@@ -37,7 +38,7 @@ namespace FitVerse.Data.UnitOfWork
         // Services
         public IImageHandleService ImageHandleService => imageHandleService ??= new ImageHandleService();
         public ICoachService CoachService => coachService ??= new CoachService(unitOfWork, mapper, ImageHandleService);
-
+        public IAnatomyService AnatomyService => anatomyService ??= new AnatomyService(unitOfWork, mapper);
         // Repositories
         public IEquipmentRepository EquipmentRepository => equipmentRepository ??= new EquipmentRepository(context);
         public IAnatomyRepository AnatomyRepository => anatomyRepository ??= new AnatomyRepository(context);

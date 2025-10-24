@@ -36,6 +36,12 @@
                             <span>Coaches</span>
                         </a>
                     </li>
+                    <li class="@(activeRoute == "Coach" ? "active" : "")">
+                        <a asp-action="Dashboard" asp-controller="Coach">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard Coach</span>
+                        </a>
+                    </li>
 
                     <li class="@(activeRoute == "Specialty" ? "active" : "")">
                         <a asp-action="index" asp-controller="Specialty">

@@ -1,123 +1,118 @@
 ﻿using AutoMapper;
+using FitVerse.Core.IService;
 using FitVerse.Core.IUnitOfWorkServices;
 using FitVerse.Core.UnitOfWork;
 using FitVerse.Core.ViewModels.Anatomy;
 using FitVerse.Data.Models;
+using FitVerse.Service.Service;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FitVerse.Web.Controllers
 {
     public class AnatomyController : Controller
     {
-        private readonly IUnitOfWork unitOfWork;
-        private readonly IUnitOFWorkService Service;
+        private readonly IUnitOFWorkService unitOFWorkService;
         private readonly IMapper mapper;
 
 
-        public AnatomyController(IUnitOfWork unitOfWork, IMapper mapper, IUnitOFWorkService service)
+
+        public AnatomyController(IUnitOFWorkService unitOFWorkService, IMapper mapper)
         {
-            this.unitOfWork = unitOfWork;
+            this.unitOFWorkService = unitOFWorkService;
             this.mapper = mapper;
-            Service = service;
+            
         }
         public IActionResult Index()
         {
-            return View();
+            var model = new AnatomyDashboardVM
+            {
+                AnatomyCount = unitOFWorkService.AnatomyService.GetAllCount(),
+                MuscleCount = unitOFWorkService.AnatomyService.GetMuscleCount(),
+                ExerciseCount = unitOFWorkService.AnatomyService.GetExerciseCount()
+            };
+
+            return View(model);
+           
         }
 
         public IActionResult GetAll()
         {
-            if (unitOfWork == null)
-                throw new Exception("unitOfWork is NULL!");
 
-            if (unitOfWork.Anatomies == null)
-                throw new Exception("unitOfWork.Anatomies is NULL!");
-
-            if (mapper == null)
-                throw new Exception("mapper is NULL!");
-
-            var allObj = unitOfWork.Anatomies.GetAll();
-            var data = mapper.Map<IEnumerable<AnatomyVM>>(allObj);
-            return Json(new { data });
+            var allObj = unitOFWorkService.AnatomyService.GetAll();
+            return Json(new { data = allObj });
         }
 
 
         public IActionResult GetById(int id)
         {
-            var anatomy = unitOfWork.Anatomies.GetById(id);
+            var anatomy = unitOFWorkService.AnatomyService.GetById(id);
             if (anatomy == null)
             {
                 return Json(new { success = false, message = "Somthing wrong!" });
             }
-            var model = mapper.Map<AnatomyVM>(anatomy);
-            return Json(new { success = true, data = model });
+   
+            return Json(new { success = true, data = anatomy });
 
         }
         public IActionResult Create(AddAnatomyVM model)
         {
-            var anatomy = mapper.Map<Anatomy>(model);
-            unitOfWork.Anatomies.Add(anatomy);
-            if (unitOfWork.Complete() > 0)
+            var anatomy = unitOFWorkService.AnatomyService.Create(model);
+            return Json(new
             {
-                return Json(new { success = true, message = "Anatomy created successfully" });
-            }
-            return Json(new { success = false, message = "Somthing wrong!" });
+                success = anatomy,
+                message = anatomy ? "Anatomy created successfully" : "Something went wrong!"
+            });
         }
         public IActionResult Delete(int id)
         {
-            var anatomy = unitOfWork.Anatomies.GetById(id);
-            if (anatomy == null)
+            var anatomy = unitOFWorkService.AnatomyService.Delete(id);
+
+            return Json(new
             {
-                return Json(new { success = false, message = "Not Found!" });
-            }
-            unitOfWork.Anatomies.Delete(anatomy);
-            if (unitOfWork.Complete() > 0)
-            {
-                return Json(new { success = true, message = "Anatomy deleted successfully" });
-            }
-            return Json(new { success = false, message = "Somthing wrong!" });
+                success = anatomy,
+                message = anatomy ? "Anatomy Deleted successfully" : "Something went wrong!"
+            });
         }
         public IActionResult Update(AnatomyVM model)
         {
-            var anatomy = unitOfWork.Anatomies.GetById(model.Id);
-            if (anatomy == null)
+            bool result = unitOFWorkService.AnatomyService.Update(model);
+            return Json(new
             {
-                return Json(new { success = false, message = "Not Found!" });
-            }
-            anatomy.Name = model.Name;
-            unitOfWork.Anatomies.Update(anatomy);
-            if (unitOfWork.Complete() > 0)
-            {
-                return Json(new { success = true, message = "Anatomy updated successfully" });
-            }
-            return Json(new { success = false, message = "Somthing wrong!" });
+                success = result,
+                message = result ? "Anatomy updated successfully" : "Something went wrong!"
+            });
         }
 
         public IActionResult GetPaged(int page = 1, int pageSize = 5, string? search = null)
         {
-            var query = unitOfWork.Anatomies.GetAll().AsQueryable();
-            if (!string.IsNullOrEmpty(search))
-            {
-
-                string lowerSearch = search.ToLower();
-                query = query.Where(a => a.Name.ToLower().Contains(lowerSearch));
-            }
-
-            var totalItems = query.Count();
-            var data = query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
-
-            var mappedData = mapper.Map<IEnumerable<AnatomyVM>>(data);
-
+            var result = unitOFWorkService.AnatomyService.GetPaged(page, pageSize, search);
             return Json(new
             {
-                data = mappedData,
-                currentPage = page,
-                totalPages = (int)Math.Ceiling((double)totalItems / pageSize)
+                data = result.Data,
+                currentPage = result.CurrentPage,
+                totalPages = result.TotalPages
             });
         }
+        public IActionResult GetMuscleCountByAnatomy(int anatomyId)
+        {
+            var count = unitOFWorkService.AnatomyService.GetCountByAnatomy(anatomyId);
+            return Json(new { count });
+
+        }
+        public IActionResult GetMusclesByAnatomyId(int anatomyId)
+        {
+            var muscles = unitOFWorkService.AnatomyService.GetMusclesByAnatomyId(anatomyId);
+
+            var data = muscles.Select(m => new
+            {
+                m.Id,
+                m.Name,
+            }).ToList();
+
+            return Json(new { data });
+        }
+
+
 
 
     }

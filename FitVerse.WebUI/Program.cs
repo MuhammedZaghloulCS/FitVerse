@@ -52,11 +52,11 @@ namespace FitVerse.WebUI
 
 
 
-            builder.Services.AddControllers()//make json case sensitive
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions.PropertyNamingPolicy = null;
-                });
+            builder.Services.AddControllers();//make json case sensitive
+                //.AddJsonOptions(options =>
+                //{
+                //    options.JsonSerializerOptions.PropertyNamingPolicy = null;
+                //});
 
 
             // Add services to the container.
