@@ -6,8 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FitVerse.Data.Models
 {
-    [BuilderFor(typeof(Coach))]
-    public partial class CoachBuilder { }
+
 
     public class Coach
     {
