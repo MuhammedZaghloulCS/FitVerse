@@ -111,6 +111,15 @@ namespace FitVerse.Data.UnitOfWork
             }
 
         }
+        public ICoachSpecialtiesRepository CoachSpecialties
+        {
+            get
+            {
+                if (coachSpecialties == null)
+                    coachSpecialties = new CoachSpecialtiesRepository(_context);
+                return coachSpecialties;
+            }
+        }
 
         public ICoachFeedbackRepository CoachFeedbacks
         {

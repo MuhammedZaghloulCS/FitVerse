@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitVerse.Data.Migrations
 {
     [DbContext(typeof(FitVerseDbContext))]
-    [Migration("20251024021405_ClientAndCoachBeString")]
-    partial class ClientAndCoachBeString
+    [Migration("20251024222150_seedSpecialtydata")]
+    partial class seedSpecialtydata
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -157,6 +157,8 @@ namespace FitVerse.Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("UserName");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -634,9 +636,6 @@ namespace FitVerse.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("DurationInDays")
-                        .HasColumnType("int");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -646,6 +645,9 @@ namespace FitVerse.Data.Migrations
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
+
+                    b.Property<int>("Sessions")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -698,6 +700,16 @@ namespace FitVerse.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Icon")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -705,6 +717,72 @@ namespace FitVerse.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Specialties");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Color = "#007bff",
+                            Description = "Building muscle and power",
+                            Icon = "fa-solid fa-dumbbell",
+                            Name = "Strength Training"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Color = "#dc3545",
+                            Description = "Cardiovascular fitness",
+                            Icon = "fa-solid fa-heartbeat",
+                            Name = "Cardio & HIIT"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Color = "#20c997",
+                            Description = "Mobility and stretching",
+                            Icon = "fa-solid fa-person-praying",
+                            Name = "Flexibility & Yoga"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Color = "#fd7e14",
+                            Description = "High-intensity functional training",
+                            Icon = "fa-solid fa-bolt",
+                            Name = "CrossFit"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Color = "#6610f2",
+                            Description = "Combat sports training",
+                            Icon = "fa-solid fa-hand-fist",
+                            Name = "Boxing & MMA"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Color = "#ffc107",
+                            Description = "Muscle hypertrophy focus",
+                            Icon = "fa-solid fa-trophy",
+                            Name = "Bodybuilding"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Color = "#198754",
+                            Description = "Distance and stamina",
+                            Icon = "fa-solid fa-person-running",
+                            Name = "Running & Endurance"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Color = "#0dcaf0",
+                            Description = "Fat loss and nutrition",
+                            Icon = "fa-solid fa-scale-balanced",
+                            Name = "Weight Loss"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

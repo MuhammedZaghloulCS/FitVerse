@@ -73,7 +73,8 @@ namespace FitVerse.WebUI
             builder.Services.AddScoped<ICoachRepository, CoachRepository>();
             builder.Services.AddScoped<IUnitOFWorkService, UnitOfWorkService>();
             builder.Services.AddScoped<IMuscleService, MuscleService>();
-
+            builder.Services.AddScoped<ISpecialtiesRepository, SpecialityRepository>();
+            builder.Services.AddScoped<ISpecialtyService, SpecialtyService>();
 
 
 

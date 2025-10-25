@@ -10,5 +10,12 @@ namespace FitVerse.Core.ViewModels.Specialist
     {
         public int Id { get; set; }
         public string Name { get; set; }
+
+        public string? Description { get; set; }   
+        public string? Icon { get; set; }          
+        public int CoachesCount { get; set; }
+        public string Color { get; set; } = "#007bff";
+
+        public int? TotalSpecialties { get; set; }
     }
 }

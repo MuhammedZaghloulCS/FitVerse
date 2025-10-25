@@ -67,5 +67,8 @@ namespace FitVerse.Data.UnitOfWork
         public ICoachRepository CoachRepository => coachRepository ??= new CoachRepository(context);
         public IClientRepository ClientRepository => clientRepository ??= new ClientRepository(context);
 
+        public ISpecialtiesRepository SpecialtiesRepository => throw new NotImplementedException();
+
+        public ICoachSpecialtiesRepository CoachSpecialtiesRepository => throw new NotImplementedException();
     }
 }

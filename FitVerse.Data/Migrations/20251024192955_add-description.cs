@@ -5,36 +5,34 @@
 namespace FitVerse.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class v2 : Migration
+    public partial class adddescription : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "Image",
-                table: "Equipments",
+                name: "Description",
+                table: "Specialties",
                 type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "");
+                nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "Image",
-                table: "Anatomies",
+                name: "Icon",
+                table: "Specialties",
                 type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "");
+                nullable: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Image",
-                table: "Equipments");
+                name: "Description",
+                table: "Specialties");
 
             migrationBuilder.DropColumn(
-                name: "Image",
-                table: "Anatomies");
+                name: "Icon",
+                table: "Specialties");
         }
     }
 }

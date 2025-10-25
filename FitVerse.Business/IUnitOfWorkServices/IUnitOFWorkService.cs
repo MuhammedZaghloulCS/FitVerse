@@ -28,6 +28,10 @@ namespace FitVerse.Core.IUnitOfWorkServices
         ICoachRepository CoachRepository { get; }
         IClientRepository ClientRepository { get; }
 
+        ISpecialtiesRepository SpecialtiesRepository { get; }
+
+        ICoachSpecialtiesRepository CoachSpecialtiesRepository { get; }
+   
         //Identity
         UserManager<ApplicationUser> UserManager { get; }
 

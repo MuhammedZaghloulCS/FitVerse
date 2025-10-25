@@ -22,10 +22,7 @@ namespace FitVerse.Service.Service
 
         public (bool Success, string Message) AddMuscle(AddMuscleVM model)
         {
-            var anatomy = _unitOfWork.Anatomies.GetById(model.AnatomyId);
-            if (anatomy == null)
-                return (false, "Anatomy group not found!");
-
+           
             _unitOfWork.Muscles.Add(new Muscle
             {
                 Name = model.Name,
