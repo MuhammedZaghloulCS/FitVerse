@@ -34,6 +34,8 @@ namespace FitVerse.WebUI
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
+                options.User.RequireUniqueEmail = true;
+
                 // Default Password settings.
                 options.Password.RequireDigit = false;
                 options.Password.RequireLowercase = false;
@@ -51,7 +53,8 @@ namespace FitVerse.WebUI
                   options.LoginPath = new PathString("/Account/Login");
                   options.AccessDeniedPath = new PathString("/Account/AccessDenied");
               });
-
+            //Allow UserName Duplication
+            builder.Services.AddScoped<IUserValidator<ApplicationUser>, AllowDuplicateUsernameValidator<ApplicationUser>>();
 
 
             builder.Services.AddControllers()//make json case sensitive
@@ -70,7 +73,8 @@ namespace FitVerse.WebUI
             builder.Services.AddScoped<ICoachRepository, CoachRepository>();
             builder.Services.AddScoped<IUnitOFWorkService, UnitOfWorkService>();
             builder.Services.AddScoped<IMuscleService, MuscleService>();
-
+            builder.Services.AddScoped<ISpecialtiesRepository, SpecialityRepository>();
+            builder.Services.AddScoped<ISpecialtyService, SpecialtyService>();
 
 
 

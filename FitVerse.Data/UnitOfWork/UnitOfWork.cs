@@ -18,6 +18,7 @@ namespace FitVerse.Data.UnitOfWork
         CoachRepository coaches;
         ClientRepository clients;
         SpecialityRepository specialties;
+        CoachSpecialtiesRepository coachSpecialties;
 
         public UnitOfWork(FitVerseDbContext context)
         {
@@ -99,9 +100,15 @@ namespace FitVerse.Data.UnitOfWork
                 return specialties;
             }
         }
-
-
-
+        public ICoachSpecialtiesRepository CoachSpecialties
+        {
+            get
+            {
+                if (coachSpecialties == null)
+                    coachSpecialties = new CoachSpecialtiesRepository(_context);
+                return coachSpecialties;
+            }
+        }
 
 
         public int Complete() => _context.SaveChanges();

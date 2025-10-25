@@ -10,7 +10,7 @@ namespace FitVerse.Data.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-
+        public string Image { get; set; } = null!;
         public virtual ICollection<Muscle>? Muscles { get; set; } = new HashSet<Muscle>();
     }
 }

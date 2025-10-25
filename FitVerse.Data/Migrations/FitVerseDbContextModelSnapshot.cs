@@ -25,6 +25,67 @@ namespace FitVerse.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("ClientSubscription", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClientId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CoachId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PackageId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("PriceAtPurchase")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Active");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("CoachId");
+
+                    b.HasIndex("PackageId");
+
+                    b.ToTable("ClientSubscription");
+                });
+
+            modelBuilder.Entity("CoachPackage", b =>
+                {
+                    b.Property<string>("CoachId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("PackageId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CoachId", "PackageId");
+
+                    b.HasIndex("PackageId");
+
+                    b.ToTable("CoachPackage");
+                });
+
             modelBuilder.Entity("FitVerse.Core.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -94,6 +155,8 @@ namespace FitVerse.Data.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
+                    b.HasIndex("UserName");
+
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
@@ -105,6 +168,10 @@ namespace FitVerse.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -112,23 +179,6 @@ namespace FitVerse.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Anatomies");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Upper Body"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Lower Body"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Core"
-                        });
                 });
 
             modelBuilder.Entity("FitVerse.Data.Models.Chat", b =>
@@ -139,11 +189,13 @@ namespace FitVerse.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<Guid>("ClientId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("ClientId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid>("CoachId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("CoachId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -156,15 +208,11 @@ namespace FitVerse.Data.Migrations
 
             modelBuilder.Entity("FitVerse.Data.Models.Client", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Age")
                         .HasColumnType("int");
-
-                    b.Property<Guid>("CoachId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Gender")
                         .IsRequired()
@@ -187,61 +235,40 @@ namespace FitVerse.Data.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime>("JoinDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int?>("PackageId")
-                        .HasColumnType("int");
-
                     b.Property<double>("StartWeight")
                         .HasColumnType("float");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("UserId1")
+                    b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CoachId");
-
-                    b.HasIndex("PackageId");
-
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Clients");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("22222222-2222-2222-2222-222222222222"),
-                            Age = 28,
-                            CoachId = new Guid("11111111-1111-1111-1111-111111111111"),
-                            Gender = "Male",
-                            Goal = "Lose 10kg",
-                            Height = 180.0,
-                            Image = "client1.jpg",
-                            IsActive = true,
-                            Name = "Ahmed Ali",
-                            PackageId = 1,
-                            StartWeight = 85.0,
-                            UserId = new Guid("00000000-0000-0000-0000-000000000000")
-                        });
                 });
 
             modelBuilder.Entity("FitVerse.Data.Models.Coach", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("About")
                         .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("ExperienceYears")
+                        .HasColumnType("int");
 
                     b.Property<string>("ImagePath")
                         .HasMaxLength(255)
@@ -255,33 +282,87 @@ namespace FitVerse.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("UserId1")
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Coaches");
 
                     b.HasData(
                         new
                         {
-                            Id = new Guid("11111111-1111-1111-1111-111111111111"),
-                            About = "Experienced trainer specializing in strength and conditioning.",
-                            ImagePath = "coach1.jpg",
+                            Id = "C1",
+                            About = "Expert in Strength and Conditioning",
+                            ExperienceYears = 8,
+                            ImagePath = "/images/coaches/john.jpg",
                             IsActive = true,
-                            Name = "John Smith",
-                            Title = "Certified Personal Trainer",
-                            UserId = new Guid("00000000-0000-0000-0000-000000000000")
+                            Name = "John Smith"
+                        },
+                        new
+                        {
+                            Id = "C2",
+                            About = "Cardio and endurance specialist with personalized HIIT plans.",
+                            ExperienceYears = 6,
+                            ImagePath = "/images/coaches/sarah.jpg",
+                            IsActive = true,
+                            Name = "Sarah Johnson"
+                        },
+                        new
+                        {
+                            Id = "C3",
+                            About = "Yoga and mobility instructor focused on flexibility and wellness.",
+                            ExperienceYears = 7,
+                            ImagePath = "/images/coaches/michael.jpg",
+                            IsActive = true,
+                            Name = "Michael Lee"
+                        },
+                        new
+                        {
+                            Id = "C4",
+                            About = "CrossFit certified coach delivering high-intensity programs.",
+                            ExperienceYears = 5,
+                            ImagePath = "/images/coaches/chris.jpg",
+                            IsActive = true,
+                            Name = "Chris Evans"
+                        },
+                        new
+                        {
+                            Id = "C5",
+                            About = "Boxing and MMA trainer with focus on endurance and strength.",
+                            ExperienceYears = 4,
+                            ImagePath = "/images/coaches/amanda.jpg",
+                            IsActive = true,
+                            Name = "Amanda Davis"
+                        },
+                        new
+                        {
+                            Id = "C6",
+                            About = "Professional bodybuilder and muscle growth expert.",
+                            ExperienceYears = 10,
+                            ImagePath = "/images/coaches/robert.jpg",
+                            IsActive = true,
+                            Name = "Robert Wilson"
+                        },
+                        new
+                        {
+                            Id = "C7",
+                            About = "Running and endurance coach with marathon training expertise.",
+                            ExperienceYears = 5,
+                            ImagePath = "/images/coaches/emily.jpg",
+                            IsActive = true,
+                            Name = "Emily Clark"
+                        },
+                        new
+                        {
+                            Id = "C8",
+                            About = "Nutrition and weight loss expert with balanced diet programs.",
+                            ExperienceYears = 6,
+                            ImagePath = "/images/coaches/david.jpg",
+                            IsActive = true,
+                            Name = "David Harris"
                         });
                 });
 
@@ -293,11 +374,13 @@ namespace FitVerse.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<Guid>("ClientId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("ClientId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid>("CoachId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("CoachId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Comments")
                         .IsRequired()
@@ -322,8 +405,8 @@ namespace FitVerse.Data.Migrations
 
             modelBuilder.Entity("FitVerse.Data.Models.CoachSpecialties", b =>
                 {
-                    b.Property<Guid>("CoachId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("CoachId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("SpecialtyId")
                         .HasColumnType("int");
@@ -337,6 +420,56 @@ namespace FitVerse.Data.Migrations
                     b.HasIndex("SpecialtyId");
 
                     b.ToTable("CoachSpecialties");
+
+                    b.HasData(
+                        new
+                        {
+                            CoachId = "C1",
+                            SpecialtyId = 1,
+                            Certification = ""
+                        },
+                        new
+                        {
+                            CoachId = "C2",
+                            SpecialtyId = 2,
+                            Certification = ""
+                        },
+                        new
+                        {
+                            CoachId = "C3",
+                            SpecialtyId = 3,
+                            Certification = ""
+                        },
+                        new
+                        {
+                            CoachId = "C4",
+                            SpecialtyId = 4,
+                            Certification = ""
+                        },
+                        new
+                        {
+                            CoachId = "C5",
+                            SpecialtyId = 5,
+                            Certification = ""
+                        },
+                        new
+                        {
+                            CoachId = "C6",
+                            SpecialtyId = 6,
+                            Certification = ""
+                        },
+                        new
+                        {
+                            CoachId = "C7",
+                            SpecialtyId = 7,
+                            Certification = ""
+                        },
+                        new
+                        {
+                            CoachId = "C8",
+                            SpecialtyId = 8,
+                            Certification = ""
+                        });
                 });
 
             modelBuilder.Entity("FitVerse.Data.Models.DietPlan", b =>
@@ -347,17 +480,26 @@ namespace FitVerse.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<double>("ActivityMultiplier")
+                        .HasColumnType("float");
+
                     b.Property<double>("CarbInGrams")
                         .HasColumnType("float");
 
-                    b.Property<Guid>("ClientId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("ClientId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid>("CoachId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("CoachId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<double>("FatsInGrams")
                         .HasColumnType("float");
+
+                    b.Property<string>("Goal")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("ProteinInGrams")
                         .HasColumnType("float");
@@ -382,6 +524,10 @@ namespace FitVerse.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -389,28 +535,6 @@ namespace FitVerse.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Equipments");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Dumbbell"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Barbell"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Machine"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Bodyweight"
-                        });
                 });
 
             modelBuilder.Entity("FitVerse.Data.Models.Exercise", b =>
@@ -444,24 +568,6 @@ namespace FitVerse.Data.Migrations
                     b.HasIndex("MuscleId");
 
                     b.ToTable("Exercises");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Perform curls using dumbbells to target biceps.",
-                            EquipmentId = 1,
-                            MuscleId = 1,
-                            Name = "Bicep Curl"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Cable exercise for triceps.",
-                            EquipmentId = 3,
-                            MuscleId = 2,
-                            Name = "Triceps Pushdown"
-                        });
                 });
 
             modelBuilder.Entity("FitVerse.Data.Models.ExercisePlan", b =>
@@ -472,11 +578,13 @@ namespace FitVerse.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<Guid>("ClientId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("ClientId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<Guid>("CoachId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("CoachId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -597,32 +705,6 @@ namespace FitVerse.Data.Migrations
                     b.HasIndex("AnatomyId");
 
                     b.ToTable("Muscles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AnatomyId = 1,
-                            Name = "Biceps"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AnatomyId = 1,
-                            Name = "Triceps"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AnatomyId = 2,
-                            Name = "Quadriceps"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            AnatomyId = 3,
-                            Name = "Abs"
-                        });
                 });
 
             modelBuilder.Entity("FitVerse.Data.Models.Notification", b =>
@@ -646,10 +728,8 @@ namespace FitVerse.Data.Migrations
                     b.Property<bool>("IsRead")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("ReciverId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ReciverId1")
+                    b.Property<string>("ReciverId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("RefId")
@@ -660,21 +740,9 @@ namespace FitVerse.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ReciverId1");
+                    b.HasIndex("ReciverId");
 
                     b.ToTable("Notifications");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Content = "Welcome to FitVerse!",
-                            CreatedAt = new DateTime(2025, 10, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsRead = false,
-                            ReciverId = new Guid("00000000-0000-0000-0000-000000000000"),
-                            RefId = 0,
-                            Type = 0
-                        });
                 });
 
             modelBuilder.Entity("FitVerse.Data.Models.Package", b =>
@@ -685,8 +753,12 @@ namespace FitVerse.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<Guid?>("CoachId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -700,27 +772,7 @@ namespace FitVerse.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CoachId");
-
                     b.ToTable("Packages");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CoachId = new Guid("11111111-1111-1111-1111-111111111111"),
-                            Name = "Basic Package",
-                            Price = 100.0,
-                            Sessions = 8
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CoachId = new Guid("11111111-1111-1111-1111-111111111111"),
-                            Name = "Premium Package",
-                            Price = 250.0,
-                            Sessions = 20
-                        });
                 });
 
             modelBuilder.Entity("FitVerse.Data.Models.Payment", b =>
@@ -734,8 +786,9 @@ namespace FitVerse.Data.Migrations
                     b.Property<double>("Amount")
                         .HasColumnType("float");
 
-                    b.Property<Guid>("ClientId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("ClientId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("PackageId")
                         .HasColumnType("int");
@@ -768,6 +821,16 @@ namespace FitVerse.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Icon")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -780,17 +843,66 @@ namespace FitVerse.Data.Migrations
                         new
                         {
                             Id = 1,
+                            Color = "#007bff",
+                            Description = "Building muscle and power",
+                            Icon = "fa-solid fa-dumbbell",
                             Name = "Strength Training"
                         },
                         new
                         {
                             Id = 2,
-                            Name = "Cardio"
+                            Color = "#dc3545",
+                            Description = "Cardiovascular fitness",
+                            Icon = "fa-solid fa-heartbeat",
+                            Name = "Cardio & HIIT"
                         },
                         new
                         {
                             Id = 3,
-                            Name = "Nutrition"
+                            Color = "#20c997",
+                            Description = "Mobility and stretching",
+                            Icon = "fa-solid fa-person-praying",
+                            Name = "Flexibility & Yoga"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Color = "#fd7e14",
+                            Description = "High-intensity functional training",
+                            Icon = "fa-solid fa-bolt",
+                            Name = "CrossFit"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Color = "#6610f2",
+                            Description = "Combat sports training",
+                            Icon = "fa-solid fa-hand-fist",
+                            Name = "Boxing & MMA"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Color = "#ffc107",
+                            Description = "Muscle hypertrophy focus",
+                            Icon = "fa-solid fa-trophy",
+                            Name = "Bodybuilding"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Color = "#198754",
+                            Description = "Distance and stamina",
+                            Icon = "fa-solid fa-person-running",
+                            Name = "Running & Endurance"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Color = "#0dcaf0",
+                            Description = "Fat loss and nutrition",
+                            Icon = "fa-solid fa-scale-balanced",
+                            Name = "Weight Loss"
                         });
                 });
 
@@ -927,6 +1039,52 @@ namespace FitVerse.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("ClientSubscription", b =>
+                {
+                    b.HasOne("FitVerse.Data.Models.Client", "Client")
+                        .WithMany("ClientSubscriptions")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FitVerse.Data.Models.Coach", "Coach")
+                        .WithMany("ClientSubscriptions")
+                        .HasForeignKey("CoachId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("FitVerse.Data.Models.Package", "Package")
+                        .WithMany("ClientSubscriptions")
+                        .HasForeignKey("PackageId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Coach");
+
+                    b.Navigation("Package");
+                });
+
+            modelBuilder.Entity("CoachPackage", b =>
+                {
+                    b.HasOne("FitVerse.Data.Models.Coach", "Coach")
+                        .WithMany("CoachPackages")
+                        .HasForeignKey("CoachId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FitVerse.Data.Models.Package", "Package")
+                        .WithMany("CoachPackages")
+                        .HasForeignKey("PackageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Coach");
+
+                    b.Navigation("Package");
+                });
+
             modelBuilder.Entity("FitVerse.Data.Models.Chat", b =>
                 {
                     b.HasOne("FitVerse.Data.Models.Client", "Client")
@@ -948,24 +1106,11 @@ namespace FitVerse.Data.Migrations
 
             modelBuilder.Entity("FitVerse.Data.Models.Client", b =>
                 {
-                    b.HasOne("FitVerse.Data.Models.Coach", "Coach")
-                        .WithMany("Clients")
-                        .HasForeignKey("CoachId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("FitVerse.Data.Models.Package", "Package")
-                        .WithMany("Clients")
-                        .HasForeignKey("PackageId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("FitVerse.Core.Models.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId1");
-
-                    b.Navigation("Coach");
-
-                    b.Navigation("Package");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -974,7 +1119,7 @@ namespace FitVerse.Data.Migrations
                 {
                     b.HasOne("FitVerse.Core.Models.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
@@ -1135,19 +1280,11 @@ namespace FitVerse.Data.Migrations
                 {
                     b.HasOne("FitVerse.Core.Models.ApplicationUser", "Reciver")
                         .WithMany()
-                        .HasForeignKey("ReciverId1");
+                        .HasForeignKey("ReciverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Reciver");
-                });
-
-            modelBuilder.Entity("FitVerse.Data.Models.Package", b =>
-                {
-                    b.HasOne("FitVerse.Data.Models.Coach", "Coach")
-                        .WithMany("Packages")
-                        .HasForeignKey("CoachId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Coach");
                 });
 
             modelBuilder.Entity("FitVerse.Data.Models.Payment", b =>
@@ -1234,6 +1371,8 @@ namespace FitVerse.Data.Migrations
                 {
                     b.Navigation("Chats");
 
+                    b.Navigation("ClientSubscriptions");
+
                     b.Navigation("CoachFeedback");
 
                     b.Navigation("DietPlans");
@@ -1247,17 +1386,17 @@ namespace FitVerse.Data.Migrations
                 {
                     b.Navigation("Chats");
 
-                    b.Navigation("Clients");
+                    b.Navigation("ClientSubscriptions");
 
                     b.Navigation("CoachFeedbacks");
+
+                    b.Navigation("CoachPackages");
 
                     b.Navigation("CoachSpecialties");
 
                     b.Navigation("DietPlans");
 
                     b.Navigation("ExercisePlans");
-
-                    b.Navigation("Packages");
                 });
 
             modelBuilder.Entity("FitVerse.Data.Models.Equipment", b =>
@@ -1282,7 +1421,9 @@ namespace FitVerse.Data.Migrations
 
             modelBuilder.Entity("FitVerse.Data.Models.Package", b =>
                 {
-                    b.Navigation("Clients");
+                    b.Navigation("ClientSubscriptions");
+
+                    b.Navigation("CoachPackages");
 
                     b.Navigation("Payments");
                 });

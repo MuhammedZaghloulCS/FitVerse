@@ -1,6 +1,8 @@
 ﻿@{
     Layout = "~/Views/Shared/_LandingLayout.cshtml";
 }
+@model Register
+
     <div class="auth-container">
         <div class="container">
             <div class="row justify-content-center">
@@ -52,54 +54,50 @@
                                         <p class="text-muted">Fill in your details to get started</p>
                                     </div>
 
-                                    <form>
-                                        <div class="row g-3 mb-3">
-                                            <div class="col-md-6">
-                                                <label class="form-label fw-semibold">First Name</label>
-                                                <input type="text" class="form-control form-control-auth" placeholder="John" required>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label fw-semibold">Last Name</label>
-                                                <input type="text" class="form-control form-control-auth" placeholder="Doe" required>
-                                            </div>
-                                        </div>
+                                <form asp-action="Register" asp-controller="Account">
+                                    <div asp-validation-summary="All" class="text-bg-danger"></div>
 
-                                        <div class="mb-3">
-                                            <label class="form-label fw-semibold">Email Address</label>
-                                            <input type="email" class="form-control form-control-auth" placeholder="your@email.com" required>
-                                        </div>
+                                    <div class="row g-3 mb-3">
 
-                                        <div class="mb-3">
-                                            <label class="form-label fw-semibold">Password</label>
-                                            <input type="password" class="form-control form-control-auth" placeholder="Create a strong password" required>
-                                        </div>
+                                        <div class="col-md-6">
+                                            <label asp-for="@Model.FirstName" class="form-label fw-semibold">First Name</label>
+                                            <input type="text" asp-for="@Model.FirstName" class="form-control form-control-auth" placeholder="John" required>
+                                            <span asp-validation-for="@Model.FirstName" class="text-danger"></span>
 
-                                        <div class="mb-3">
-                                            <label class="form-label fw-semibold">Confirm Password</label>
-                                            <input type="password" class="form-control form-control-auth" placeholder="Confirm your password" required>
                                         </div>
+                                        <div class="col-md-6">
+                                            <label asp-for="@Model.LastName" class="form-label fw-semibold">Last Name</label>
+                                            <input type="text" asp-for="@Model.LastName" class="form-control form-control-auth" placeholder="Doe" required>
+                                            <span asp-validation-for="@Model.LastName" class="text-danger"></span>
 
-                                        <div class="mb-4">
-                                            <label class="form-label fw-semibold mb-3">I want to join as:</label>
-                                            <div class="row g-3">
-                                                <div class="col-6">
-                                                    <label class="role-card">
-                                                        <input type="radio" name="role" value="coach">
-                                                        <div class="role-icon">🏋️</div>
-                                                        <div class="fw-semibold">Coach</div>
-                                                        <small class="text-muted">Train clients</small>
-                                                    </label>
-                                                </div>
-                                                <div class="col-6">
-                                                    <label class="role-card active">
-                                                        <input type="radio" name="role" value="client" checked>
-                                                        <div class="role-icon">💪</div>
-                                                        <div class="fw-semibold">Client</div>
-                                                        <small class="text-muted">Get trained</small>
-                                                    </label>
-                                                </div>
-                                            </div>
                                         </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label asp-for="@Model.Email" class="form-label fw-semibold">Email Address</label>
+                                        <input type="email" asp-for="@Model.Email" class="form-control form-control-auth" placeholder="your@email.com" required>
+                                        <span asp-validation-for="@Model.Email" class="text-danger"></span>
+
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label asp-for="@Model.Password" class="form-label fw-semibold">Password</label>
+                                        <input type="password" asp-for="@Model.Password" class="form-control form-control-auth" placeholder="Create a strong password" autocomplete="new-password" required>
+                                        <span asp-validation-for="@Model.Password" class="text-danger"></span>
+
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label asp-for="@Model.ConfirmPassword" class="form-label fw-semibold">Confirm Password</label>
+                                        <input type="password" asp-for="@Model.ConfirmPassword" class="form-control form-control-auth" placeholder="Confirm your password" autocomplete="new-password" required>
+                                        <span asp-validation-for="@Model.ConfirmPassword" class="text-danger"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label asp-for="@Model.PhoneNumber" class="form-label fw-semibold">Phone Number</label>
+                                        <input type="tel" asp-for="@Model.PhoneNumber" class="form-control form-control-auth" placeholder="Enter your Phone Number" required>
+                                        <span asp-validation-for="@Model.PhoneNumber" class="text-danger"></span>
+                                    </div>
+                              
 
                                         <div class="form-check mb-4">
                                             <input class="form-check-input" type="checkbox" id="terms" required>
@@ -111,7 +109,7 @@
                                         <button type="submit" class="btn btn-auth w-100 mb-3">Create Account</button>
 
                                         <div class="text-center">
-                                            <p class="text-muted mb-0">Already have an account? <a href="login.html" class="text-decoration-none fw-semibold" style="color: #6366f1;">Sign In</a></p>
+                                            <p class="text-muted mb-0">Already have an account? <a asp-action="Login"  asp-controller="Account" class="text-decoration-none fw-semibold" style="color: #6366f1;">Sign In</a></p>
                                         </div>
                                     </form>
                                 </div>

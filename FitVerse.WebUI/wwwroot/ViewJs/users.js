@@ -294,7 +294,7 @@ function DeleteUser() {
             if (result.isConfirmed) {
                 $.ajax({
                     url: `/Admin/Users/DeleteUser/${user.Id}`,
-                    method: 'GET', // أو 'POST' حسب إعدادات السيرفر
+                    method: 'GET',
                     success: function () {
                         Swal.fire(
                             'Deleted!',
