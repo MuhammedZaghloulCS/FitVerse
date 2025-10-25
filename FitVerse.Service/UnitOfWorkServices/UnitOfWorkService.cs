@@ -29,7 +29,6 @@ namespace FitVerse.Data.UnitOfWork
         private IClientService clientService;
         private IUsersService users;
         private IAccountService account;
-        private IUsers users;
         private IAdminService adminService;
 
         // Lazy-loaded repositories
@@ -57,8 +56,7 @@ namespace FitVerse.Data.UnitOfWork
         public ICoachService CoachService => coachService ??= new CoachService(unitOfWork, mapper, ImageHandleService);
         public IClientService ClientService => clientService ??= new ClientService(unitOfWork, mapper, ImageHandleService);
         public IUsersService UsersService => users ??= new UsersService(userManager, mapper);
-        public IAccountService AccountService => account ??= new AccountService(userManager, mapper,signInManager);
-        public IUsers UsersService => users ??= new UsersService(userManager, mapper);
+        public IAccountService AccountService => account ??= new AccountService(userManager, mapper,signInManager);       
         public IAdminService AdminService => adminService ??= new AdminService(unitOfWork, userManager);
 
 
