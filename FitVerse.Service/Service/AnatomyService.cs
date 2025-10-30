@@ -2,129 +2,123 @@
 using FitVerse.Core.IService;
 using FitVerse.Core.UnitOfWork;
 using FitVerse.Core.ViewModels.Anatomy;
+using FitVerse.Core.ViewModels.Anatomy;
+using FitVerse.Core.ViewModels.Equipment;
 using FitVerse.Core.ViewModels.Meuscle;
 using FitVerse.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FitVerse.Service.Service
 {
-    public class AnatomyService:IAnatomyService
+    public class AnatomyService : IAnatomyService
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
+        private readonly IImageHandleService imageHandleService;
 
-        public AnatomyService(IUnitOfWork unitOfWork, IMapper mapper)
+        public AnatomyService(IUnitOfWork unitOfWork, IMapper mapper, IImageHandleService imageHandleService)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
+            this.imageHandleService = imageHandleService;
+
         }
 
-        public IEnumerable<AnatomyVM> GetAll()
+
+        public (bool Success, string Message) AddAnatomy(AddAnatomyVM model)
         {
-            var allObj = unitOfWork.Anatomies.GetAll();
-            return mapper.Map<IEnumerable<AnatomyVM>>(allObj);
+
+            try
+            {
+                string? imagePath = imageHandleService.SaveImage(model.ImageFile);
+
+                var Anatomy = mapper.Map<Anatomy>(model);
+
+                Anatomy.Image = imagePath ?? "/Images/default.jpg";
+
+                unitOfWork.Anatomies.Add(Anatomy);
+                unitOfWork.Complete();
+
+                return (true, "Anatomy added successfully.");
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
+            }
         }
-
-        public AnatomyVM GetById(int id)
+        public List<AddAnatomyVM> GetAll(string? search)
         {
-            var anatomy = unitOfWork.Anatomies.GetById(id);
-            return mapper.Map<AnatomyVM>(anatomy);
-        }
-
-        public bool Create(AddAnatomyVM model)
-        {
-            var anatomy = mapper.Map<Anatomy>(model);
-            unitOfWork.Anatomies.Add(anatomy);
-            return unitOfWork.Complete() > 0;
-        }
-
-        public bool Update(AnatomyVM model)
-        {
-            var anatomy = unitOfWork.Anatomies.GetById(model.Id);
-            if (anatomy == null)
-                return false;
-
-            anatomy.Name = model.Name;
-            unitOfWork.Anatomies.Update(anatomy);
-            return unitOfWork.Complete() > 0;
-        }
-
-        public bool Delete(int id)
-        {
-            var anatomy = unitOfWork.Anatomies.GetById(id);
-            if (anatomy == null)
-                return false;
-
-            unitOfWork.Anatomies.Delete(anatomy);
-            return unitOfWork.Complete() > 0;
-        }
-
-        public (IEnumerable<AnatomyVM> Data, int CurrentPage, int TotalPages) GetPaged(int page = 1, int pageSize = 5, string? search = null)
-        {
-            var query = unitOfWork.Anatomies.GetAll().AsQueryable();
-
+            var anatomies = unitOfWork.Anatomies.GetAll();
             if (!string.IsNullOrEmpty(search))
             {
-                string lowerSearch = search.ToLower();
-                query = query.Where(a => a.Name.ToLower().Contains(lowerSearch));
+                anatomies = anatomies.Where(e => e.Name.Contains(search, StringComparison.OrdinalIgnoreCase));
             }
 
-            var totalItems = query.Count();
-            var data = query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
 
-            var mappedData = mapper.Map<IEnumerable<AnatomyVM>>(data);
-
-            int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
-
-            return (mappedData, page, totalPages);
+            return mapper.Map<List<AddAnatomyVM>>(anatomies);
         }
-        public int GetAllCount()
+
+        public AddAnatomyVM? GetById(int id)
         {
-            return unitOfWork.Anatomies.GetAll().Count();
+            var Anatomy = unitOfWork.Anatomies.GetById(id);
+            return mapper.Map<AddAnatomyVM>(Anatomy);
         }
-        public int GetMuscleCount()
+
+
+        public (bool Success, string Message) Update(AddAnatomyVM model)
         {
-            var count = unitOfWork.Muscles
-            .GetAll().Count();
+            try
+            {
+                var anatomy = unitOfWork.Anatomies.GetById(model.Id);
+                if (anatomy == null)
+                    return (false, "Not Found!");
 
-            return count;
+                anatomy.Name = model.Name;
 
+                // ✅ تحديث الصورة لو تم رفع واحدة جديدة
+                if (model.ImageFile != null)
+                {
+                    string? imagePath = imageHandleService.SaveImage(model.ImageFile);
+                    anatomy.Image = imagePath ?? anatomy.Image;
+                }
+
+                unitOfWork.Anatomies.Update(anatomy);
+                unitOfWork.Complete();
+
+                return (true, "Anatomy updated successfully!");
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
+            }
         }
-        public int GetExerciseCount()
+
+        public (bool Success, string Message) Delete(int id)
         {
-            var count = unitOfWork.Exercises
-            .GetAll().Count();
-            return count;
-        }
-        public int GetCountByAnatomy(int anatomyId)
-        {
-            var count = unitOfWork.Muscles
-            .GetAll()
-            .Count(m => m.AnatomyId == anatomyId);
-            return count;
-        }
-        public List<Muscle> GetMusclesByAnatomyId(int anatomyId)
-        {
-            // بنجيب كل العضلات اللي ليها نفس الـ AnatomyId
-            var muscles = unitOfWork.Muscles
-                .GetAll()
-                .Where(m => m.AnatomyId == anatomyId)
-                .ToList();
+            var Anatomy = unitOfWork.Anatomies.GetById(id);
+            if (Anatomy == null)
+                return (false, "Not Found!");
 
-            return muscles;
+            unitOfWork.Anatomies.Delete(Anatomy);
+            if (unitOfWork.Complete() > 0)
+                return (true, "Anatomy deleted successfully");
+
+            return (false, "Something went wrong!");
         }
 
-        
+     
 
 
+        // ✅ Count Helpers
+        public int GetAllCount() => unitOfWork.Anatomies.GetAll().Count();
+        public int GetMuscleCount() => unitOfWork.Muscles.GetAll().Count();
+        public int GetExerciseCount() => unitOfWork.Exercises.GetAll().Count();
 
+  
 
+       
     }
 }
+

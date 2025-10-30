@@ -12,6 +12,8 @@ using FitVerse.Core.ViewModels.Coach;
 using FitVerse.Core.ViewModels.ExerciseVM;
 using FitVerse.Core.ViewModels.User;
 using FitVerse.Core.Models;
+using FitVerse.Core.ViewModels.Equipment;
+using FitVerse.Core.ViewModels.DietPlan;
 
 
 namespace FitVerse.Core.MapperConfigs
@@ -23,7 +25,12 @@ namespace FitVerse.Core.MapperConfigs
             CreateMap<Anatomy,AnatomyVM>().ReverseMap();
             CreateMap<Equipment,EquipmentVM>().ReverseMap();
             CreateMap<AddAnatomyVM, Anatomy>().ReverseMap();
-            CreateMap<AddAnatomyVM, Equipment>().ReverseMap();
+            CreateMap<Anatomy, AddAnatomyVM>()
+.ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.Image ?? "/Images/default.jpg"));
+            CreateMap<AddEquipmentVM, Equipment>().ReverseMap();
+            CreateMap<Equipment, AddEquipmentVM>()
+     .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.Image ?? "/Images/default.jpg"));
+           
             CreateMap<Coach,AddCoachVM>().ReverseMap();
             CreateMap <Package,PackageVM>().ReverseMap();
             CreateMap<Muscle, MuscleVM>().ReverseMap();
@@ -38,6 +45,8 @@ namespace FitVerse.Core.MapperConfigs
             CreateMap<AddClientVM, Client>().ReverseMap();
             CreateMap<Client, ClientDashVM>().ReverseMap();
             CreateMap<ApplicationUser, GetAllUsersViewModel>().ReverseMap();
+            CreateMap<DietPlan, DietPlanVM>().ReverseMap();
+
 
         }
 

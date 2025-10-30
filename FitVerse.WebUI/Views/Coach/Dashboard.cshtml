@@ -1,4 +1,5 @@
-﻿@{
+﻿@model FitVerse.Core.ViewModels.Coach.CoachDashboardViewModel
+@{
    
     Layout = "~/Views/Shared/_CoachLayout.cshtml";
 }
@@ -39,33 +40,19 @@
             </div>
         </div>
     </div>
-    <
+    
 </div>
 <!-- Main Content Grid -->
-<div class="row g-4 mb-4">
-    <!-- Client Activity Chart -->
-    <div class="col-lg-8">
-        <div class="card-custom">
-            <div class="card-header-custom">
-                <i class="bi bi-graph-up me-2"></i> Client Activity Overview
-            </div>
-            <div class="card-body-custom">
-                <canvas id="activityChart" height="80"></canvas>
-            </div>
-        </div>
-    </div>
+<div class="row g-6 mb-4">
 
-    <!-- Quick Actions -->
-    <div class="col-lg-4">
+    <!-- Quick Actions (يمين) -->
+    <div class="col-lg-4 order-lg-2">
         <div class="card-custom">
             <div class="card-header-custom">
                 <i class="bi bi-lightning-charge me-2"></i> Quick Actions
             </div>
             <div class="card-body-custom">
                 <div class="d-grid gap-3">
-                    <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#createPlanModal">
-                        <i class="bi bi-plus-circle me-2"></i> Create Workout Plan
-                    </button>
                     <button class="btn btn-success-custom" data-bs-toggle="modal" data-bs-target="#addExerciseModal">
                         <i class="bi bi-lightning me-2"></i> Add Exercise
                     </button>
@@ -86,44 +73,44 @@
             </div>
         </div>
     </div>
-</div>
 
-<!-- Recent Clients & Pending Tasks -->
-<div class="col-lg-6">
-    <div class="card-custom">
-        <div class="card-header-custom d-flex justify-content-between align-items-center">
-            <span><i class="bi bi-people me-2"></i> Recent Clients</span>
-            <a href="coach/index.html" class="text-white text-decoration-none small">View All</a>
-        </div>
-        <div class="card-body-custom">
-            @if (Model.RecentClients != null && Model.RecentClients.Any())
-            {
-                foreach (var client in Model.RecentClients)
+    <!-- Recent Clients (شمال) -->
+    <div class="col-lg-8 order-lg-1">
+        <div class="card-custom">
+            <div class="card-header-custom d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-people me-2"></i> Recent Clients</span>
+                <a href="coach/index.html" class="text-white text-decoration-none small">View All</a>
+            </div>
+            <div class="card-body-custom">
+                @if (Model.RecentClients != null && Model.RecentClients.Any())
                 {
-                    <div class="d-flex align-items-center justify-content-between mb-3 pb-3 border-bottom">
-                        <div class="d-flex align-items-center gap-3">
-                            <div>
-
-                                <div class="fw-semibold">@client.Name</div>
-                                <div class="text-muted small">Last payment: @client.LastPaymentAgo</div>
+                    foreach (var client in Model.RecentClients)
+                    {
+                        <div class="d-flex align-items-center justify-content-between mb-3 pb-3 border-bottom">
+                            <div class="d-flex align-items-center gap-3">
+                                <div>
+                                    <div class="fw-semibold">@client.Name</div>
+                                    <div class="text-muted small">Last payment: @client.LastPaymentAgo</div>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge-custom @(client.IsActive ? "badge-success" : "badge-warning")">
+                                    @(client.IsActive ? "Active" : "Inactive")
+                                </span>
                             </div>
                         </div>
-                        <div class="text-end">
-                            <span class="badge-custom @(client.IsActive ? "badge-success" : "badge-warning")">
-                                @(client.IsActive ? "Active" : "Inactive")
-                            </span>
-
-                        </div>
-                    </div>
+                    }
                 }
-            }
-            else
-            {
-                <div class="text-center text-muted">No clients found.</div>
-            }
+                else
+                {
+                    <div class="text-center text-muted">No clients found.</div>
+                }
+            </div>
         </div>
     </div>
+
 </div>
+
 
 
 <!-- Create Plan Modal -->
@@ -253,6 +240,7 @@
 </div>
 
 
-@* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> *@
-@* <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script> *@
-<script src="/ViewJs/exercise.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="/ViewJs/coachDashboard.js"></script>

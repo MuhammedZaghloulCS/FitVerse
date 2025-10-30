@@ -18,6 +18,7 @@ namespace FitVerse.Data.UnitOfWork
         CoachRepository coaches;
         ClientRepository clients;
         SpecialityRepository specialties;
+        DietPlanRepository dietPlans;
 
         public UnitOfWork(FitVerseDbContext context)
         {
@@ -31,6 +32,15 @@ namespace FitVerse.Data.UnitOfWork
                 if (muscles == null)
                     muscles = new MuscleRepository(_context);
                 return muscles;
+            }
+        }
+        public IDietPlanRepository DietPlans
+        {
+            get
+            {
+                if (dietPlans == null)
+                    dietPlans = new DietPlanRepository(_context);
+                return dietPlans;
             }
         }
         public IAnatomyRepository Anatomies
@@ -67,7 +77,7 @@ namespace FitVerse.Data.UnitOfWork
             {
                 if (clients == null)
                     clients = new ClientRepository(_context);
-                return Clients;
+                return clients;
 
             }
 

@@ -121,7 +121,7 @@
 
                     <li class="nav-item">
                         <a class="nav-link @(ViewBag.Active == "DietPlans" ? "active" : "")"
-                           asp-controller="Coach" asp-action="DietPlans">
+                           asp-controller="Dietplan" asp-action="Index">
                             <i class="bi bi-egg-fried"></i> Diet Plans
                         </a>
                     </li>
@@ -179,12 +179,16 @@
         © @DateTime.Now.Year FitVerse. All Rights Reserved.
     </footer>
 
+
     <!-- Chart.js -->
     <script src="~/jquery/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="~/js/script.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    @* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> *@
+    @* <script src="/ViewJs/coachDashboard.js"></script> *@
+
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

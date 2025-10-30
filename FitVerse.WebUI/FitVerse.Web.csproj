@@ -26,10 +26,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-	
-  <ItemGroup>
-    <Folder Include="wwwroot\Images\" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\FitVerse.Business\FitVerse.Core.csproj" />

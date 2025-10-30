@@ -281,11 +281,13 @@ function deleteExercise(Id) {
                 }
             });
         }
+        else {
+            html = '<div class="text-center text-muted">No clients found.</div>';
+        }
     });
-        }  
-else{
-    html = '<div class="text-center text-muted">No clients found.</div>';
 }
+        
+
 
 //$('#allClientsContainer').html(html);
 //        },

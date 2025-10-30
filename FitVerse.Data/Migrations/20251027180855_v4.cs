@@ -5,7 +5,7 @@
 namespace FitVerse.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class ClientAndCoachBeString : Migration
+    public partial class v4 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

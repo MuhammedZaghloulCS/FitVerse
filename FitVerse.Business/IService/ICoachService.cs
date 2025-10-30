@@ -2,6 +2,7 @@
 using FitVerse.Core.viewModels;
 using FitVerse.Core.ViewModels.Client;
 using FitVerse.Core.ViewModels.Coach;
+using FitVerse.Core.ViewModels.Package;
 using FitVerse.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -20,8 +21,9 @@ namespace FitVerse.Core.IService
         (bool Success, string Message) UpdateCoach(AddCoachVM model);
         public (List<AddCoachVM> Data, int TotalItems) GetPagedEquipments(int page, int pageSize, string? search);
         CoachDashboardViewModel GetDashboardData(string coachId);
-        
-       
+        List<PackageVM> GetPackagesByCoachId(string coachId);
+
+
 
 
 

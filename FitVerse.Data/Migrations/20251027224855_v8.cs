@@ -5,35 +5,35 @@
 namespace FitVerse.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Diet : Migration
+    public partial class v8 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<double>(
-                name: "ActivityMultiplier",
+                name: "Height",
                 table: "DietPlans",
                 type: "float",
                 nullable: false,
                 defaultValue: 0.0);
 
-            migrationBuilder.AddColumn<string>(
-                name: "Goal",
+            migrationBuilder.AddColumn<double>(
+                name: "Weight",
                 table: "DietPlans",
-                type: "nvarchar(max)",
+                type: "float",
                 nullable: false,
-                defaultValue: "");
+                defaultValue: 0.0);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "ActivityMultiplier",
+                name: "Height",
                 table: "DietPlans");
 
             migrationBuilder.DropColumn(
-                name: "Goal",
+                name: "Weight",
                 table: "DietPlans");
         }
     }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitVerse.Data.Migrations
 {
     [DbContext(typeof(FitVerseDbContext))]
-    [Migration("20251024034050_DurationInDaysTOSessions")]
-    partial class DurationInDaysTOSessions
+    [Migration("20251027205427_v7")]
+    partial class v7
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -360,21 +360,30 @@ namespace FitVerse.Data.Migrations
                     b.Property<double>("ActivityMultiplier")
                         .HasColumnType("float");
 
+                    b.Property<int>("Age")
+                        .HasColumnType("int");
+
                     b.Property<double>("CarbInGrams")
                         .HasColumnType("float");
 
                     b.Property<string>("ClientId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CoachId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<double>("FatsInGrams")
                         .HasColumnType("float");
 
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Goal")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -968,14 +977,11 @@ namespace FitVerse.Data.Migrations
                     b.HasOne("FitVerse.Data.Models.Client", "Client")
                         .WithMany("DietPlans")
                         .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("FitVerse.Data.Models.Coach", "Coach")
                         .WithMany("DietPlans")
-                        .HasForeignKey("CoachId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CoachId");
 
                     b.Navigation("Client");
 

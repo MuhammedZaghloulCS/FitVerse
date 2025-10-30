@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using FitVerse.Core.IService;
 using FitVerse.Core.viewModels;
 using FitVerse.Core.ViewModels.Client;
+using FitVerse.Core.ViewModels.Package;
 using FitVerse.Data.UnitOfWork;
 using global::FitVerse.Core.IService;
 using global::FitVerse.Core.UnitOfWork;
@@ -50,9 +51,25 @@ namespace FitVerse.Data.Service
 
             public List<AddCoachVM> GetAllCoaches()
             {
-                var coaches = unitOfWork.Coaches.GetAll();
-                return mapper.Map<List<AddCoachVM>>(coaches);
+                // نجيب الكوتشات ومعاهم التخصصات
+                var coaches = unitOfWork.Coaches.GetAll(includeProperties: "CoachSpecialties.Specialty");
+
+                // نعمل المابينج
+                var coachVMs = mapper.Map<List<AddCoachVM>>(coaches);
+
+                // نضيف التخصصات جوه الـ ViewModel
+                foreach (var coachVm in coachVMs)
+                {
+                    var coachEntity = coaches.First(c => c.Id == coachVm.Id);
+                    coachVm.Specialties = coachEntity.CoachSpecialties
+                        .Select(cs => cs.Specialty?.Name)
+                        .Where(name => !string.IsNullOrEmpty(name))
+                        .ToList();
+                }
+
+                return coachVMs;
             }
+
 
             public AddCoachVM GetCoachByIdGuid(string id)
             {
@@ -137,7 +154,15 @@ public (List<AddCoachVM> Data, int TotalItems) GetPagedEquipments(int page, int 
 
                 return dashboard;
             }
-            
+            public List<PackageVM> GetPackagesByCoachId(string coachId)
+            {
+                var packages = unitOfWork.Packages
+                    .GetAll(p => p.CoachPackages.Any(cp => cp.CoachId == coachId), includeProperties: "CoachPackages");
+
+                
+                return mapper.Map<List<PackageVM>>(packages);
+            }
+
 
 
 

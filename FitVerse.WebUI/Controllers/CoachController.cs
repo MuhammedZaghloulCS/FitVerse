@@ -32,9 +32,13 @@ namespace FitVerse.Web.Controllers
 
 
         public IActionResult Dashboard() {
-            string coachId ="11111111-1111-1111-1111-111111111111";
+            string coachId ="1";
             var model = unitOFWorkService.CoachService.GetDashboardData(coachId);
-            return View(model);
+            return View("Dashboard",model);
+        }
+        public IActionResult ClientCoaches()
+        {
+            return View("ClientCoaches");
         }
 
 
@@ -116,15 +120,23 @@ namespace FitVerse.Web.Controllers
         public IActionResult GetAllClients()
         {
             //var coachId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            string coachId = "11111111-1111-1111-1111-111111111111";// Coach logged in ID
+            string coachId = "1";// Coach logged in ID
 
             var clients = unitOFWorkService.CoachRepository.GetAllClientsByCoach(coachId);
 
             return Json(new { data = clients });
         }
+        [HttpGet]
+        public IActionResult GetPackagesByCoachId(string coachId)
+        {
+            var packages = unitOFWorkService.CoachService.GetPackagesByCoachId(coachId);
+            return Json(new { data = packages });
+        }
 
 
-    }
+
+
+        }
 
 }
 

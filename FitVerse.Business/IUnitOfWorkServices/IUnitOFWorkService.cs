@@ -18,6 +18,8 @@ namespace FitVerse.Core.IUnitOfWorkServices
         IImageHandleService ImageHandleService { get; }
         IAnatomyService AnatomyService { get; }
         IUsers UsersService { get; }
+        IEquipmentService EquipmentService { get; }
+        IDietPlan DietPlanService { get; }
 
 
         // 🧩 Repositories (اختياري، لو محتاج توصل ليها مباشرة)

@@ -2,8 +2,11 @@
 using FitVerse.Core.IService;
 using FitVerse.Core.IUnitOfWorkServices;
 using FitVerse.Core.UnitOfWork;
+using FitVerse.Core.viewModels;
 using FitVerse.Core.ViewModels.Anatomy;
 using FitVerse.Data.Models;
+using FitVerse.Data.Service;
+using FitVerse.Data.UnitOfWork;
 using FitVerse.Service.Service;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,14 +16,14 @@ namespace FitVerse.Web.Controllers
     {
         private readonly IUnitOFWorkService unitOFWorkService;
         private readonly IMapper mapper;
+        private readonly IImageHandleService imageHandleService;
 
 
-
-        public AnatomyController(IUnitOFWorkService unitOFWorkService, IMapper mapper)
+        public AnatomyController(IUnitOFWorkService unitOFWorkService, IMapper mapper, IImageHandleService imageHandleService)
         {
             this.unitOFWorkService = unitOFWorkService;
             this.mapper = mapper;
-            
+            this.imageHandleService = imageHandleService;
         }
         public IActionResult Index()
         {
@@ -32,13 +35,13 @@ namespace FitVerse.Web.Controllers
             };
 
             return View(model);
-           
+
         }
 
-        public IActionResult GetAll()
+        public IActionResult GetAll(string? search)
         {
 
-            var allObj = unitOFWorkService.AnatomyService.GetAll();
+            var allObj = unitOFWorkService.AnatomyService.GetAll(search);
             return Json(new { data = allObj });
         }
 
@@ -50,67 +53,43 @@ namespace FitVerse.Web.Controllers
             {
                 return Json(new { success = false, message = "Somthing wrong!" });
             }
-   
+
             return Json(new { success = true, data = anatomy });
 
         }
-        public IActionResult Create(AddAnatomyVM model)
+       
+        [HttpPost]
+        public IActionResult AddAnatomy([FromForm] AddAnatomyVM model)
         {
-            var anatomy = unitOFWorkService.AnatomyService.Create(model);
+            var result =unitOFWorkService.AnatomyService.AddAnatomy(model);
+
             return Json(new
             {
-                success = anatomy,
-                message = anatomy ? "Anatomy created successfully" : "Something went wrong!"
+                success = result.Success,
+                message = result.Message,
+                data = result.Success ? model : null
             });
+
         }
+
+
         public IActionResult Delete(int id)
         {
-            var anatomy = unitOFWorkService.AnatomyService.Delete(id);
+            var result = unitOFWorkService.AnatomyService.Delete(id);
 
-            return Json(new
-            {
-                success = anatomy,
-                message = anatomy ? "Anatomy Deleted successfully" : "Something went wrong!"
-            });
+            return Json(new { success = result.Success, message = result.Message });
+
         }
-        public IActionResult Update(AnatomyVM model)
+        [HttpPost]
+        public IActionResult Update([FromForm] AddAnatomyVM model)
         {
-            bool result = unitOFWorkService.AnatomyService.Update(model);
-            return Json(new
-            {
-                success = result,
-                message = result ? "Anatomy updated successfully" : "Something went wrong!"
-            });
+            var result = unitOFWorkService.AnatomyService.Update(model);
+            return Json(new { success = result.Success, message = result.Message });
         }
 
-        public IActionResult GetPaged(int page = 1, int pageSize = 5, string? search = null)
-        {
-            var result = unitOFWorkService.AnatomyService.GetPaged(page, pageSize, search);
-            return Json(new
-            {
-                data = result.Data,
-                currentPage = result.CurrentPage,
-                totalPages = result.TotalPages
-            });
-        }
-        public IActionResult GetMuscleCountByAnatomy(int anatomyId)
-        {
-            var count = unitOFWorkService.AnatomyService.GetCountByAnatomy(anatomyId);
-            return Json(new { count });
 
-        }
-        public IActionResult GetMusclesByAnatomyId(int anatomyId)
-        {
-            var muscles = unitOFWorkService.AnatomyService.GetMusclesByAnatomyId(anatomyId);
 
-            var data = muscles.Select(m => new
-            {
-                m.Id,
-                m.Name,
-            }).ToList();
 
-            return Json(new { data });
-        }
 
 
 

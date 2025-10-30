@@ -43,7 +43,7 @@ namespace FitVerse.Web.Controllers
         public IActionResult GetAllEquipments()
         {
             var Exercises = db.Equipments.GetAll();
-            var data = mapper.Map<ExerciseVM>(Exercises);
+            var data = mapper.Map<EquipmentVM>(Exercises);
             return Json(new { data });
         }
 

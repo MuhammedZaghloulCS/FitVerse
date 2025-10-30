@@ -5,24 +5,25 @@
 namespace FitVerse.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class DurationInDaysTOSessions : Migration
+    public partial class v2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "DurationInDays",
-                table: "Packages",
-                newName: "Sessions");
+            migrationBuilder.AddColumn<string>(
+                name: "Name",
+                table: "DietPlans",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "Sessions",
-                table: "Packages",
-                newName: "DurationInDays");
+            migrationBuilder.DropColumn(
+                name: "Name",
+                table: "DietPlans");
         }
     }
 }

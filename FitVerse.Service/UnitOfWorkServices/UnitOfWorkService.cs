@@ -27,6 +27,8 @@ namespace FitVerse.Data.UnitOfWork
         private IClientService clientService;
         private IAnatomyService anatomyService;
         private IUsers users;
+        private IEquipmentService equipmentService;
+        private IDietPlan dietPlanService;
 
         // Lazy-loaded repositories
         private IEquipmentRepository equipmentRepository;
@@ -50,9 +52,11 @@ namespace FitVerse.Data.UnitOfWork
         // Services
         public IImageHandleService ImageHandleService => imageHandleService ??= new ImageHandleService();
         public ICoachService CoachService => coachService ??= new CoachService(unitOfWork, mapper, ImageHandleService);
-        public IAnatomyService AnatomyService => anatomyService ??= new AnatomyService(unitOfWork, mapper);
+        public IAnatomyService AnatomyService => anatomyService ??= new AnatomyService(unitOfWork, mapper, ImageHandleService);
         public IClientService ClientService => clientService ??= new ClientService(unitOfWork, mapper, ImageHandleService);
+        public IEquipmentService EquipmentService => equipmentService ??= new EquipmentService(unitOfWork, mapper, ImageHandleService);
         public IUsers UsersService => users ??= new UsersService(userManager, mapper);
+        public IDietPlan DietPlanService => dietPlanService ??= new DietPlanService(unitOfWork, mapper);
 
         // Repositories
         public IEquipmentRepository EquipmentRepository => equipmentRepository ??= new EquipmentRepository(context);
@@ -60,6 +64,7 @@ namespace FitVerse.Data.UnitOfWork
         public IMuscleRepository MuscleRepository => muscleRepository ??= new MuscleRepository(context);
         public ICoachRepository CoachRepository => coachRepository ??= new CoachRepository(context);
         public IClientRepository ClientRepository => clientRepository ??= new ClientRepository(context);
-       
+
+        //public IDietPlan DietPlanService => throw new NotImplementedException();
     }
 }

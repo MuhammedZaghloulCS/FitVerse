@@ -1,4 +1,5 @@
-﻿$(function () {
+﻿
+$(function () {
     $("#coachForm").submit(function (e) {
         e.preventDefault();
         let formData = new FormData(this);

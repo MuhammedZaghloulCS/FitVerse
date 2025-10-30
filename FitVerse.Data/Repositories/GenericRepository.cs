@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace FitVerse.Data.Repositories
 {
+
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         protected readonly FitVerseDbContext context;
@@ -59,6 +60,27 @@ namespace FitVerse.Data.Repositories
             return query.ToList();
         }
 
+        public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter = null, string includeProperties = "")
+        {
+            IQueryable<T> query = dbSet; // dbSet = context.Set<T>()
+
+            // لو فيه فلتر، نطبقه
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            // نضيف الـ include properties لو موجودة
+            if (!string.IsNullOrWhiteSpace(includeProperties))
+            {
+                foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp.Trim());
+                }
+            }
+
+            return query.ToList();
+        }
 
         public T GetById(int id)
         {

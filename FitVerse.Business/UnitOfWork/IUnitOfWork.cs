@@ -17,7 +17,7 @@ namespace FitVerse.Core.UnitOfWork
         IAnatomyRepository Anatomies { get; }
         //ICoachSpecialtiesRepository CoachSpecialties { get; }
         //ICoachFeedbackRepository CoachFeedbacks { get; }
-        //IDietPlanRepository DietPlans { get; }
+        IDietPlanRepository DietPlans { get; }
         IEquipmentRepository Equipments { get; }
         IExerciseRepository Exercises { get; }
         //IMessageRepository Messages { get; }
