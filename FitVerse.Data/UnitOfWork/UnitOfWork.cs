@@ -19,6 +19,9 @@ namespace FitVerse.Data.UnitOfWork
         ClientRepository clients;
         SpecialityRepository specialties;
         DietPlanRepository dietPlans;
+        PaymentRepository payments;
+        CoachFeedbackRepository coachFeedbacks;
+        CoachSpecialtiesRepository coachSpecialties;
 
         public UnitOfWork(FitVerseDbContext context)
         {
@@ -110,6 +113,35 @@ namespace FitVerse.Data.UnitOfWork
             }
         }
 
+        public IPaymentRepository Payments {
+            get
+            {
+                if (payments == null)
+                    payments = new PaymentRepository(_context);
+                return payments;
+            }
+
+        }
+        public ICoachSpecialtiesRepository CoachSpecialties
+        {
+            get
+            {
+                if (coachSpecialties == null)
+                    coachSpecialties = new CoachSpecialtiesRepository(_context);
+                return coachSpecialties;
+            }
+        }
+
+        public ICoachFeedbackRepository CoachFeedbacks
+        {
+            get
+            {
+                if (coachFeedbacks == null)
+                    coachFeedbacks = new CoachFeedbackRepository(_context);
+                return coachFeedbacks;
+            }
+
+        }
 
         public int Complete() => _context.SaveChanges();
         public void Dispose() => _context.Dispose();

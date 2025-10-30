@@ -1,1 +1,115 @@
-﻿
+﻿@model FitVerse.Core.ViewModels.Admin.AdminDashboardViewModel
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<!-- Main Content -->
+<div class="w-100 py-4">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 px-3">
+        <div>
+            <h2 class="fw-bold mb-1">Admin Dashboard</h2>
+            <p class="text-muted mb-0">Welcome back! Here's what's happening with FitVerse today.</p>
+        </div>
+        <div>
+            <button class="btn btn-primary-custom">
+                <i class="bi bi-download"></i> Export Report
+            </button>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4 px-3">
+
+        <!-- Total Users -->
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card primary">
+                <div class="stat-icon primary">
+                    <i class="bi bi-people"></i>
+                </div>
+                <div class="stat-value">@Model.TotalUsers</div>
+                <div class="stat-label">Total Users</div>
+            </div>
+        </div>
+
+        <!-- Active Coaches -->
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card success">
+                <div class="stat-icon success">
+                    <i class="bi bi-person-badge"></i>
+                </div>
+                <div class="stat-value">@Model.TotalCoaches</div>
+                <div class="stat-label">Active Coaches</div>
+            </div>
+        </div>
+
+        <!-- Packages Sold -->
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card warning">
+                <div class="stat-icon warning">
+                    <i class="bi bi-box-seam"></i>
+                </div>
+                <div class="stat-value">@Model.SoldedPackages</div>
+                <div class="stat-label">Packages Sold</div>
+            </div>
+        </div>
+
+        <!-- Total Revenue -->
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card danger">
+                <div class="stat-icon danger">
+                    <i class="bi bi-currency-dollar"></i>
+                </div>
+                <div class="stat-value">$@Model.TotalRevenue</div>
+                <div class="stat-label">Total Revenue</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Coaches Card -->
+    <div class="row px-3">
+        <div class="col-12">
+            <div class="card-custom w-100">
+                <div class="card-header-custom">
+                    <i class="bi bi-star me-2"></i> Top Coaches
+                </div>
+                <div class="card-body-custom">
+                    @if (Model.TopCoaches != null && Model.TopCoaches.Any())
+                    {
+                        @foreach (var coach in Model.TopCoaches)
+                        {
+                            <div class="d-flex align-items-center justify-content-between mb-3 pb-3 border-bottom">
+                                <div class="d-flex align-items-center gap-3">
+                                    <img src="https://ui-avatars.com/api/?name=@coach.Name&background=3b82f6&color=fff"
+                                         alt="Coach" style="width: 50px; height: 50px; border-radius: 50%;">
+                                    <div>
+                                        <div class="fw-semibold">@coach.Name</div>
+                                        <small class="text-muted">@coach.ClientsCount Clients</small>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <div class="fw-bold" style="color: #10b981;">@coach.Rating.ToString("0.0")</div>
+                                    <small class="text-muted">
+                                        @{
+                                            var stars = new string('★', (int)Math.Round(coach.Rating));
+                                            var empty = new string('☆', 5 - (int)Math.Round(coach.Rating));
+                                        }
+                                        @($"{stars}{empty}")
+                                    </small>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-muted">No coaches data available.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

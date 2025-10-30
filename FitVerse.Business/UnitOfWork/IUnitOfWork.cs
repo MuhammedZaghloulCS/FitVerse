@@ -18,6 +18,9 @@ namespace FitVerse.Core.UnitOfWork
         //ICoachSpecialtiesRepository CoachSpecialties { get; }
         //ICoachFeedbackRepository CoachFeedbacks { get; }
         IDietPlanRepository DietPlans { get; }
+        ICoachSpecialtiesRepository CoachSpecialties { get; }
+        ICoachFeedbackRepository CoachFeedbacks { get; }
+        //IDietPlanRepository DietPlans { get; }
         IEquipmentRepository Equipments { get; }
         IExerciseRepository Exercises { get; }
         //IMessageRepository Messages { get; }
@@ -27,7 +30,7 @@ namespace FitVerse.Core.UnitOfWork
         //IExercisePlanDetailRepository ExercisePlanDetails { get; }
         //INotificationRepository Notifications { get; }
         IPackageRepository Packages { get; }
-        //IPaymentRepository Payments { get; }
+        IPaymentRepository Payments { get; }
         ISpecialtiesRepository Specialties { get; }
         int Complete();
     }
