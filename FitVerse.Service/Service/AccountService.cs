@@ -29,7 +29,7 @@ namespace FitVerse.Service.Service
         public async Task<(bool Success, string Message,ApplicationUser User)> Login(Login auth)
         {
             var user = await userManager.FindByEmailAsync(auth.Email);
-            if (user == null|| await userManager.CheckPasswordAsync(user, auth.Password))
+            if (user == null|| !await userManager.CheckPasswordAsync(user, auth.Password))
             {
                 return (Success: false, Message: "Email Or Password Is Invalid", null);
             }

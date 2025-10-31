@@ -1,4 +1,4 @@
-﻿using FitVerse.Core.Interfaces;
+using FitVerse.Core.Interfaces;
 using FitVerse.Core.UnitOfWork;
 using FitVerse.Data.Context;
 using FitVerse.Data.Models;
@@ -22,6 +22,8 @@ namespace FitVerse.Data.UnitOfWork
         PaymentRepository payments;
         CoachFeedbackRepository coachFeedbacks;
         CoachSpecialtiesRepository coachSpecialties;
+        ChatRepository chats;
+        MessageRepository messages;
 
         public UnitOfWork(FitVerseDbContext context)
         {
@@ -143,7 +145,28 @@ namespace FitVerse.Data.UnitOfWork
 
         }
 
+        public IChatRepository Chats
+        {
+            get
+            {
+                if (chats == null)
+                    chats = new ChatRepository(_context);
+                return chats;
+            }
+        }
+
+        public IMessageRepository Messages
+        {
+            get
+            {
+                if (messages == null)
+                    messages = new MessageRepository(_context);
+                return messages;
+            }
+        }
+
         public int Complete() => _context.SaveChanges();
+        public async Task<int> SaveAsync() => await _context.SaveChangesAsync();
         public void Dispose() => _context.Dispose();
     }
 }

@@ -1,4 +1,4 @@
-﻿using FitVerse.Core.Interfaces;
+using FitVerse.Core.Interfaces;
 using FitVerse.Core.ViewModels.Equipment;
 using FitVerse.Data.Context;
 using Microsoft.EntityFrameworkCore;
@@ -94,6 +94,11 @@ namespace FitVerse.Data.Repositories
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
             dbSet.Update(entity);
+        }
+
+        public IQueryable<T> GetQueryable()
+        {
+            return dbSet;
         }
 
 
