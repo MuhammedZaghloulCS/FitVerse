@@ -3,6 +3,7 @@ using FitVerse.Core.IService;
 using FitVerse.Core.UnitOfWork;
 using FitVerse.Core.ViewModels.Client;
 using FitVerse.Core.ViewModels.Coach;
+using FitVerse.Core.ViewModels.Profile;
 using FitVerse.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -77,8 +78,10 @@ namespace FitVerse.Service.Service
             var clients = unitOfWork.Clients.GetAll();
             return mapper.Map<List<ClientDashVM>>(clients);
         }
-        
-    
 
-}
+        public (bool Success, string Message) UpdateClientGoals(string userName, ClientViewModel clientPhysicalInfo)
+        {
+           return unitOfWork.Clients.UpdateClientGoalsRepo(userName, clientPhysicalInfo);
+        }
+    }
 }

@@ -32,7 +32,8 @@ namespace FitVerse.Core.IService
         public  Task<(bool, string)> UpdatePersonalInfoAsync(GetAllUsersViewModel user);
 
         public Task<(bool Success, string Message)> ChangeUserRoleAsync(ChangeUserRoleViewModel userWithRole);
-        public Task<(bool Success, string Message)> ChangePasswordByAdminAsync(string UserName, ChangePasswordByAdmin passwords);
+        public Task<(bool Success, string Message)> ChangePasswordByAdminAsync(string UserName, ChangePasswordByAdminViewModel passwords);
+        public Task<(bool Success, string Message)> ChangePasswordByUserAsync(string UserName, ChangePasswordByUserViewModel passwords);
 
 
 

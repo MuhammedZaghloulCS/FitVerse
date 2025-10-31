@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FitVerse.Core.ViewModels.Profile
 {
-    public class ChangePasswordByAdmin
+    public class ChangePasswordByAdminViewModel
     {
 
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$",

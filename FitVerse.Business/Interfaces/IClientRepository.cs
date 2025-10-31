@@ -1,5 +1,6 @@
 ﻿using FitVerse.Core.ViewModels.Anatomy;
 using FitVerse.Core.ViewModels.Coach;
+using FitVerse.Core.ViewModels.Profile;
 using FitVerse.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,6 @@ namespace FitVerse.Core.Interfaces
 {
     public interface IClientRepository:IGenericRepository<Client>
     {
-        
+        public (bool Success, string Message) UpdateClientGoalsRepo(string userName, ClientViewModel clientPhysicalInfo);
     }
 }

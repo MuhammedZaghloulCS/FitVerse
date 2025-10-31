@@ -1,4 +1,5 @@
 ﻿using FitVerse.Core.ViewModels.Client;
+using FitVerse.Core.ViewModels.Profile;
 using FitVerse.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -16,5 +17,6 @@ namespace FitVerse.Core.IService
         //(bool Success, string Message) DeleteClient(Guid id);
         //AddClientVM GetClientById(Guid id);
         List<ClientDashVM> GetAllClients();
+        (bool Success, string Message) UpdateClientGoals(string userName, ClientViewModel clientPhysicalInfo);
     }
 }

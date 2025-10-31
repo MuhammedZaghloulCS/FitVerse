@@ -141,23 +141,18 @@ namespace FitVerse.Web.Controllers
 
         public async Task<IActionResult> ChangePasswordByAdmin( ProfileViewModel userPass)
         {
-            #region make model valid
-            ModelState.Remove("UserInfo.Id");
-            ModelState.Remove("UserInfo.FirstName");
-            ModelState.Remove("UserInfo.LastName");
-            ModelState.Remove("UserInfo.FullName");
-            ModelState.Remove("UserInfo.Email");
-            ModelState.Remove("UserInfo.PhoneNumber");
-            ModelState.Remove("UserInfo.Age");
-            ModelState.Remove("UserInfo.Gender");
-            ModelState.Remove("UserInfo.ImagePath");
-            ModelState.Remove("UserInfo.Role");
-            ModelState.Remove("UserInfo.Status");
-            ModelState.Remove("UserInfo.JoinedDate");
-            ModelState.Remove("UserWithPhoto");
-            ModelState.Remove("UserWithPhoto.Image");
-            ModelState.Remove("UserWithPhoto.UserName");
-            #endregion 
+            var keysToKeep = new[]
+     {
+                    "ChangePasswordByAdmin.Password",
+                    "ChangePasswordByAdmin.ConfirmPassword",
+                    "UserInfo.UserName"
+                };
+
+            // Remove all other keys from ModelState
+            foreach (var key in ModelState.Keys.Except(keysToKeep).ToList())
+            {
+                ModelState.Remove(key);
+            }
             (bool Success, string Message) res = (false, "Change Password Failed, Please try again.");
 
             if (ModelState.IsValid)
@@ -171,6 +166,47 @@ namespace FitVerse.Web.Controllers
             }
 
             return Json(new { Success = res.Success, Message = res.Message });
+        }
+        [HttpPost("ChangePasswordByUser")]
+
+        public async Task<IActionResult> ChangePasswordByUser(ProfileViewModel userPass)
+        {
+           
+
+            var keysToKeep = new[]
+                {
+                    "ChangePasswordByUser.OldPassword",
+                    "ChangePasswordByUser.Password",
+                    "ChangePasswordByUser.ConfirmPassword",
+                    "UserInfo.UserName"
+                };
+
+            // Remove all other keys from ModelState
+            foreach (var key in ModelState.Keys.Except(keysToKeep).ToList())
+            {
+                ModelState.Remove(key);
+            }
+            (bool Success, string Message) res = (false, "Change Password Failed, Please try again.");
+
+            if (ModelState.IsValid)
+            {
+                res = await unitOFWorkService.UsersService
+                    .ChangePasswordByUserAsync(userPass.UserInfo.UserName, userPass.ChangePasswordByUser);
+            }
+           else
+            {
+                res = (false, "Invalid input data. Please check your form.");
+            }
+
+            return Json(new { Success = res.Success, Message = res.Message });
+        }
+
+        //todo: Update Client Goals
+        [HttpPost("UpdateClientGoals")]
+        public IActionResult UpdateClientGoals(ProfileViewModel client)
+        {
+            var result = unitOFWorkService.ClientService.UpdateClientGoals(client.UserInfo.UserName,client.clientPhysicalInfo);
+            return Json(new { result });
         }
 
     }

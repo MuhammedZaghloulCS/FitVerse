@@ -1,5 +1,6 @@
 ﻿using FitVerse.Core.Interfaces;
 using FitVerse.Core.ViewModels.Coach;
+using FitVerse.Core.ViewModels.Profile;
 using FitVerse.Data.Context;
 using FitVerse.Data.Models;
 using System;
@@ -18,7 +19,19 @@ namespace FitVerse.Data.Repositories
         {
         }
 
-       
+        public (bool Success,string Message) UpdateClientGoalsRepo(string userName, ClientViewModel clientPhysicalInfo)
+        {
+            var res= (Success: false, Message: "User Not Found");
+            Find(c => c.User.UserName == userName).ToList().ForEach(client =>
+            {
+                client.Height = clientPhysicalInfo.Height;
+                client.StartWeight = clientPhysicalInfo.StartWeight;
+                client.Goal = clientPhysicalInfo.Goal;
 
+                res= (Success : true, Message : "Goals Addes Successfully");
+            });
+            return res;
+
+        }
     }
 }

@@ -4,6 +4,7 @@ using FitVerse.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitVerse.Data.Migrations
 {
     [DbContext(typeof(FitVerseDbContext))]
-    partial class FitVerseDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251031022058_addCertificateWithInCoach")]
+    partial class addCertificateWithInCoach
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -252,6 +255,9 @@ namespace FitVerse.Data.Migrations
 
                     b.Property<string>("Certificates")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("Commision")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("ExperienceYears")
                         .HasColumnType("int");

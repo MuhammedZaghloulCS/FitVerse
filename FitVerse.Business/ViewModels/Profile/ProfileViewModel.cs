@@ -11,6 +11,10 @@ namespace FitVerse.Core.ViewModels.Profile
     {
         public GetAllUsersViewModel UserInfo { get; set; }
         public UploadImageViewModel UserWithPhoto { get; set; }
-        public ChangePasswordByAdmin ChangePasswordByAdmin { get; set; }
+        public ChangePasswordByAdminViewModel ChangePasswordByAdmin { get; set; }
+        public ChangePasswordByUserViewModel ChangePasswordByUser { get; set; }
+        public CoachViewModel coachProfessionalInfo { get; set; }
+
+        public ClientViewModel clientPhysicalInfo { get; set; }
     }
 }

@@ -12,8 +12,9 @@ namespace FitVerse.Data.Models
     {
         public string Id { get; set; }=Guid.NewGuid().ToString();
         public int? ExperienceYears { get; set; }
-        public string? About { get; set; } 
-
+        public string? About { get; set; }
+        public decimal? Salary { get; set; }
+        public string? Certificates { get; set; }
         public string? UserId { get; set; }
         [ForeignKey(nameof(UserId))]
         public virtual ApplicationUser User { get; set; }

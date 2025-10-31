@@ -3,6 +3,7 @@
     ChangePersonalInfo();
     ChangeRole();
     ChangePasswordByAdmin();
+    ChangePasswordByUser();
 })
 
 function ChangePersonalInfo() {
@@ -67,7 +68,7 @@ function ChangeRole() {
                     method: 'POST',
                     url: '/Admin/Users/ChangeUserRole',
                     data: {
-                        UserName: $('#UserInfo_UserName').val(),
+                        UserName: $('#hiddenUserName').val(),
                         Role: $('#select-role').val()
                     },
                     success: function (response) {
@@ -77,6 +78,9 @@ function ChangeRole() {
                                 text: response.message,
                                 icon: "success"
                             });
+                            
+                            location.reload();
+
                         } else {
                             Swal.fire({
                                 title: "Error",
@@ -101,16 +105,7 @@ function ChangePasswordByAdmin() {
     $('#AdminFunctions').on('submit', function (e) {
         e.preventDefault();
 
-        const formData = {
-            UserInfo: {
-                UserName: $('#hiddenUserName').val()
-            },
-            ChangePasswordByAdmin: {
-                Password: $('#ChangePasswordByAdmin_Password').val(),
-                ConfirmPassword: $('#ChangePasswordByAdmin_ConfirmPassword').val()
-            }
-        };
-
+        
         $.ajax({
             url: '/Admin/Users/ChangePasswordByAdmin',
             method: 'POST',
@@ -147,4 +142,50 @@ function ChangePasswordByAdmin() {
         });
     });
 }
+
+function ChangePasswordByUser() {
+    $('#passwordForm').on('submit', function (e) {
+        e.preventDefault();
+
+
+
+        $.ajax({
+            url: '/Admin/Users/ChangePasswordByUser',
+            method: 'POST',
+            data: {
+                'UserInfo.UserName': $('#hiddenUserName').val(),
+                'ChangePasswordByUser.OldPassword': $('#ChangePasswordByUser_OldPassword').val(),
+                'ChangePasswordByUser.Password': $('#ChangePasswordByUser_Password').val(),
+                'ChangePasswordByUser.ConfirmPassword': $('#ChangePasswordByUser_ConfirmPassword').val()
+            },
+            success: function (res) {
+                if (res.success || res.Success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: res.message || res.Message,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    $('#passwordForm')[0].reset();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Failed',
+                        text: res.message || res.Message
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Something went wrong while changing the password.'
+                });
+            }
+        });
+    });
+}
+
+
 

@@ -303,7 +303,7 @@ namespace FitVerse.Service.Service
             return (true, "User role updated successfully");
 
         }
-        public async Task<(bool Success, string Message)> ChangePasswordByAdminAsync(string UserName, ChangePasswordByAdmin passwords)
+        public async Task<(bool Success, string Message)> ChangePasswordByAdminAsync(string UserName, ChangePasswordByAdminViewModel passwords)
         {
             var user = await userManager.FindByNameAsync(UserName);
             if (user == null)
@@ -312,6 +312,23 @@ namespace FitVerse.Service.Service
             await userManager.RemovePasswordAsync(user);
             await userManager.AddPasswordAsync(user, passwords.Password);
                
+
+            return (true, "User Password updated successfully");
+
+        }
+        public async Task<(bool Success, string Message)> ChangePasswordByUserAsync(string UserName, ChangePasswordByUserViewModel passwords)
+        {
+            var user = await userManager.FindByNameAsync(UserName);
+            if (user == null)
+                return (false, "User not found");
+            
+            var result= await userManager.ChangePasswordAsync(user, passwords.OldPassword, passwords.Password);
+            if (!result.Succeeded)
+            {
+                return (false, "Updating password failed, please try again");
+
+            }
+
 
             return (true, "User Password updated successfully");
 
