@@ -52,20 +52,116 @@ namespace FitVerse.Data.UnitOfWork
 
 
         // Services
-        public IImageHandleService ImageHandleService => imageHandleService ??= new ImageHandleService();
-        public ICoachService CoachService => coachService ??= new CoachService(unitOfWork, mapper, ImageHandleService);
-        public IClientService ClientService => clientService ??= new ClientService(unitOfWork, mapper, ImageHandleService);
-        public IUsersService UsersService => users ??= new UsersService(userManager, mapper);
-        public IAccountService AccountService => account ??= new AccountService(userManager, mapper,signInManager);       
-        public IAdminService AdminService => adminService ??= new AdminService(unitOfWork, userManager);
+        public IImageHandleService ImageHandleService
+        {
+            get
+            {
+                if (imageHandleService == null)
+                    imageHandleService = new ImageHandleService();
+                return imageHandleService;
+            }
+        }
 
+        public ICoachService CoachService
+        {
+            get
+            {
+                if (coachService == null)
+                    coachService = new CoachService(unitOfWork, mapper, ImageHandleService);
+                return coachService;
+            }
+        }
+
+        public IClientService ClientService
+        {
+            get
+            {
+                if (clientService == null)
+                    clientService = new ClientService(unitOfWork, mapper, ImageHandleService);
+                return clientService;
+            }
+        }
+
+        public IUsersService UsersService
+        {
+            get
+            {
+                if (users == null)
+                    users = new UsersService(userManager, mapper, unitOfWork);
+                return users;
+            }
+        }
+
+        public IAccountService AccountService
+        {
+            get
+            {
+                if (account == null)
+                    account = new AccountService(userManager, mapper, signInManager);
+                return account;
+            }
+        }
+
+        public IAdminService AdminService
+        {
+            get
+            {
+                if (adminService == null)
+                    adminService = new AdminService(unitOfWork, userManager);
+                return adminService;
+            }
+        }
 
         // Repositories
-        public IEquipmentRepository EquipmentRepository => equipmentRepository ??= new EquipmentRepository(context);
-        public IAnatomyRepository AnatomyRepository => anatomyRepository ??= new AnatomyRepository(context);
-        public IMuscleRepository MuscleRepository => muscleRepository ??= new MuscleRepository(context);
-        public ICoachRepository CoachRepository => coachRepository ??= new CoachRepository(context);
-        public IClientRepository ClientRepository => clientRepository ??= new ClientRepository(context);
+        public IEquipmentRepository EquipmentRepository
+        {
+            get
+            {
+                if (equipmentRepository == null)
+                    equipmentRepository = new EquipmentRepository(context);
+                return equipmentRepository;
+            }
+        }
+
+        public IAnatomyRepository AnatomyRepository
+        {
+            get
+            {
+                if (anatomyRepository == null)
+                    anatomyRepository = new AnatomyRepository(context);
+                return anatomyRepository;
+            }
+        }
+
+        public IMuscleRepository MuscleRepository
+        {
+            get
+            {
+                if (muscleRepository == null)
+                    muscleRepository = new MuscleRepository(context);
+                return muscleRepository;
+            }
+        }
+
+        public ICoachRepository CoachRepository
+        {
+            get
+            {
+                if (coachRepository == null)
+                    coachRepository = new CoachRepository(context);
+                return coachRepository;
+            }
+        }
+
+        public IClientRepository ClientRepository
+        {
+            get
+            {
+                if (clientRepository == null)
+                    clientRepository = new ClientRepository(context);
+                return clientRepository;
+            }
+        }
 
         public ISpecialtiesRepository SpecialtiesRepository => throw new NotImplementedException();
 

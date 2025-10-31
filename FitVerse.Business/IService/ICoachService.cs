@@ -14,6 +14,7 @@ namespace FitVerse.Core.IService
     public interface ICoachService:IService
     {
         (bool Success, string Message) AddCoach(AddCoachVM model); //برتجع تابل tuble    }
+        (bool Success, string Message) AddCoachByAdmin(Coach model); 
         List<AddCoachVM> GetAllCoaches();
         public AddCoachVM GetCoachByIdGuid(string id);
         (bool Success, string Message) DeleteCoachById(string id);

@@ -1,19 +1,30 @@
 ﻿@{
-    var activeRoute = ViewContext.RouteData.Values["controller"]?.ToString();
+    Layout = null;
+    var title = ViewBag.Title ?? "Admin Dashboard - FitVerse";
 }
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gym Management System</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="~/css/styles.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@title</title>
 
+    <!-- ✅ Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- ✅ Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+
+    <!-- ✅ Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- ✅ Custom CSS -->
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
 </head>
+
 <body>
+    <!-- ✅ Navigation -->
     <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
         <div class="container-fluid px-4">
             <a class="navbar-brand d-flex align-items-center" asp-controller="Admin" asp-action="Dashboard">
@@ -27,7 +38,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="Admin" asp-action="index"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                        <a class="nav-link" asp-controller="Admin" asp-action="Dashboard"><i class="bi bi-speedometer2"></i> Dashboard</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Admin" asp-action="Users"><i class="bi bi-people"></i> Users</a>
@@ -39,7 +50,7 @@
                         <a class="nav-link" asp-controller="Admin" asp-action="Clients"><i class="bi bi-person-check"></i> Clients</a>
                     </li>
 
-                    <!-- Dropdown System -->
+                    <!-- ⚙️ Dropdown -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="systemDropdown" role="button" data-bs-toggle="dropdown">
                             <i class="bi bi-gear"></i> System
@@ -48,9 +59,9 @@
                             <li><a class="dropdown-item" asp-controller="Admin" asp-action="Equipment"><i class="bi bi-tools me-2"></i> Equipment</a></li>
                             <li><a class="dropdown-item" asp-controller="Admin" asp-action="Exercises"><i class="bi bi-lightning me-2"></i> Exercises</a></li>
                             <li><a class="dropdown-item" asp-controller="Admin" asp-action="Anatomy"><i class="bi bi-person-arms-up me-2"></i> Anatomy</a></li>
-                            <li><a class="dropdown-item" asp-controller="Muscle" asp-action="Index"><i class="bi bi-heart-pulse me-2"></i> Muscles</a></li>
-                            <li><a class="dropdown-item" asp-controller="Specialty" asp-action="Index"><i class="bi bi-award me-2"></i> Specialties</a></li>
-                            <li><a class="dropdown-item" asp-controller="Package" asp-action="Index"><i class="bi bi-box-seam me-2"></i> Packages</a></li>
+                            <li><a class="dropdown-item" asp-controller="Admin" asp-action="Muscles"><i class="bi bi-heart-pulse me-2"></i> Muscles</a></li>
+                            <li><a class="dropdown-item" asp-controller="Admin" asp-action="Specialties"><i class="bi bi-award me-2"></i> Specialties</a></li>
+                            <li><a class="dropdown-item" asp-controller="Admin" asp-action="Packages"><i class="bi bi-box-seam me-2"></i> Packages</a></li>
                         </ul>
                     </li>
 
@@ -61,7 +72,7 @@
                         <a class="nav-link" asp-controller="Admin" asp-action="Reports"><i class="bi bi-graph-up"></i> Reports</a>
                     </li>
 
-                    <!-- Notifications -->
+                    <!-- 🔔 Notifications -->
                     <li class="nav-item position-relative">
                         <a class="nav-link notification-bell" asp-controller="Notifications" asp-action="Index">
                             <i class="bi bi-bell fs-5"></i>
@@ -69,7 +80,7 @@
                         </a>
                     </li>
 
-                    <!-- User Dropdown -->
+                    <!-- 👤 User Dropdown -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
                             <img src="https://ui-avatars.com/api/?name=Admin&background=6366f1&color=fff" alt="Admin" class="user-avatar" />
@@ -87,23 +98,34 @@
         </div>
     </nav>
 
-
-            <div class="container-fluid">
-                <main role="main" class="pb-3">
-                    @RenderBody()
-                </main>
-            </div>
-            <!-- Dashboard Content -->
+    <!-- ✅ Page Body -->
+    <div class="container-fluid mt-4">
+        <main role="main" class="pb-3">
+            @RenderBody()
         </main>
     </div>
 
-    <!-- Chart.js -->
-    <script src="~/jquery/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="~/js/script.js"></script>
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <footer class="text-center py-3 border-top small text-muted mt-auto">
+        © @DateTime.Now.Year FitVerse. All Rights Reserved.
+    </footer>
 
+    <!-- ✅ jQuery FIRST -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+
+    <!-- ✅ Then Bootstrap JS (remove '...' integrity) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+
+    <!-- ✅ Then custom scripts -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="~/js/script.js"></script>
+
+    <!--SWAl-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- ✅ Page-specific scripts -->
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

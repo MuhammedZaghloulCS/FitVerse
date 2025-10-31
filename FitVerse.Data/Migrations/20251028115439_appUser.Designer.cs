@@ -4,6 +4,7 @@ using FitVerse.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitVerse.Data.Migrations
 {
     [DbContext(typeof(FitVerseDbContext))]
-    partial class FitVerseDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251028115439_appUser")]
+    partial class appUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -112,8 +115,9 @@ namespace FitVerse.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Gender")
-                        .HasColumnType("int");
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
@@ -167,6 +171,8 @@ namespace FitVerse.Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("UserName");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -223,15 +229,20 @@ namespace FitVerse.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Goal")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double?>("Height")
+                    b.Property<double>("Height")
                         .HasColumnType("float");
 
-                    b.Property<double?>("StartWeight")
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<double>("StartWeight")
                         .HasColumnType("float");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -247,10 +258,11 @@ namespace FitVerse.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("About")
+                        .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<int?>("ExperienceYears")
+                    b.Property<int>("ExperienceYears")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -1075,7 +1087,9 @@ namespace FitVerse.Data.Migrations
                 {
                     b.HasOne("FitVerse.Core.Models.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

@@ -10,16 +10,13 @@ namespace FitVerse.Data.Models
 
     public class Coach
     {
-        public string Id { get; set; } = Guid.NewGuid().ToString(); // يتم إنشاء Id تلقائي
-        public string Name { get; set; } = null!;
-        public int ExperienceYears { get; set; }
-        public string About { get; set; } = null!;
-        public string? ImagePath { get; set; }
-        public bool IsActive { get; set; }
+        public string Id { get; set; }=Guid.NewGuid().ToString();
+        public int? ExperienceYears { get; set; }
+        public string? About { get; set; } 
 
         public string? UserId { get; set; }
         [ForeignKey(nameof(UserId))]
-        public virtual ApplicationUser User { get; set; } = null!;
+        public virtual ApplicationUser User { get; set; }
 
         public virtual ICollection<CoachSpecialties> CoachSpecialties { get; set; } = new HashSet<CoachSpecialties>();
         public virtual ICollection<CoachPackage> CoachPackages { get; set; } = new List<CoachPackage>();

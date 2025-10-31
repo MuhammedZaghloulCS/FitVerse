@@ -15,18 +15,7 @@ namespace FitVerse.Data.Configurations
         {
             builder.HasKey(c => c.Id);
 
-            builder.Property(c => c.Name)
-                   .IsRequired()
-                   .HasMaxLength(100);
-
-            builder.Property(c => c.Gender)
-                   .HasMaxLength(10);
-
-            builder.Property(c => c.Goal)
-                   .HasMaxLength(255);
-
-            builder.Property(c => c.Image)
-                   .HasMaxLength(255);
+    
 
             builder.HasMany(c => c.ClientSubscriptions)
                         .WithOne(s => s.Client)

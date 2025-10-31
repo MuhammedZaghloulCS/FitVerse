@@ -39,7 +39,7 @@ namespace FitVerse.Service.Service
 
                 var client = mapper.Map<Client>(model);
                 client.UserId = "6A29B02B-7643-48C3-9B47-6ECF12F4B9F9";
-                client.Image = imagePath ?? "/Images/default.jpg";
+                //client.Image = imagePath ?? "/Images/default.jpg";
 
                 unitOfWork.Clients.Add(client);
                 unitOfWork.Complete();
@@ -52,7 +52,24 @@ namespace FitVerse.Service.Service
             }
 
         }
+        public (bool Success, string Message) AddClientByAdmin(Client client)
+        {
 
+            try
+            {
+
+
+                unitOfWork.Clients.Add(client);
+                unitOfWork.Complete();
+
+                return (true, "Client added successfully.");
+            }
+            catch (Exception ex)
+            {
+                return (false, ex.Message);
+            }
+
+        }
         public List<ClientDashVM> GetAllClients()
         {
             //Guid coachId = Guid.Parse("11111111-1111-1111-1111-111111111111");// Coach logged in ID

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FitVerse.Core.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -40,8 +41,16 @@ namespace FitVerse.Core.ViewModels.Admin.User
         [RegularExpression(@"^(010|011|012|015)\d{8}$", ErrorMessage = "Please enter a valid Egyptian phone number.")]
         public string PhoneNumber { get; set; }
         [Required(ErrorMessage = "Account Status is required")]
-
         public string Status { get; set; }
+
+        [Required(ErrorMessage = "User Gender is required")]
+
+        public UserGender Gender { get; set; }
+        [Required(ErrorMessage = "Age is required")] 
+        [Range(18,55,ErrorMessage ="Age should be in range 18 to 55")]
+        public int Age { get; set; }
+
+
 
 
     }

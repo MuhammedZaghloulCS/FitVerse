@@ -54,7 +54,6 @@ namespace FitVerse.WebUI
                   options.AccessDeniedPath = new PathString("/Account/AccessDenied");
               });
             //Allow UserName Duplication
-            builder.Services.AddScoped<IUserValidator<ApplicationUser>, AllowDuplicateUsernameValidator<ApplicationUser>>();
 
 
             builder.Services.AddControllers()//make json case sensitive
@@ -98,9 +97,7 @@ namespace FitVerse.WebUI
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapStaticAssets();
-            app.MapControllerRoute(
-                name: "areas",
-                pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
+
 
 
             app.MapControllerRoute(

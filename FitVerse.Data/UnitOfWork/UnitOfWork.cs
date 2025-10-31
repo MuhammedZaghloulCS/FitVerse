@@ -20,6 +20,7 @@ namespace FitVerse.Data.UnitOfWork
         SpecialityRepository specialties;
         PaymentRepository payments;
         CoachFeedbackRepository coachFeedbacks;
+        CoachSpecialtiesRepository coachSpecialties;
 
         public UnitOfWork(FitVerseDbContext context)
         {
@@ -69,7 +70,7 @@ namespace FitVerse.Data.UnitOfWork
             {
                 if (clients == null)
                     clients = new ClientRepository(_context);
-                return Clients;
+                return clients;
 
             }
 

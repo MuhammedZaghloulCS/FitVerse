@@ -163,8 +163,8 @@
                             <input asp-for="PhoneNumber" class="form-control-custom"  />
                             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                         </div>
-
-                        <div class="col-12">
+                        <div class="d-flex">
+                        <div class="col-4">
                             <label asp-for="Role" class="form-label-custom"></label>
                             <select asp-for="Role" class="form-control-custom">
                                 <option hidden selected>Select Role</option>
@@ -174,8 +174,8 @@
                             </select>
                             <span asp-validation-for="Role" class="text-danger"></span>
                         </div>
-
-                        <div class="col-12">
+                         
+                        <div class="col-4">
                             <label asp-for="Status" class="form-label-custom"></label>
                             <select asp-for="Status" class="form-control-custom">
                                 <option hidden selected>Select Status</option>
@@ -184,7 +184,21 @@
                             </select>
                             <span asp-validation-for="Role" class="text-danger"></span>
                         </div>
-                
+                            <div class="col-4">
+                                <label asp-for="@Model.Gender" class="form-label-custom"></label>
+                                <select asp-for="@Model.Gender" class="form-control-custom">
+                                    <option hidden selected>Select Gender</option>
+                                    <option value="1">Male</option>
+                                    <option value="2">Female</option>
+                                </select>
+                                <span asp-validation-for="@Model.Gender" class="text-danger"></span>
+                            </div>
+						</div>
+                        <div class="col-12">
+                            <label asp-for="@Model.Age" class="form-label-custom"></label>
+                            <input asp-for="@Model.Age" class="form-control-custom" type="number" min="0" style="-moz-appearance: textfield; appearance: textfield;" onfocus="this.style.appearance='textfield'; this.style.MozAppearance='textfield'; this.style.WebkitAppearance='none';" />
+                            <span asp-validation-for="@Model.Age" class="text-danger"></span>
+                        </div>
                     </div>
 
                     <div class="modal-footer border-0">
@@ -194,79 +208,6 @@
                 </form>
             </div>
             
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="UpdateUserModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content" style="border-radius: 16px; border: none;">
-            <div class="modal-header" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none;">
-                <h5 class="modal-title fw-bold">Update User</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-4">
-                <form asp-action="UpdateUser" asp-controller="Users" method="post">
-                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-                    <div class="row g-3">
-                        <input asp-for="Id" id="UpdateId" hidden class="form-control-custom" />
-
-                        <div class="col-12">
-                            <label asp-for="FirstName" class="form-label-custom"></label>
-                            <input asp-for="FirstName" id="UpdateFirstName" class="form-control-custom" />
-                            <span asp-validation-for="FirstName" class="text-danger"></span>
-                        </div>
-
-                        <div class="col-12">
-                            <label asp-for="LastName"  class="form-label-custom"></label>
-							<input asp-for="LastName"  id="UpdateLastName" class="form-control-custom" />
-                            <span asp-validation-for="LastName" class="text-danger"></span>
-                        </div>
-
-                        <div class="col-12">
-                            <label asp-for="Email"  class="form-label-custom"></label>
-							<input asp-for="Email" id="UpdateEmail" class="form-control-custom" />
-                            <span asp-validation-for="Email" class="text-danger"></span>
-                        </div>
-
-
-
-                        <div class="col-12">
-                            <label asp-for="PhoneNumber" class="form-label-custom"></label>
-                            <input asp-for="PhoneNumber" id="UpdatePhoneNumber" class="form-control-custom" />
-                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                        </div>
-
-                        <div class="col-12">
-                            <label asp-for="Role" class="form-label-custom"></label>
-                            <select asp-for="Role" id="UpdateRole" class="form-control-custom">
-                                <option hidden selected>Select Role</option>
-                                <option value="Admin">Admin</option>
-                                <option value="Coach">Coach</option>
-                                <option value="Client">Client</option>
-                            </select>
-                            <span asp-validation-for="Role" class="text-danger"></span>
-                        </div>
-
-                        <div class="col-12">
-                            <label asp-for="Status" class="form-label-custom"></label>
-                            <select asp-for="Status" id="UpdateStatus" class="form-control-custom">
-                                <option hidden selected>Select Status</option>
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
-                            </select>
-                            <span asp-validation-for="Status" class="text-danger"></span>
-                        </div>
-
-                    </div>
-
-                    <div class="modal-footer border-0">
-                        <button type="reset" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary-custom">Update User</button>
-                    </div>
-                </form>
-            </div>
-
         </div>
     </div>
 </div>
@@ -311,6 +252,30 @@
                         icon: 'error',
                         title: 'Oops!',
                         text: addUserMessage,
+                        confirmButtonColor: '#d33'
+                    });
+                }
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var status = '@TempData["UpdateUserStatus"]';
+            var message = '@TempData["UpdateUserMessage"]';
+
+            if (status && message) {
+                if (status === "success") {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: message,
+                        confirmButtonColor: '#4f46e5'
+                    });
+                } else if (status === "error") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops!',
+                        text: message,
                         confirmButtonColor: '#d33'
                     });
                 }

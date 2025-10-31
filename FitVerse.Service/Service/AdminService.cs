@@ -64,7 +64,7 @@ namespace FitVerse.Service.Service
                       coach => coach.Id,
                       (avg, coach) => new TopCoachViewModel
                       {
-                          Name = coach.Name,
+                          //Name = coach.Name,
                           ClientsCount = avg.ClientsCount,
                           Rating = avg.AverageRate
                       })

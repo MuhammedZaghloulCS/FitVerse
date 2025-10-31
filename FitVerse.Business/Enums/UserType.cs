@@ -7,4 +7,5 @@ namespace FitVerse.Core.Enums
         Coach=1,
         Client
     }
+
 }
