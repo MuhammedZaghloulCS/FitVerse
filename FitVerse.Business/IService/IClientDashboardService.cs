@@ -5,6 +5,6 @@ namespace FitVerse.Core.IUnitOfWorkServices
 {
     public interface IClientDashboardService
     {
-       ClientDashboardViewModel GetClientDashboardAsync(string clientId);
+       ClientDashboardViewModel GetClientDashboard(string clientId);
     }
 }

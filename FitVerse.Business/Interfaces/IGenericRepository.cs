@@ -20,7 +20,6 @@ namespace FitVerse.Core.Interfaces
         IQueryable<T> GetQueryable();
 
 
-        void Delete(T entity); 
         void RemoveRange(IEnumerable<T> entities);
         void complete();
 

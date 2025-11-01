@@ -168,15 +168,7 @@ namespace FitVerse.Data.UnitOfWork
 
         }
 
-        public IDietPlanRepository DietPlans {
-            get
-            {
-                if (dietPlanRepository == null)
-                    dietPlanRepository = new DietPlanRepository(_context);
-                return dietPlanRepository;
-            }
 
-        }
         public IExercisePlanDetailRepository ExercisePlanDetails { 
             get
             {

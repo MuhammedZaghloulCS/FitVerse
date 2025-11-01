@@ -15,7 +15,7 @@ namespace FitVerse.Web.Controllers
 
         public IActionResult Dashboard(string clientId = "1")
         {
-            var model = _unitOfWorkService.ClientDashboardService.GetClientDashboardAsync(clientId);
+            var model = _unitOfWorkService.ClientDashboardService.GetClientDashboard(clientId);
             if (model == null)
                 return NotFound("Client or Coach not found");
 

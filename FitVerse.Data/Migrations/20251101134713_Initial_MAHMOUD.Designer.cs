@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitVerse.Data.Migrations
 {
     [DbContext(typeof(FitVerseDbContext))]
-    [Migration("20251101003512_AddDietPkanContent")]
-    partial class AddDietPkanContent
+    [Migration("20251101134713_Initial_MAHMOUD")]
+    partial class Initial_MAHMOUD
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -293,80 +293,6 @@ namespace FitVerse.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Coaches");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "C1",
-                            About = "Expert in Strength and Conditioning",
-                            ExperienceYears = 8,
-                            ImagePath = "/images/coaches/john.jpg",
-                            IsActive = true,
-                            Name = "John Smith"
-                        },
-                        new
-                        {
-                            Id = "C2",
-                            About = "Cardio and endurance specialist with personalized HIIT plans.",
-                            ExperienceYears = 6,
-                            ImagePath = "/images/coaches/sarah.jpg",
-                            IsActive = true,
-                            Name = "Sarah Johnson"
-                        },
-                        new
-                        {
-                            Id = "C3",
-                            About = "Yoga and mobility instructor focused on flexibility and wellness.",
-                            ExperienceYears = 7,
-                            ImagePath = "/images/coaches/michael.jpg",
-                            IsActive = true,
-                            Name = "Michael Lee"
-                        },
-                        new
-                        {
-                            Id = "C4",
-                            About = "CrossFit certified coach delivering high-intensity programs.",
-                            ExperienceYears = 5,
-                            ImagePath = "/images/coaches/chris.jpg",
-                            IsActive = true,
-                            Name = "Chris Evans"
-                        },
-                        new
-                        {
-                            Id = "C5",
-                            About = "Boxing and MMA trainer with focus on endurance and strength.",
-                            ExperienceYears = 4,
-                            ImagePath = "/images/coaches/amanda.jpg",
-                            IsActive = true,
-                            Name = "Amanda Davis"
-                        },
-                        new
-                        {
-                            Id = "C6",
-                            About = "Professional bodybuilder and muscle growth expert.",
-                            ExperienceYears = 10,
-                            ImagePath = "/images/coaches/robert.jpg",
-                            IsActive = true,
-                            Name = "Robert Wilson"
-                        },
-                        new
-                        {
-                            Id = "C7",
-                            About = "Running and endurance coach with marathon training expertise.",
-                            ExperienceYears = 5,
-                            ImagePath = "/images/coaches/emily.jpg",
-                            IsActive = true,
-                            Name = "Emily Clark"
-                        },
-                        new
-                        {
-                            Id = "C8",
-                            About = "Nutrition and weight loss expert with balanced diet programs.",
-                            ExperienceYears = 6,
-                            ImagePath = "/images/coaches/david.jpg",
-                            IsActive = true,
-                            Name = "David Harris"
-                        });
                 });
 
             modelBuilder.Entity("FitVerse.Data.Models.CoachFeedback", b =>
@@ -423,56 +349,6 @@ namespace FitVerse.Data.Migrations
                     b.HasIndex("SpecialtyId");
 
                     b.ToTable("CoachSpecialties");
-
-                    b.HasData(
-                        new
-                        {
-                            CoachId = "C1",
-                            SpecialtyId = 1,
-                            Certification = ""
-                        },
-                        new
-                        {
-                            CoachId = "C2",
-                            SpecialtyId = 2,
-                            Certification = ""
-                        },
-                        new
-                        {
-                            CoachId = "C3",
-                            SpecialtyId = 3,
-                            Certification = ""
-                        },
-                        new
-                        {
-                            CoachId = "C4",
-                            SpecialtyId = 4,
-                            Certification = ""
-                        },
-                        new
-                        {
-                            CoachId = "C5",
-                            SpecialtyId = 5,
-                            Certification = ""
-                        },
-                        new
-                        {
-                            CoachId = "C6",
-                            SpecialtyId = 6,
-                            Certification = ""
-                        },
-                        new
-                        {
-                            CoachId = "C7",
-                            SpecialtyId = 7,
-                            Certification = ""
-                        },
-                        new
-                        {
-                            CoachId = "C8",
-                            SpecialtyId = 8,
-                            Certification = ""
-                        });
                 });
 
             modelBuilder.Entity("FitVerse.Data.Models.DailyLog", b =>
@@ -539,21 +415,33 @@ namespace FitVerse.Data.Migrations
                     b.Property<double>("ActivityMultiplier")
                         .HasColumnType("float");
 
+                    b.Property<int>("Age")
+                        .HasColumnType("int");
+
                     b.Property<double>("CarbInGrams")
                         .HasColumnType("float");
 
                     b.Property<string>("ClientId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CoachId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<double>("FatsInGrams")
                         .HasColumnType("float");
 
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Goal")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Height")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -565,6 +453,9 @@ namespace FitVerse.Data.Migrations
                         .HasColumnType("float");
 
                     b.Property<double>("TotalCal")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Weight")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
@@ -902,72 +793,6 @@ namespace FitVerse.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Specialties");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Color = "#007bff",
-                            Description = "Building muscle and power",
-                            Icon = "fa-solid fa-dumbbell",
-                            Name = "Strength Training"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Color = "#dc3545",
-                            Description = "Cardiovascular fitness",
-                            Icon = "fa-solid fa-heartbeat",
-                            Name = "Cardio & HIIT"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Color = "#20c997",
-                            Description = "Mobility and stretching",
-                            Icon = "fa-solid fa-person-praying",
-                            Name = "Flexibility & Yoga"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Color = "#fd7e14",
-                            Description = "High-intensity functional training",
-                            Icon = "fa-solid fa-bolt",
-                            Name = "CrossFit"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Color = "#6610f2",
-                            Description = "Combat sports training",
-                            Icon = "fa-solid fa-hand-fist",
-                            Name = "Boxing & MMA"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Color = "#ffc107",
-                            Description = "Muscle hypertrophy focus",
-                            Icon = "fa-solid fa-trophy",
-                            Name = "Bodybuilding"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Color = "#198754",
-                            Description = "Distance and stamina",
-                            Icon = "fa-solid fa-person-running",
-                            Name = "Running & Endurance"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Color = "#0dcaf0",
-                            Description = "Fat loss and nutrition",
-                            Icon = "fa-solid fa-scale-balanced",
-                            Name = "Weight Loss"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -1250,14 +1075,11 @@ namespace FitVerse.Data.Migrations
                     b.HasOne("FitVerse.Data.Models.Client", "Client")
                         .WithMany("DietPlans")
                         .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("FitVerse.Data.Models.Coach", "Coach")
                         .WithMany("DietPlans")
-                        .HasForeignKey("CoachId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CoachId");
 
                     b.Navigation("Client");
 

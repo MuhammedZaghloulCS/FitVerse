@@ -26,7 +26,7 @@ namespace FitVerse.Core.UnitOfWorkServices
             this.imageService = imageService;
         }
 
-        public ClientDashboardViewModel GetClientDashboardAsync(string clientId)
+        public ClientDashboardViewModel GetClientDashboard(string clientId)
         {
             var client = clientService.GetById(clientId);
             if (client == null) return null;

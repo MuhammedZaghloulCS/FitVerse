@@ -25,7 +25,6 @@ namespace FitVerse.Core.UnitOfWork
         IExercisePlanDetailRepository ExercisePlanDetails { get; }  
 
 
-        IDietPlanRepository DietPlans { get; }
         IEquipmentRepository Equipments { get; }
         IExerciseRepository Exercises { get; }
         IMessageRepository Messages { get; }
