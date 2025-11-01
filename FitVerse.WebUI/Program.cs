@@ -1,11 +1,15 @@
 using FitVerse.Core.Interfaces;
 using FitVerse.Core.IService;
 using FitVerse.Core.IUnitOfWorkServices;
+using FitVerse.Core.IUnitOfWorkServices;
 using FitVerse.Core.MapperConfigs;
+using FitVerse.Core.Models;
 using FitVerse.Core.UnitOfWork;
+using FitVerse.Core.UnitOfWorkServices;
 using FitVerse.Data.Context;
 using FitVerse.Data.Repositories;
 using FitVerse.Data.Service;
+using FitVerse.Data.Service.FitVerse.Data.Service;
 using FitVerse.Data.Service.FitVerse.Data.Service;
 using FitVerse.Data.UnitOfWork;
 using FitVerse.Data.UnitOfWork;
@@ -14,9 +18,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
-using FitVerse.Data.Service.FitVerse.Data.Service;
-using FitVerse.Core.IUnitOfWorkServices;
-using FitVerse.Core.Models;
 
 namespace FitVerse.WebUI
 {

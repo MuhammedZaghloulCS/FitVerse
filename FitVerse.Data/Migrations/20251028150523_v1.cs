@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace FitVerse.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class initialcreate : Migration
+    public partial class v1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -103,7 +105,10 @@ namespace FitVerse.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Icon = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Color = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -118,7 +123,8 @@ namespace FitVerse.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AnatomyId = table.Column<int>(type: "int", nullable: false)
+                    AnatomyId = table.Column<int>(type: "int", nullable: false),
+                    ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -511,6 +517,37 @@ namespace FitVerse.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DailyLogs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClientId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CoachId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    LogDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    ClientNotes = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
+                    CoachFeedback = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
+                    CoachRating = table.Column<int>(type: "int", nullable: true),
+                    IsReviewed = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DailyLogs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DailyLogs_Clients_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_DailyLogs_Coaches_CoachId",
+                        column: x => x.CoachId,
+                        principalTable: "Coaches",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DietPlans",
                 columns: table => new
                 {
@@ -637,6 +674,51 @@ namespace FitVerse.Data.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Coaches",
+                columns: new[] { "Id", "About", "ExperienceYears", "ImagePath", "IsActive", "Name", "UserId" },
+                values: new object[,]
+                {
+                    { "C1", "Expert in Strength and Conditioning", 8, "/images/coaches/john.jpg", true, "John Smith", null },
+                    { "C2", "Cardio and endurance specialist with personalized HIIT plans.", 6, "/images/coaches/sarah.jpg", true, "Sarah Johnson", null },
+                    { "C3", "Yoga and mobility instructor focused on flexibility and wellness.", 7, "/images/coaches/michael.jpg", true, "Michael Lee", null },
+                    { "C4", "CrossFit certified coach delivering high-intensity programs.", 5, "/images/coaches/chris.jpg", true, "Chris Evans", null },
+                    { "C5", "Boxing and MMA trainer with focus on endurance and strength.", 4, "/images/coaches/amanda.jpg", true, "Amanda Davis", null },
+                    { "C6", "Professional bodybuilder and muscle growth expert.", 10, "/images/coaches/robert.jpg", true, "Robert Wilson", null },
+                    { "C7", "Running and endurance coach with marathon training expertise.", 5, "/images/coaches/emily.jpg", true, "Emily Clark", null },
+                    { "C8", "Nutrition and weight loss expert with balanced diet programs.", 6, "/images/coaches/david.jpg", true, "David Harris", null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Specialties",
+                columns: new[] { "Id", "Color", "Description", "Icon", "Name" },
+                values: new object[,]
+                {
+                    { 1, "#007bff", "Building muscle and power", "fa-solid fa-dumbbell", "Strength Training" },
+                    { 2, "#dc3545", "Cardiovascular fitness", "fa-solid fa-heartbeat", "Cardio & HIIT" },
+                    { 3, "#20c997", "Mobility and stretching", "fa-solid fa-person-praying", "Flexibility & Yoga" },
+                    { 4, "#fd7e14", "High-intensity functional training", "fa-solid fa-bolt", "CrossFit" },
+                    { 5, "#6610f2", "Combat sports training", "fa-solid fa-hand-fist", "Boxing & MMA" },
+                    { 6, "#ffc107", "Muscle hypertrophy focus", "fa-solid fa-trophy", "Bodybuilding" },
+                    { 7, "#198754", "Distance and stamina", "fa-solid fa-person-running", "Running & Endurance" },
+                    { 8, "#0dcaf0", "Fat loss and nutrition", "fa-solid fa-scale-balanced", "Weight Loss" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "CoachSpecialties",
+                columns: new[] { "CoachId", "SpecialtyId", "Certification" },
+                values: new object[,]
+                {
+                    { "C1", 1, "" },
+                    { "C2", 2, "" },
+                    { "C3", 3, "" },
+                    { "C4", 4, "" },
+                    { "C5", 5, "" },
+                    { "C6", 6, "" },
+                    { "C7", 7, "" },
+                    { "C8", 8, "" }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -738,6 +820,16 @@ namespace FitVerse.Data.Migrations
                 column: "SpecialtyId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DailyLogs_ClientId",
+                table: "DailyLogs",
+                column: "ClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DailyLogs_CoachId",
+                table: "DailyLogs",
+                column: "CoachId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DietPlans_ClientId",
                 table: "DietPlans",
                 column: "ClientId");
@@ -837,6 +929,9 @@ namespace FitVerse.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "CoachSpecialties");
+
+            migrationBuilder.DropTable(
+                name: "DailyLogs");
 
             migrationBuilder.DropTable(
                 name: "DietPlans");

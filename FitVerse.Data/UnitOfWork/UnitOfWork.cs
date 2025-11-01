@@ -1,4 +1,5 @@
 ﻿using FitVerse.Core.Interfaces;
+using FitVerse.Core.Repositories;
 using FitVerse.Core.UnitOfWork;
 using FitVerse.Data.Context;
 using FitVerse.Data.Models;
@@ -21,6 +22,14 @@ namespace FitVerse.Data.UnitOfWork
         PaymentRepository payments;
         CoachFeedbackRepository coachFeedbacks;
         CoachSpecialtiesRepository coachSpecialties;
+        CoachPackageRepository coachPackageRepository;
+        IDailyLogRepository dailyLogRepository;
+        DietPlanRepository dietPlanRepository;
+        ExercisePlanDetailRepository ExercisePlanDetail;
+
+
+
+
 
         public UnitOfWork(FitVerseDbContext context)
         {
@@ -64,16 +73,14 @@ namespace FitVerse.Data.UnitOfWork
                 return package;
             }
         }
-        public IClientRepository Clients 
+        public IClientRepository Clients
         {
             get
             {
                 if (clients == null)
                     clients = new ClientRepository(_context);
-                return Clients;
-
+                return clients; // <--- صحح هنا
             }
-
         }
         public IExerciseRepository Exercises
         {
@@ -122,6 +129,7 @@ namespace FitVerse.Data.UnitOfWork
             }
         }
 
+
         public ICoachFeedbackRepository CoachFeedbacks
         {
             get
@@ -132,6 +140,54 @@ namespace FitVerse.Data.UnitOfWork
             }
 
         }
+
+      
+        ICoachPackageRepository IUnitOfWork.coachPackageRepository
+        {
+            get
+            {
+                if (coachPackageRepository == null)
+                    coachPackageRepository = new CoachPackageRepository(_context);
+                return coachPackageRepository;
+            }
+
+
+        }
+
+        public IDietPlanRepository DietPlans {
+            get
+            {
+                if (dietPlanRepository == null)
+                    dietPlanRepository = new DietPlanRepository(_context);
+                return dietPlanRepository;
+            }
+
+        }
+        public IExercisePlanDetailRepository ExercisePlanDetails { 
+            get
+            {
+                if (ExercisePlanDetail == null)
+                    ExercisePlanDetail = new ExercisePlanDetailRepository(_context);
+                return ExercisePlanDetail;
+            }
+        }
+
+
+
+
+
+        IDailyLogRepository IUnitOfWork.DailyLogsRepository
+        {
+            get
+            {
+                if (dailyLogRepository == null)
+                    dailyLogRepository = new DailyLogRepository(_context);
+                return dailyLogRepository;
+            }
+        }
+
+        public IExercisePlanRepository ExercisePlans => new ExercisePlanRepository(_context);
+
 
         public int Complete() => _context.SaveChanges();
         public void Dispose() => _context.Dispose();

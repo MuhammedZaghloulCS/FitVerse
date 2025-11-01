@@ -1,38 +1,53 @@
-﻿using AutoMapper;
-using FitVerse.Core.IUnitOfWorkServices;
-using FitVerse.Core.UnitOfWork;
+﻿using FitVerse.Core.IUnitOfWorkServices;
 using FitVerse.Core.ViewModels.Admin;
 using FitVerse.Data.Models;
-using FitVerse.Service.Service;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace FitVerse.Web.Controllers
 {
-
- 
     public class AdminController : Controller
     {
-        IUnitOFWorkService unitOFWorkService;
+        private readonly IUnitOFWorkService _unitOfWorkService;
 
         public AdminController(IUnitOFWorkService unitOFWorkService)
         {
-            this.unitOFWorkService = unitOFWorkService;
+            _unitOfWorkService = unitOFWorkService;
         }
 
         public IActionResult Index()
         {
             var model = new AdminDashboardViewModel
             {
-                TotalUsers = unitOFWorkService.AdminService.getTotalUsersCount(),
-                TotalRevenue = unitOFWorkService.AdminService.getTotalRevenue(),
-                TotalCoaches = unitOFWorkService.AdminService.getCoachesCount(),
-                SoldedPackages = unitOFWorkService.AdminService.getSoldedPackagesCount(),
-                TopCoaches = unitOFWorkService.AdminService.getTopRatedCoaches()
+                TotalUsers = _unitOfWorkService.AdminService.getTotalUsersCount(),
+                TotalRevenue = _unitOfWorkService.AdminService.getTotalRevenue(),
+                TotalCoaches = _unitOfWorkService.AdminService.getCoachesCount(),
+                SoldedPackages = _unitOfWorkService.AdminService.getSoldedPackagesCount(),
+                TopCoaches = _unitOfWorkService.AdminService.getTopRatedCoaches()
             };
 
             return View(model);
         }
 
- 
+        public IActionResult CoachPackages()
+        {
+            var coaches = _unitOfWorkService.CoachService.GetAllCoachesWithPackages();
+            var packages = _unitOfWorkService.PackageAppService.GetAllPackages();
+            ViewBag.Packages = packages;
+            return View(coaches);
+        }
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> AssignPackagesToCoach(string coachId, List<int> selectedPackages)
+        {
+            _unitOfWorkService.PackageAppService.AssignPackagesToCoach(coachId, selectedPackages);
+            TempData["SuccessMessage"] = "Packages updated successfully!";
+            return RedirectToAction(nameof(CoachPackages));
+        }
+
+
     }
 }

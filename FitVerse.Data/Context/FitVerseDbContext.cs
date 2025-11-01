@@ -41,6 +41,7 @@ namespace FitVerse.Data.Context
         public DbSet<Specialty> Specialties { get; set; }
 
 
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());

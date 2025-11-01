@@ -30,6 +30,11 @@ namespace FitVerse.Data.Repositories
 
         }
 
+        public void complete()
+        {
+            context.SaveChanges();
+        }
+
         public void Delete(T entity)
         {
             if (entity == null)
@@ -65,6 +70,13 @@ namespace FitVerse.Data.Repositories
             if (id == null)
                 throw new ArgumentNullException(nameof(id));
             return dbSet.Find(id);
+        }
+
+        public void RemoveRange(IEnumerable<T> entities)
+        {
+            if (entities == null)
+                throw new ArgumentNullException(nameof(entities));
+            dbSet.RemoveRange(entities);
         }
 
         public void Update(T entity)

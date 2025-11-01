@@ -17,14 +17,18 @@ namespace FitVerse.Core.UnitOfWork
         IAnatomyRepository Anatomies { get; }
         ICoachSpecialtiesRepository CoachSpecialties { get; }
         ICoachFeedbackRepository CoachFeedbacks { get; }
-        //IDietPlanRepository DietPlans { get; }
+        ICoachPackageRepository coachPackageRepository { get; }
+        IDailyLogRepository DailyLogsRepository { get; }
+        IExercisePlanDetailRepository ExercisePlanDetails { get; }  
+
+
+        IDietPlanRepository DietPlans { get; }
         IEquipmentRepository Equipments { get; }
         IExerciseRepository Exercises { get; }
         //IMessageRepository Messages { get; }
         //IChatRepository Chats { get; }
         //IExerciseRepository Exercises { get; }
-        //IExercisePlanRepository ExercisePlans { get; }
-        //IExercisePlanDetailRepository ExercisePlanDetails { get; }
+        IExercisePlanRepository ExercisePlans { get; }
         //INotificationRepository Notifications { get; }
         IPackageRepository Packages { get; }
         IPaymentRepository Payments { get; }

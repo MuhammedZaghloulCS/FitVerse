@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FitVerse.Core.IService
+namespace FitVerse.Core.Interfaces
 {
-    public interface IExerciseService:IService
+    public interface ICoachPackageRepository : IGenericRepository<CoachPackage>
     {
+
     }
 }

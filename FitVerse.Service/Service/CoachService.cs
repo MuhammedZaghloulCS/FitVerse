@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using FitVerse.Core.IService;
 using FitVerse.Core.viewModels;
 using FitVerse.Core.ViewModels.Client;
+using FitVerse.Core.ViewModels.Package;
 using FitVerse.Data.UnitOfWork;
 using global::FitVerse.Core.IService;
 using global::FitVerse.Core.UnitOfWork;
@@ -61,7 +62,6 @@ namespace FitVerse.Data.Service
             }
 
 
-
             (bool Success, string Message) ICoachService.DeleteCoachById(string id)
             {
                 var coaches = unitOfWork.Coaches.DeleteCoachById(id);
@@ -102,24 +102,24 @@ namespace FitVerse.Data.Service
 
 
 
-public (List<AddCoachVM> Data, int TotalItems) GetPagedEquipments(int page, int pageSize, string? search)
-        {
-            var query = unitOfWork.Coaches.GetAll().AsQueryable();
+            public (List<AddCoachVM> Data, int TotalItems) GetPagedEquipments(int page, int pageSize, string? search)
+                    {
+                        var query = unitOfWork.Coaches.GetAll().AsQueryable();
 
-            if (!string.IsNullOrEmpty(search))
-                query = query.Where(e => e.Name.ToLower().Contains(search.ToLower()));
+                        if (!string.IsNullOrEmpty(search))
+                            query = query.Where(e => e.Name.ToLower().Contains(search.ToLower()));
 
-            var totalItems = query.Count();
+                        var totalItems = query.Count();
 
-            // استخدام ProjectTo لتحويل الـ IQueryable مباشرة إلى الـ VM
-            var data = query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ProjectTo<AddCoachVM>(mapper.ConfigurationProvider)
-                .ToList();
+                        // استخدام ProjectTo لتحويل الـ IQueryable مباشرة إلى الـ VM
+                        var data = query
+                            .Skip((page - 1) * pageSize)
+                            .Take(pageSize)
+                            .ProjectTo<AddCoachVM>(mapper.ConfigurationProvider)
+                            .ToList();
 
-            return (data, totalItems);
-        }
+                        return (data, totalItems);
+                    }
 
             public CoachDashboardViewModel GetDashboardData(string coachId)
             {
@@ -137,12 +137,69 @@ public (List<AddCoachVM> Data, int TotalItems) GetPagedEquipments(int page, int 
 
                 return dashboard;
             }
-            
+
+            public List<CoachWithPackagesVM> GetAllCoachesWithPackages()
+            {
+                var coaches = unitOfWork.Coaches.GetAll().ToList();
+
+                var coachVMs = coaches.Select(c => new CoachWithPackagesVM
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    ExperienceYears = c.ExperienceYears,
+                    Packages = c.CoachPackages.Select(cp => new PackagesVM
+                    {
+                        Id = cp.Package.Id,
+                        Name = cp.Package.Name
+                    }).ToList()
+                }).ToList();
+
+                return coachVMs;
+            }
+
+
+            // يرجع كل العملاء للكوتش
+            public List<ClientDashVM> GetClientsByCoachId(string coachId)
+            {
+                var clients = unitOfWork.Clients
+                    .Find(c => c.ClientSubscriptions.Any(cs => cs.CoachId == coachId))
+                    .ToList();
+
+                return mapper.Map<List<ClientDashVM>>(clients);
+            }
+
+            // تمارين اليوم للكوتش (لجميع عملائه اليوم)
+            public List<Exercise> GetTodayExercisesByClient(string coachId)
+            {
+                var today = DateTime.UtcNow.Date;
+
+                var exercises = unitOfWork.ExercisePlanDetails
+                    .Find(epd => epd.ExercisePlan.CoachId == coachId
+                                && epd.ExercisePlan.Date.Date == today)
+                    .Select(epd => epd.Exercise)
+                    .ToList();
+
+                return exercises;
+            }
+
+
+            public Coach GetCoachByClientId(string clientId)
+            {
+                var client = unitOfWork.Clients.Find(c => c.Id == clientId).FirstOrDefault();
+                if (client == null) return null;
+
+                var coachId = client.ClientSubscriptions.FirstOrDefault()?.CoachId;
+                if (coachId == null) return null;
+
+                return unitOfWork.Coaches.Find(c => c.Id == coachId).FirstOrDefault();
+            }
+
+
 
 
 
 
         }
-}
+    }
 }
 

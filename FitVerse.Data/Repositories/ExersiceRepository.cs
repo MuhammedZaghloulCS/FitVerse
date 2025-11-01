@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace FitVerse.Data.Repositories
 {
-    internal class ExersiceRepository : GenericRepository<Exercise>,IExerciseRepository
+    public class ExersiceRepository : GenericRepository<Exercise>,IExerciseRepository
     {
         FitVerseDbContext contex;
         public ExersiceRepository(FitVerseDbContext context) : base(context)

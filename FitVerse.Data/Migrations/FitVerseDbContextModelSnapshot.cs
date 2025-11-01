@@ -472,6 +472,59 @@ namespace FitVerse.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("FitVerse.Data.Models.DailyLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClientId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ClientNotes")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("CoachFeedback")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CoachId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("CoachRating")
+                        .HasColumnType("int");
+
+                    b.Property<double>("CurrentWeight")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("float(5)");
+
+                    b.Property<bool>("IsReviewed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime>("LogDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("PhotoPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("CoachId");
+
+                    b.ToTable("DailyLogs", (string)null);
+                });
+
             modelBuilder.Entity("FitVerse.Data.Models.DietPlan", b =>
                 {
                     b.Property<int>("Id")
@@ -498,6 +551,10 @@ namespace FitVerse.Data.Migrations
                         .HasColumnType("float");
 
                     b.Property<string>("Goal")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Notes")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -694,6 +751,10 @@ namespace FitVerse.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagePath")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -1162,6 +1223,25 @@ namespace FitVerse.Data.Migrations
                     b.Navigation("Specialty");
                 });
 
+            modelBuilder.Entity("FitVerse.Data.Models.DailyLog", b =>
+                {
+                    b.HasOne("FitVerse.Data.Models.Client", "Client")
+                        .WithMany("DailyLogs")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("FitVerse.Data.Models.Coach", "Coach")
+                        .WithMany("DailyLogs")
+                        .HasForeignKey("CoachId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Coach");
+                });
+
             modelBuilder.Entity("FitVerse.Data.Models.DietPlan", b =>
                 {
                     b.HasOne("FitVerse.Data.Models.Client", "Client")
@@ -1375,6 +1455,8 @@ namespace FitVerse.Data.Migrations
 
                     b.Navigation("CoachFeedback");
 
+                    b.Navigation("DailyLogs");
+
                     b.Navigation("DietPlans");
 
                     b.Navigation("ExercisePlans");
@@ -1393,6 +1475,8 @@ namespace FitVerse.Data.Migrations
                     b.Navigation("CoachPackages");
 
                     b.Navigation("CoachSpecialties");
+
+                    b.Navigation("DailyLogs");
 
                     b.Navigation("DietPlans");
 

@@ -129,6 +129,23 @@ namespace FitVerse.Data.Repositories
             return clientVMs;
         }
 
-      
+        public IQueryable<Coach> GetAllWithPackages()
+        {
+            return Coaches
+                .Include(c => c.CoachPackages)
+                .ThenInclude(cp => cp.Package);
+        }
+
+        public List<Specialty> GetCoachspecialtiesByCoachId(string CoachId)
+        {
+            var specialties = (from cs in context.Set<CoachSpecialties>()
+                               join s in context.Set<Specialty>() on cs.SpecialtyId equals s.Id
+                               where cs.CoachId == CoachId.ToString()
+                               select s).ToList();
+            return specialties;
+
+        }
+
     }
 }
+

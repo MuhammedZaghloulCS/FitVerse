@@ -16,6 +16,8 @@ namespace FitVerse.Core.Interfaces
         T Add(T entity);
         void Update(T entity);
         void Delete(T entity); 
-        
+        void RemoveRange(IEnumerable<T> entities);
+        void complete();
+
     }
 }
