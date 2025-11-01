@@ -12,39 +12,33 @@ function loadSpecialty() {
 
             response.data.forEach(function (item) {
 
-                let color = "#4a4a4a"; 
-
-                const name = item.Name.toLowerCase();
-
-                if (name.includes("nutrition") || name.includes("weight")) color = "#4CAF50"; 
-                else if (name.includes("cardio") || name.includes("hiit")) color = "#E91E63"; 
-                else if (name.includes("strength")) color = "#2196F3"; 
-                else if (name.includes("yoga") || name.includes("flexibility")) color = "#FF9800"; 
-                else if (name.includes("crossfit")) color = "#9C27B0"; 
-                else if (name.includes("boxing") || name.includes("mma")) color = "#f44336";
-                else if (name.includes("bodybuilding")) color = "#FF5722"; 
-                else if (name.includes("running") || name.includes("endurance")) color = "#009688";
-
-                const iconHtml = item.Icon
-                    ? `<i class="${item.Icon}" style="font-size: 2rem; color: ${color};"></i>`
-                    : `<span style="font-size: 2rem;">💪</span>`;
+                // ✅ استخدم الصورة فقط بدون ألوان أو تمييز
+                const imageHtml = item.Image
+                    ? `<img src="${item.Image}" alt="${item.Name}" 
+                            class="img-fluid rounded-circle mb-3" 
+                            style="width:80px; height:80px; object-fit:cover;">`
+                    : `<img src="/images/default-specialty.png" alt="default" 
+                            class="img-fluid rounded-circle mb-3" 
+                            style="width:80px; height:80px; object-fit:cover;">`;
 
                 $('#specialtiesContainer').append(`
-                     <div class="col-lg-3 col-md-6">
-
+                    <div class="col-lg-3 col-md-6">
                         <div class="card-custom">
                             <div class="card-body-custom text-center">
-                                <div class="mb-3">${iconHtml}</div>
+                                ${imageHtml}
                                 <h5 class="fw-bold mb-2">${item.Name}</h5>
                                 <p class="text-muted small mb-3">${item.Description || ''}</p>
                                 <div class="mb-3">
                                     <span class="badge-custom badge-primary">${item.CoachesCount} Coaches</span>
                                 </div>
                                 <div class="d-flex gap-2">
-                                  <button class="btn btn-outline-primary btn-sm flex-grow-1" onclick="editSpecialty(${item.Id})" data-bs-toggle="modal" data-bs-target="#editSpecialtyModal">
-                                          <i class="bi bi-pencil"></i> Edit </button>
-                                  <button class="btn btn-danger btn-sm" onclick="deleteSpecialty(${item.Id})">
-                                          <i class="bi bi-trash"></i>  </button>
+                                    <button class="btn btn-outline-primary btn-sm flex-grow-1"
+                                        onclick="editSpecialty(${item.Id}, '${item.Name}', '${item.Description}', '${item.ImagePath || ''}')"
+                                        <i class="bi bi-pencil"></i> Edit
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteSpecialty(${item.Id})">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -52,96 +46,105 @@ function loadSpecialty() {
                 `);
             });
         },
-         error: function () {
+        error: function () {
             console.error("❌ Failed to load specialties.");
         }
     });
 }
 
 
-$.ajax({
-    url: '/Specialty/Create',
-    method: 'POST',
-    contentType: 'application/json',
-    data: JSON.stringify({
-        name: $('#specialtyName').val(),
-        description: $('#specialtyDescription').val(),
-        icon: $('#specialtyIcon').val()
-    }),
-    success: function (response) {
-     
-            swal("Success",  "Specialty added successfully!", "success");
-            loadSpecialty();
-       
-    },
-    error: function () {
-        swal("Error", "Failed to add specialty.", "error");
-    }
-});
-
-
-
 function addSpecialty() {
     const name = $('#specialtyName').val().trim();
     const description = $('#specialtyDescription').val().trim();
-    const icon = $('#specialtyIcon').val().trim();
+    const imageFile = $('#specialtyImage')[0].files[0];
 
-    if (!name || !description || !icon) {
+    if (!name || !description || !imageFile) {
         swal("Error", "Please fill all fields before submitting.", "error");
         return;
     }
 
+    const formData = new FormData();
+    formData.append("Name", name);
+    formData.append("Description", description);
+    formData.append("Image", imageFile);
+
     $.ajax({
-        url: '/Specialty/Create', 
+        url: '/Specialty/Create',
         method: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({ Name: name, Description: description, Icon: icon }),
+        processData: false,
+        contentType: false,
+        data: formData,
         success: function (response) {
-            if (response.success || response.Success) {
-                swal("Success!", response.message || "Specialty added successfully.", "success");
-                $('#addSpecialtyModal').modal('hide');
-                loadSpecialty();
-            } else {
-                swal("Error", response.message || "Failed to add specialty.", "error");
-            }
+            swal("Success!", response.message || "Specialty added successfully.", "success");
+            $('#addSpecialtyModal').modal('hide');
+            $('#specialtyName').val('');
+            $('#specialtyDescription').val('');
+            $('#specialtyImage').val('');
+            loadSpecialty();
         },
         error: function (xhr) {
             console.error(xhr.responseText);
-            swal("Error", "Invalid data. Please fill all fields.", "error");
+            swal("Error", "Something went wrong. Please try again.", "error");
         }
     });
 }
 
 
+function editSpecialty(id, name, description, imagePath) {
+    $('#specialtyId').val(id);
+    $('#editSpecialtyName').val(name);
+    $('#editSpecialtyDescription').val(description);
+
+    if (imagePath) {
+        $('#currentImagePreview').attr('src', imagePath).show();
+    } else {
+        $('#currentImagePreview').hide();
+    }
+
+    $('#editSpecialtyImage').val('');
+
+    $('#editSpecialtyModal').modal('show');
+}
+
 function updateSpecialty() {
     const id = $('#specialtyId').val();
     const name = $('#editSpecialtyName').val().trim();
     const description = $('#editSpecialtyDescription').val().trim();
-    const icon = $('#editSpecialtyIcon').val().trim();
+    const imageFile = $('#editSpecialtyImage')[0].files[0];
 
     if (!name) {
         swal("Error", "Name is required!", "error");
         return;
     }
 
+    const formData = new FormData();
+    formData.append("Id", id);
+    formData.append("Name", name);
+    formData.append("Description", description);
+
+    if (imageFile) {
+        formData.append("Image", imageFile);
+    }
+
     $.ajax({
         url: '/Specialty/Update',
         method: 'PUT',
-        contentType: 'application/json',
-        data: JSON.stringify({ Id: id, Name: name, Description: description, Icon: icon }),
+        processData: false,
+        contentType: false,
+        data: formData,
         success: function (response) {
-
-                swal("Updated!", response.message, "success");
-                $('#editSpecialtyModal').modal('hide');
-                loadSpecialty();
-          
-            
+            swal("Updated!", response.message || "Specialty updated successfully.", "success");
+            $('#editSpecialtyModal').modal('hide');
+            $('#editSpecialtyImage').val('');
+            loadSpecialty();
         },
-        error: function () {
+        error: function (xhr) {
+            console.error(xhr.responseText);
             swal("Error", "Server error occurred while updating specialty.", "error");
         }
     });
 }
+
 
 function deleteSpecialty(id) {
     swal({

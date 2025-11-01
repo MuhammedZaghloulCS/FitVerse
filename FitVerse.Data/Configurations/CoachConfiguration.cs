@@ -1,6 +1,7 @@
 ﻿using FitVerse.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Reflection.Emit;
 
 namespace FitVerse.Data.Configurations
 {
@@ -39,6 +40,8 @@ namespace FitVerse.Data.Configurations
                    .WithOne(cp => cp.Coach)
                    .HasForeignKey(cp => cp.CoachId)
                    .OnDelete(DeleteBehavior.Cascade);
+
+ 
         }
     }
 }

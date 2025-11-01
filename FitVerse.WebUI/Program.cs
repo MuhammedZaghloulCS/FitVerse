@@ -2,21 +2,19 @@ using FitVerse.Core.Interfaces;
 using FitVerse.Core.IService;
 using FitVerse.Core.IUnitOfWorkServices;
 using FitVerse.Core.MapperConfigs;
+using FitVerse.Core.Models;
 using FitVerse.Core.UnitOfWork;
+using FitVerse.Data.Configurations;
 using FitVerse.Data.Context;
 using FitVerse.Data.Repositories;
 using FitVerse.Data.Service;
 using FitVerse.Data.Service.FitVerse.Data.Service;
-using FitVerse.Data.UnitOfWork;
 using FitVerse.Data.UnitOfWork;
 using FitVerse.Service.Service;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
-using FitVerse.Data.Service.FitVerse.Data.Service;
-using FitVerse.Core.IUnitOfWorkServices;
-using FitVerse.Core.Models;
 
 namespace FitVerse.WebUI
 {
@@ -75,8 +73,15 @@ namespace FitVerse.WebUI
             builder.Services.AddScoped<IMuscleService, MuscleService>();
             builder.Services.AddScoped<ISpecialtiesRepository, SpecialityRepository>();
             builder.Services.AddScoped<ISpecialtyService, SpecialtyService>();
+            builder.Services.AddScoped<IClientOnCoachesService, ClientOnCoachesService>();
+            builder.Services.AddScoped<IExerciseService, ExerciseService>();
+            
+            builder.Services.AddScoped<IExercisePlanRepository, ExercisePlanRepository>();
+            builder.Services.AddScoped<IExercisePlanService, ExercisePlanService>();
 
-
+            
+            builder.Services.AddScoped<IExercisePlanDetailRepository, ExercisePlanDetailRepository>();
+            builder.Services.AddScoped<IExercisePlanDetailService, ExercisePlanDetailService>();
 
 
             builder.Services.AddAutoMapper(op=>op.AddProfile(typeof(MapperConfig)));
@@ -84,6 +89,7 @@ namespace FitVerse.WebUI
 
             var app = builder.Build();
 
+        
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {

@@ -44,7 +44,10 @@ function loadMuscles() {
         success: function (response) {
             let dropdown = $('#muscleId');
             dropdown.empty().append('<option value="" disabled selected>Select muscle</option>');
-            response.data.forEach(m => {
+
+            console.log(response);
+
+            response.Data.forEach(m => {
                 dropdown.append(`<option value="${m.Id}">${m.Name}</option>`);
             });
         },
@@ -53,6 +56,7 @@ function loadMuscles() {
         }
     });
 }
+
 
 function loadEquipments() {
     $.ajax({
@@ -144,23 +148,24 @@ function loadExercisesPaged() {
 
 
 // ======================= PAGINATION =========================
+// ==========================
+// Pagination
+// ==========================
 function renderPagination(currentPage, totalPages) {
     const pagination = $('.pagination');
     pagination.empty();
 
-    if (totalPages <= 1) return;
-
     const prevDisabled = currentPage === 1 ? 'disabled' : '';
     const nextDisabled = currentPage === totalPages ? 'disabled' : '';
 
-    pagination.append(`<button class="btn-icon" ${prevDisabled} onclick="changePage(${currentPage - 1})"><i class="fas fa-chevron-left"></i></button>`);
+    pagination.append(`<li class="page-item ${prevDisabled}"><a class="page-link" href="#" onclick="changePage(${currentPage - 1})">Previous</a></li>`);
 
     for (let i = 1; i <= totalPages; i++) {
         const active = i === currentPage ? 'active' : '';
-        pagination.append(`<button class="btn-icon ${active}" onclick="changePage(${i})">${i}</button>`);
+        pagination.append(`<li class="page-item ${active}"><a class="page-link" href="#" onclick="changePage(${i})">${i}</a></li>`);
     }
 
-    pagination.append(`<button class="btn-icon" ${nextDisabled} onclick="changePage(${currentPage + 1})"><i class="fas fa-chevron-right"></i></button>`);
+    pagination.append(`<li class="page-item ${nextDisabled}"><a class="page-link" href="#" onclick="changePage(${currentPage + 1})">Next</a></li>`);
 }
 
 function changePage(page) {
@@ -168,7 +173,6 @@ function changePage(page) {
     currentPage = page;
     loadExercisesPaged();
 }
-
 
 // ======================= CRUD =========================
 function addExercise() {
@@ -186,12 +190,10 @@ function addExercise() {
         data: exercise,
         success: function (response) {
             if (response.success) {
-                // إظهار رسالة نجاح
                 swal({
                     title: "✅ Added Successfully!",
                     icon: "success",
                 }).then(() => {
-                    // لما يضغط OK، نخفي المودال ونفض الفورم
                     $('#addExerciseModal').modal('hide');
                     clearForm();
                     loadExercisesPaged();
@@ -283,9 +285,9 @@ function deleteExercise(Id) {
         }
     });
         }  
-else{
-    html = '<div class="text-center text-muted">No clients found.</div>';
-}
+//else{
+//    html = '<div class="text-center text-muted">No clients found.</div>';
+//}
 
 //$('#allClientsContainer').html(html);
 //        },

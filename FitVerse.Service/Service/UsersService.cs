@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 namespace FitVerse.Service.Service
 {
-    internal class UsersService : IUsersService
+    public class UsersService : IUsersService
     {
         UserManager<ApplicationUser> userManager;
 

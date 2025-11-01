@@ -8,17 +8,18 @@ namespace FitVerse.Data.Models
 {
     public class ExercisePlanDetail
     {
+        public int Id { get; set; }  // Primary Key
         public int NumOfSets { get; set; }
         public int NumOfRepeats { get; set; }
         public DateTime Date { get; set; }
         public string? Notes { get; set; }
         public bool IsCompleted { get; set; }
-
         public int ExercisePlanId { get; set; }
-        public virtual  ExercisePlan? ExercisePlan { get; set; }
-
+        public virtual ExercisePlan? ExercisePlan { get; set; }
         public int ExerciseId { get; set; }
         public virtual Exercise? Exercise { get; set; }
+
+
     
     }
 }

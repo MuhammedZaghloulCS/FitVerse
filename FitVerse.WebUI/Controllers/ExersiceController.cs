@@ -1,5 +1,6 @@
 ﻿
 using AutoMapper;
+using FitVerse.Core.IService;
 using FitVerse.Core.UnitOfWork;
 using FitVerse.Core.viewModels;
 using FitVerse.Core.ViewModels.ExerciseVM;
@@ -12,122 +13,81 @@ namespace FitVerse.Web.Controllers
 {
     public class ExerciseController : Controller
     {
-        IUnitOfWork db; IMapper mapper;
-        public ExerciseController(IUnitOfWork db, IMapper mapper)
+        private readonly IExerciseService _exerciseService;
+
+        public ExerciseController(IExerciseService exerciseService)
         {
-            this.db = db;
-            this.mapper = mapper;
+            _exerciseService = exerciseService;
         }
+
         public IActionResult Index()
         {
-            GetAll();
             return View();
         }
+
+        [HttpGet]
         public IActionResult GetAll()
         {
-            if (db == null)
-                throw new NullReferenceException("UnitOfWork returns NullException");
-            if (db.Exercises == null)
-                throw new NullReferenceException("DbContext.Excersice returns NullException");
-
-            var data = mapper.Map < List < ExerciseVM >> (db.Exercises.GetAll().ToList());
-            return Json(new { data });
-
-        }
-        public IActionResult GetAllMuscles()
-        {
-            var muscles = db.Muscles.GetAll();
-            var data = mapper.Map<MuscleVM>(muscles);
-            return Json(new { data });
-        }
-        public IActionResult GetAllEquipments()
-        {
-            var Exercises = db.Equipments.GetAll();
-            var data = mapper.Map<ExerciseVM>(Exercises);
-            return Json(new { data });
+            var data = _exerciseService.GetAllExercises();
+            return Json(new { success = true, data });
         }
 
-        public IActionResult Create(AddExerciseVM exercise)
-        {
-            if (exercise == null)
-                throw new NullReferenceException();
-            var exe = mapper.Map<Exercise>(exercise);
-            db.Exercises.Add(exe);
-            if (db.Complete() > 0)
-            {
-                return Json(new { success = true, message = "Exercise created successfully" });
-
-            }
-            return Json(new { success = false, message = "Somthing wrong!" });
-
-        }
-
-
+        [HttpGet]
         public IActionResult GetById(int id)
         {
-            var exe = db.Exercises.GetById(id);
-            if (exe == null)
-                throw new NullReferenceException();
-            var exercise = mapper.Map<ExerciseVM>(exe);
-            return Json(new { success = true, data = exercise });
+            var data = _exerciseService.GetExerciseById(id);
+            if (data == null)
+                return Json(new { success = false, message = "Exercise not found!" });
+
+            return Json(new { success = true, data });
         }
 
+        [HttpPost]
+        public IActionResult Create(AddExerciseVM model)
+        {
+            var result = _exerciseService.AddExercise(model);
+            return Json(new { success = result.Success, message = result.Message });
+        }
 
+        [HttpPost]
         public IActionResult Update(ExerciseVM model)
         {
-            var exercise = db.Exercises.GetById(model.Id);
-            if (exercise == null)
-            {
-                return Json(new { success = false, message = "Not Found!" });
-            }
-            exercise.Name = model.Name;
-            db.Exercises.Update(exercise);
-            if (db.Complete() > 0)
-            {
-                return Json(new { success = true, message = "Exercise updated successfully" });
-            }
-            return Json(new { success = false, message = "Somthing wrong!" });
-
+            var result = _exerciseService.UpdateExercise(model);
+            return Json(new { success = result.Success, message = result.Message });
         }
+
+        [HttpPost]
         public IActionResult Delete(int id)
         {
-            var exercise = db.Exercises.GetById(id);
-            if (exercise == null)
-            {
-                return Json(new { success = false, message = "Not Found!" });
-            }
-            db.Exercises.Delete(exercise);
-            if (db.Complete() > 0)
-            {
-                return Json(new { success = true, message = "Exercise deleted successfully" });
-            }
-            return Json(new { success = false, message = "Somthing wrong!" });
+            var result = _exerciseService.DeleteExercise(id);
+            return Json(new { success = result.Success, message = result.Message });
         }
+
+        [HttpGet]
         public IActionResult GetPaged(int page = 1, int pageSize = 6, string? search = null)
         {
-            var query = db.Exercises.GetAll().AsQueryable();
-
-            if (!string.IsNullOrEmpty(search))
-            {
-
-                string lowerSearch = search.ToLower();
-                query = query.Where(a => a.Name.ToLower().Contains(lowerSearch));
-            }
-
-            var totalItems = query.Count();
-            var data = query
-                .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToList();
-            var mappedData = data.Select(e => new ExerciseVM { Id = e.Id, Name = e.Name }).ToList();
-
-
+            var (data, totalItems) = _exerciseService.GetPagedExercises(page, pageSize, search);
             return Json(new
             {
-                data = mappedData,
+                success = true,
+                data,
                 currentPage = page,
-                totalPages = (int)Math.Ceiling((double)totalItems / pageSize)
+                totalPages = (int)System.Math.Ceiling((double)totalItems / pageSize)
             });
+        }
+
+        [HttpGet]
+        public IActionResult GetAllMuscles()
+        {
+            var data = _exerciseService.GetAllMuscles();
+            return Json(new { success = true, data });
+        }
+
+        [HttpGet]
+        public IActionResult GetAllEquipments()
+        {
+            var data = _exerciseService.GetAllEquipments();
+            return Json(new { success = true, data });
         }
     }
 

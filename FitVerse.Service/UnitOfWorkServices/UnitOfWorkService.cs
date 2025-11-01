@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace FitVerse.Data.UnitOfWork
 {
-    public class UnitOfWorkService : IUnitOFWorkService
+    public class UnitOfWorkService :IUnitOFWorkService
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
@@ -29,8 +29,11 @@ namespace FitVerse.Data.UnitOfWork
         private IClientService clientService;
         private IUsersService users;
         private IAccountService account;
-        private IUsers users;
+        //private IUsers users;
         private IAdminService adminService;
+        private IClientOnCoachesService clientOnCoachesService;
+        private IExercisePlanService exercisePlanService;
+        private IExercisePlanDetailService exercisePlanDetailService;
 
         // Lazy-loaded repositories
         private IEquipmentRepository equipmentRepository;
@@ -38,7 +41,9 @@ namespace FitVerse.Data.UnitOfWork
         private IMuscleRepository muscleRepository;
         private ICoachRepository coachRepository;
         private IClientRepository clientRepository;
-
+        private IExercisePlanRepository exercisePlanRepository;
+        private IExercisePlanDetailRepository exercisePlanDetailRepository;
+       
 
         public UnitOfWorkService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
@@ -53,13 +58,15 @@ namespace FitVerse.Data.UnitOfWork
 
 
         // Services
+
         public IImageHandleService ImageHandleService => imageHandleService ??= new ImageHandleService();
         public ICoachService CoachService => coachService ??= new CoachService(unitOfWork, mapper, ImageHandleService);
         public IClientService ClientService => clientService ??= new ClientService(unitOfWork, mapper, ImageHandleService);
         public IUsersService UsersService => users ??= new UsersService(userManager, mapper);
         public IAccountService AccountService => account ??= new AccountService(userManager, mapper,signInManager);
-        public IUsers UsersService => users ??= new UsersService(userManager, mapper);
+        //public IUsersService UsersService => users ??= new UsersService(userManager, mapper);
         public IAdminService AdminService => adminService ??= new AdminService(unitOfWork, userManager);
+
 
 
         // Repositories
@@ -69,8 +76,16 @@ namespace FitVerse.Data.UnitOfWork
         public ICoachRepository CoachRepository => coachRepository ??= new CoachRepository(context);
         public IClientRepository ClientRepository => clientRepository ??= new ClientRepository(context);
 
-        public ISpecialtiesRepository SpecialtiesRepository => throw new NotImplementedException();
+        public ISpecialtiesRepository SpecialtiesRepository => new SpecialityRepository(context);
 
-        public ICoachSpecialtiesRepository CoachSpecialtiesRepository => throw new NotImplementedException();
+        public ICoachSpecialtiesRepository CoachSpecialtiesRepository =>  new CoachSpecialtiesRepository(context);
+
+         //public IClientOnCoachesService clientOnCoachesService =>  new ClientOnCoachesService(unitOfWork);
+
+        public IExercisePlanDetailRepository ExercisePlanDetailRepository => new ExercisePlanDetailRepository(context);
+
+        public IExercisePlanRepository ExercisePlanRepository => new ExercisePlanRepository(context);
+
+        IClientOnCoachesService IUnitOFWorkService.clientOnCoachesService => new ClientOnCoachesService(unitOfWork);
     }
 }

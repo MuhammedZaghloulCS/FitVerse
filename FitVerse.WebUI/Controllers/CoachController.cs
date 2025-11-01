@@ -8,6 +8,7 @@ using FitVerse.Core.ViewModels.Equipment;
 using FitVerse.Data.Models;
 using FitVerse.Data.Service.FitVerse.Data.Service;
 using FitVerse.Data.UnitOfWork;
+using FitVerse.Service.Service;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -30,7 +31,10 @@ namespace FitVerse.Web.Controllers
             return View();
         }
 
-
+        public IActionResult MyClients()
+        {
+            return View(); 
+        }
         public IActionResult Dashboard() {
             string coachId ="11111111-1111-1111-1111-111111111111";
             var model = unitOFWorkService.CoachService.GetDashboardData(coachId);
@@ -123,7 +127,12 @@ namespace FitVerse.Web.Controllers
             return Json(new { data = clients });
         }
 
-
+        [HttpGet]
+        public IActionResult GetMyClients()
+        {
+            var clients = unitOFWorkService.clientOnCoachesService.GetAllClients();
+            return Json(new { success = true, clients });
+        }
     }
 
 }

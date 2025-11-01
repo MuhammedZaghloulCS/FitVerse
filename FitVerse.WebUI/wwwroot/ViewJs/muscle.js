@@ -35,13 +35,24 @@ function loadMusclePaged() {
         url: '/Muscle/GetPaged',
         method: 'GET',
         data: {
-            page: currentPage, pageSize, search: currentSearch, anatomyId: anatomyFilter 
-},
+            page: currentPage,
+            pageSize,
+            search: currentSearch,
+            anatomyId: anatomyFilter
+        },
         success: function (response) {
-            const tbody = $('#data');
+            const tbody = $('#Data');
             tbody.empty();
 
-            response.data.forEach(item => {
+            const data = response.Data || [];
+
+            if (!Array.isArray(data)) {
+                swal("Error", "Invalid data format returned from server.", "error");
+                console.error("Response:", response);
+                return;
+            }
+
+            data.forEach(item => {
                 tbody.append(`
                     <tr>
                         <td>${item.Name}</td>
@@ -65,13 +76,14 @@ function loadMusclePaged() {
                 `);
             });
 
-            renderPagination(response.currentPage, response.totalPages);
+            renderPagination(response.CurrentPage || 1, response.TotalPages || 1);
         },
         error: function () {
             swal("Error", "Failed to load muscles!", "error");
         }
     });
 }
+
 
 // ==========================
 // Pagination
@@ -107,11 +119,17 @@ function loadAnatomyGroups(selectId = '#AnatomyGroup', selectedId = null) {
         url: '/Muscle/GetAnatomyGroups',
         method: 'GET',
         success: function (response) {
+            // تحقق أن Data موجودة ومصفوفة
+            if (!response || !response.Data || !Array.isArray(response.Data)) {
+                console.error("Invalid data format returned from server.", response);
+                return;
+            }
+
             const select = $(selectId);
             select.empty();
             select.append('<option value="">Select body part...</option>');
 
-            response.data.forEach(item => {
+            response.Data.forEach(item => {
                 const selected = item.Id === selectedId ? 'selected' : '';
                 select.append(`<option value="${item.Id}" ${selected}>${item.Name}</option>`);
             });
@@ -153,18 +171,24 @@ function addMuscle() {
     }
 
     $.post('/Muscle/Create', { Name: name, Description: description, AnatomyId: anatomyId }, function (response) {
-        if (response.success) {
-            swal("Added!", response.message, "success");
+        console.log("Response:", response);
+
+        const success = response.success ?? response.Success;
+        const message = response.message ?? response.Message;
+
+        if (success) {
+            swal("Added!", message || "Muscle added successfully!", "success");
             $('#addMuscleModal').modal('hide');
             $('#addMuscleForm')[0].reset();
             loadMusclePaged();
-            loadStats(); 
-
+            loadStats();
         } else {
-            swal("Error", response.message, "error");
+            swal("Error", message || "Something went wrong!", "error");
         }
     });
+
 }
+
 
 function updateMuscle() {
     const id = $('#editMuscleId').val();
@@ -177,16 +201,20 @@ function updateMuscle() {
         return;
     }
 
-    $.post('/Muscle/Update', { Id: id, Name: name, Description: description, AnatomyId: anatomyId }, function (response) {
-        if (response.success) {
-            swal("Updated!", response.message, "success");
-            $('#editMuscleModal').modal('hide');
-            loadMusclePaged();
-            loadStats();
-        } else {
-            swal("Error", response.message, "error");
+    $.post('/Muscle/Update',
+        { Id: id, Name: name, Description: description, AnatomyId: anatomyId },
+        function (response) {
+            if (response.Success) {
+                swal("Updated!", response.Message || "Updated successfully!", "success");
+                $('#editMuscleModal').modal('hide');
+                loadMusclePaged();
+                loadStats();
+            } else {
+                swal("Error", response.Message || "Something went wrong!", "error");
+            }
         }
-    });
+    );
+
 }
 
 function deleteMuscle(id) {

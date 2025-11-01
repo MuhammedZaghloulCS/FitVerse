@@ -59,7 +59,6 @@ namespace FitVerse.Data.Repositories
             return query.ToList();
         }
 
-
         public T GetById(int id)
         {
             if (id == null)

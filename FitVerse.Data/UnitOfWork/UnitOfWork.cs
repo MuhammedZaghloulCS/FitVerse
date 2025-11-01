@@ -20,7 +20,13 @@ namespace FitVerse.Data.UnitOfWork
         SpecialityRepository specialties;
         PaymentRepository payments;
         CoachFeedbackRepository coachFeedbacks;
+        CoachSpecialtiesRepository coachSpecialties;
+        SpecialityRepository speciality;
+        ExercisePlanRepository exercisePlans;
+        ExercisePlanDetailRepository exercisePlanDetail;
+        
 
+        
         public UnitOfWork(FitVerseDbContext context)
         {
             _context = context;
@@ -69,7 +75,7 @@ namespace FitVerse.Data.UnitOfWork
             {
                 if (clients == null)
                     clients = new ClientRepository(_context);
-                return Clients;
+                return clients;
 
             }
 
@@ -111,16 +117,7 @@ namespace FitVerse.Data.UnitOfWork
             }
 
         }
-        public ICoachSpecialtiesRepository CoachSpecialties
-        {
-            get
-            {
-                if (coachSpecialties == null)
-                    coachSpecialties = new CoachSpecialtiesRepository(_context);
-                return coachSpecialties;
-            }
-        }
-
+          
         public ICoachFeedbackRepository CoachFeedbacks
         {
             get
@@ -130,6 +127,36 @@ namespace FitVerse.Data.UnitOfWork
                 return coachFeedbacks;
             }
 
+        }
+
+         public  ICoachSpecialtiesRepository CoachSpecialties
+        {
+            get
+            {
+                 if (coachSpecialties == null)
+                coachSpecialties = new CoachSpecialtiesRepository(_context);
+                return coachSpecialties;
+            }
+        }
+
+        public IExercisePlanRepository ExercisePlans
+        {
+            get
+            {
+                if(exercisePlans == null)
+                    exercisePlans= new ExercisePlanRepository(_context);
+                return exercisePlans;
+            }
+        }
+
+        public IExercisePlanDetailRepository ExercisePlanDetails
+        {
+            get
+            {
+                if(exercisePlanDetail== null)
+                    exercisePlanDetail= new ExercisePlanDetailRepository(_context);
+                return exercisePlanDetail;
+            }
         }
 
         public int Complete() => _context.SaveChanges();
