@@ -3,16 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace FitVerse.Data.Migrations
 {
     /// <inheritdoc />
-<<<<<<<< HEAD:FitVerse.Data/Migrations/20251030121604_last.cs
-    public partial class last : Migration
-========
-    public partial class Initial_MAHMOUD : Migration
->>>>>>>> 882d8902ed3a4bbe463171f8bc7bb5a79afbba4c:FitVerse.Data/Migrations/20251101134713_Initial_MAHMOUD.cs
+    public partial class intialC : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -568,10 +562,7 @@ namespace FitVerse.Data.Migrations
                     ProteinInGrams = table.Column<double>(type: "float", nullable: false),
                     CarbInGrams = table.Column<double>(type: "float", nullable: false),
                     FatsInGrams = table.Column<double>(type: "float", nullable: false),
-<<<<<<<< HEAD:FitVerse.Data/Migrations/20251030121604_last.cs
-========
                     Goal = table.Column<string>(type: "nvarchar(max)", nullable: false),
->>>>>>>> 882d8902ed3a4bbe463171f8bc7bb5a79afbba4c:FitVerse.Data/Migrations/20251101134713_Initial_MAHMOUD.cs
                     ClientId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     CoachId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ActivityMultiplier = table.Column<double>(type: "float", nullable: false),
@@ -686,51 +677,6 @@ namespace FitVerse.Data.Migrations
                         principalTable: "Exercises",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.InsertData(
-                table: "Coaches",
-                columns: new[] { "Id", "About", "ExperienceYears", "ImagePath", "IsActive", "Name", "UserId" },
-                values: new object[,]
-                {
-                    { "C1", "Expert in Strength and Conditioning", 8, "/images/coaches/john.jpg", true, "John Smith", null },
-                    { "C2", "Cardio and endurance specialist with personalized HIIT plans.", 6, "/images/coaches/sarah.jpg", true, "Sarah Johnson", null },
-                    { "C3", "Yoga and mobility instructor focused on flexibility and wellness.", 7, "/images/coaches/michael.jpg", true, "Michael Lee", null },
-                    { "C4", "CrossFit certified coach delivering high-intensity programs.", 5, "/images/coaches/chris.jpg", true, "Chris Evans", null },
-                    { "C5", "Boxing and MMA trainer with focus on endurance and strength.", 4, "/images/coaches/amanda.jpg", true, "Amanda Davis", null },
-                    { "C6", "Professional bodybuilder and muscle growth expert.", 10, "/images/coaches/robert.jpg", true, "Robert Wilson", null },
-                    { "C7", "Running and endurance coach with marathon training expertise.", 5, "/images/coaches/emily.jpg", true, "Emily Clark", null },
-                    { "C8", "Nutrition and weight loss expert with balanced diet programs.", 6, "/images/coaches/david.jpg", true, "David Harris", null }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Specialties",
-                columns: new[] { "Id", "Color", "Description", "Icon", "Name" },
-                values: new object[,]
-                {
-                    { 1, "#007bff", "Building muscle and power", "fa-solid fa-dumbbell", "Strength Training" },
-                    { 2, "#dc3545", "Cardiovascular fitness", "fa-solid fa-heartbeat", "Cardio & HIIT" },
-                    { 3, "#20c997", "Mobility and stretching", "fa-solid fa-person-praying", "Flexibility & Yoga" },
-                    { 4, "#fd7e14", "High-intensity functional training", "fa-solid fa-bolt", "CrossFit" },
-                    { 5, "#6610f2", "Combat sports training", "fa-solid fa-hand-fist", "Boxing & MMA" },
-                    { 6, "#ffc107", "Muscle hypertrophy focus", "fa-solid fa-trophy", "Bodybuilding" },
-                    { 7, "#198754", "Distance and stamina", "fa-solid fa-person-running", "Running & Endurance" },
-                    { 8, "#0dcaf0", "Fat loss and nutrition", "fa-solid fa-scale-balanced", "Weight Loss" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "CoachSpecialties",
-                columns: new[] { "CoachId", "SpecialtyId", "Certification" },
-                values: new object[,]
-                {
-                    { "C1", 1, "" },
-                    { "C2", 2, "" },
-                    { "C3", 3, "" },
-                    { "C4", 4, "" },
-                    { "C5", 5, "" },
-                    { "C6", 6, "" },
-                    { "C7", 7, "" },
-                    { "C8", 8, "" }
                 });
 
             migrationBuilder.CreateIndex(
