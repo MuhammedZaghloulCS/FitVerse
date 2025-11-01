@@ -130,6 +130,14 @@ namespace FitVerse.Data.Repositories
             return clientVMs;
         }
 
-      
+        public void DeleteByUserId(string UserId)
+        {
+            var user = Find(c => c.UserId == UserId).FirstOrDefault();
+            if (user != null)
+            {
+                Coaches.Remove(user);
+                context.SaveChanges();
+            }
+        }
     }
 }

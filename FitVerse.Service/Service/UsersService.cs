@@ -300,6 +300,36 @@ namespace FitVerse.Service.Service
                 await userManager.AddToRoleAsync(user, userWithRole.Role);
                 await userManager.RemoveFromRolesAsync(user, currentRoles);
             }
+            if (Statics.CLIENT == userWithRole.Role)
+            {
+                Client client = new Client
+                {
+
+                    UserId = user.Id
+
+                };
+
+                UnitOfWork.Clients.Add(client);
+                UnitOfWork.Clients.DeleteByUserId(user.Id);
+            }
+            else if (Statics.COACH == userWithRole.Role)
+            {
+                Coach coach = new Coach
+                {
+
+                    UserId = user.Id
+
+                };
+                UnitOfWork.Coaches.Add(coach);
+                UnitOfWork.Coaches.DeleteByUserId(user.Id);
+            }
+            else if (Statics.ADMIN == userWithRole.Role)
+            {
+                UnitOfWork.Coaches.DeleteByUserId(user.Id);
+                UnitOfWork.Clients.DeleteByUserId(user.Id);
+
+            }
+            UnitOfWork.Complete();
             return (true, "User role updated successfully");
 
         }

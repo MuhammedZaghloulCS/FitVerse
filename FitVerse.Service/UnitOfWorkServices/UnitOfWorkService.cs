@@ -77,7 +77,7 @@ namespace FitVerse.Data.UnitOfWork
             get
             {
                 if (clientService == null)
-                    clientService = new ClientService(unitOfWork, mapper, ImageHandleService);
+                    clientService = new ClientService(unitOfWork, mapper, ImageHandleService,userManager);
                 return clientService;
             }
         }

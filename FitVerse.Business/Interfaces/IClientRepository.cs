@@ -13,5 +13,7 @@ namespace FitVerse.Core.Interfaces
     public interface IClientRepository:IGenericRepository<Client>
     {
         public (bool Success, string Message) UpdateClientGoalsRepo(string userName, ClientViewModel clientPhysicalInfo);
+        public void DeleteByUserId(string UserId);
+
     }
 }

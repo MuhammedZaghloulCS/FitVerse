@@ -4,6 +4,7 @@
     ChangeRole();
     ChangePasswordByAdmin();
     ChangePasswordByUser();
+    SetClientGoal();
 })
 
 function ChangePersonalInfo() {
@@ -188,4 +189,33 @@ function ChangePasswordByUser() {
 }
 
 
+function SetClientGoal() {
+    $('#goalsForm').on('submit', function (e) {
+        e.preventDefault();
+        var UserName = $('#hiddenUserName').val();
+        var Height = $('#clientPhysicalInfo_Height').val();
+        var StartWeight = $('#clientPhysicalInfo_StartWeight').val();
+        var Goal = $('#clientPhysicalInfo_Goal').val();
 
+        console.log(UserName, Height, StartWeight, Goal);
+        $.ajax({
+            url: '/Admin/Users/UpdateClientGoals',
+            method: 'POST',
+            data: {
+                userName: UserName,
+                height: Height,
+                startWeight: StartWeight,
+                goal: Goal
+            },
+            success: function (response) {
+                Swal.fire("Updated", "Data has been updated", "success");
+                $('#goalsForm')[0].reset();
+            },
+            error: function () {
+                Swal.fire("Error", "update the data later", "error");
+            }
+        });
+    });
+
+    
+}

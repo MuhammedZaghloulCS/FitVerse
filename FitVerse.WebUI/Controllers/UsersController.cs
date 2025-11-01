@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using FitVerse.Core.Models;
 using System.Threading.Tasks;
 using FitVerse.Core.ViewModels.Profile;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace FitVerse.Web.Controllers
 {
@@ -101,33 +102,7 @@ namespace FitVerse.Web.Controllers
             var res = await unitOFWorkService.UsersService.ChangeUserRoleAsync(userWithRole);
             return Json(new { Succeeded = res.Success, Message = res.Message });
         }
-        //[HttpPost("UpdateUser")]
-        //public async Task<IActionResult> Profile(AddUserByAdmin myUser)
-        //{
-        //    ModelState.Remove("Id");
-        //    ModelState.Remove("Password");
-        //    ModelState.Remove("ConfirmPassword");
-
-        //    if (!ModelState.IsValid)
-        //    {
-        //        ViewBag.ShowUpdateUserModal = true;
-        //        return View("Index", myUser);
-        //    }
-
-        //    var (success, message) = await unitOFWorkService.UsersService.UpdateUserAsync(myUser);
-
-        //    if (!success)
-        //    {
-        //        TempData["UpdateUserStatus"] = "error";
-        //        TempData["UpdateUserMessage"] = message;
-        //        ViewBag.ShowUpdateUserModal = true;
-        //        return View("Index", myUser);
-        //    }
-
-        //    TempData["UpdateUserStatus"] = "success";
-        //    TempData["UpdateUserMessage"] = "User updated successfully!";
-        //    return RedirectToAction("Index");
-        //}
+    
         [HttpGet("DeleteUser/{Id}")]
         public async Task<IActionResult> DeleteUser(string Id)
         {
@@ -203,9 +178,16 @@ namespace FitVerse.Web.Controllers
 
         //todo: Update Client Goals
         [HttpPost("UpdateClientGoals")]
-        public IActionResult UpdateClientGoals(ProfileViewModel client)
+        public IActionResult UpdateClientGoals(string userName, double? height, double? startWeight, string goal)
         {
-            var result = unitOFWorkService.ClientService.UpdateClientGoals(client.UserInfo.UserName,client.clientPhysicalInfo);
+            var clientInfo = new ClientViewModel
+            {
+                Height = height,
+                StartWeight = startWeight,
+                Goal = goal
+            };
+
+            var result = unitOFWorkService.ClientService.UpdateClientGoals(userName, clientInfo);
             return Json(new { result });
         }
 
