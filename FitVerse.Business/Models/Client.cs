@@ -28,5 +28,7 @@ namespace FitVerse.Data.Models
         public virtual ICollection<ExercisePlan> ExercisePlans { get; set; } = new HashSet<ExercisePlan>();
         public virtual ICollection<DietPlan> DietPlans { get; set; } = new HashSet<DietPlan>();
         public virtual CoachFeedback? CoachFeedback { get; set; }
+        public virtual ICollection<DailyLog> DailyLogs { get; set; } = new HashSet<DailyLog>();
+
     }
 }

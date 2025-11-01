@@ -22,6 +22,9 @@ namespace FitVerse.Core.Interfaces
 
         public List<ClientDashVM> GetRecentClients(string coachId);
         public List<ClientDashVM> GetAllClientsByCoach(string coachId);
+        IQueryable<Coach> GetAllWithPackages();
+        public List<Specialty> GetCoachspecialtiesByCoachId(string CoachId);
+
 
 
     }

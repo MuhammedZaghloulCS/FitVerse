@@ -1,4 +1,4 @@
-﻿using FitVerse.Core.Interfaces;
+using FitVerse.Core.Interfaces;
 using FitVerse.Core.ViewModels.Equipment;
 using FitVerse.Data.Context;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +29,11 @@ namespace FitVerse.Data.Repositories
             dbSet.Add(entity);
             return entity;
 
+        }
+
+        public void complete()
+        {
+            context.SaveChanges();
         }
 
         public void Delete(T entity)
@@ -89,11 +94,23 @@ namespace FitVerse.Data.Repositories
             return dbSet.Find(id);
         }
 
+        public void RemoveRange(IEnumerable<T> entities)
+        {
+            if (entities == null)
+                throw new ArgumentNullException(nameof(entities));
+            dbSet.RemoveRange(entities);
+        }
+
         public void Update(T entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
             dbSet.Update(entity);
+        }
+
+        public IQueryable<T> GetQueryable()
+        {
+            return dbSet;
         }
 
 

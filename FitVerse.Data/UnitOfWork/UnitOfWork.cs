@@ -1,4 +1,5 @@
 ﻿using FitVerse.Core.Interfaces;
+using FitVerse.Core.Repositories;
 using FitVerse.Core.UnitOfWork;
 using FitVerse.Data.Context;
 using FitVerse.Data.Models;
@@ -22,6 +23,16 @@ namespace FitVerse.Data.UnitOfWork
         PaymentRepository payments;
         CoachFeedbackRepository coachFeedbacks;
         CoachSpecialtiesRepository coachSpecialties;
+        CoachPackageRepository coachPackageRepository;
+        IDailyLogRepository dailyLogRepository;
+        DietPlanRepository dietPlanRepository;
+        ExercisePlanDetailRepository ExercisePlanDetail;
+        ChatRepository chats;
+        MessageRepository messages;
+
+
+
+
 
         public UnitOfWork(FitVerseDbContext context)
         {
@@ -74,16 +85,16 @@ namespace FitVerse.Data.UnitOfWork
                 return package;
             }
         }
-        public IClientRepository Clients 
+        public IClientRepository Clients
         {
             get
             {
                 if (clients == null)
                     clients = new ClientRepository(_context);
+                return clients; // <--- صحح هنا
                 return clients;
 
             }
-
         }
         public IExerciseRepository Exercises
         {
@@ -132,6 +143,7 @@ namespace FitVerse.Data.UnitOfWork
             }
         }
 
+
         public ICoachFeedbackRepository CoachFeedbacks
         {
             get
@@ -143,7 +155,68 @@ namespace FitVerse.Data.UnitOfWork
 
         }
 
+      
+        ICoachPackageRepository IUnitOfWork.coachPackageRepository
+        {
+            get
+            {
+                if (coachPackageRepository == null)
+                    coachPackageRepository = new CoachPackageRepository(_context);
+                return coachPackageRepository;
+            }
+
+
+        }
+
+
+        public IExercisePlanDetailRepository ExercisePlanDetails { 
+            get
+            {
+                if (ExercisePlanDetail == null)
+                    ExercisePlanDetail = new ExercisePlanDetailRepository(_context);
+                return ExercisePlanDetail;
+            }
+        }
+
+
+
+
+
+        IDailyLogRepository IUnitOfWork.DailyLogsRepository
+        {
+            get
+            {
+                if (dailyLogRepository == null)
+                    dailyLogRepository = new DailyLogRepository(_context);
+                return dailyLogRepository;
+            }
+        }
+
+        public IExercisePlanRepository ExercisePlans => new ExercisePlanRepository(_context);
+
+
+        public IChatRepository Chats
+        {
+            get
+            {
+                if (chats == null)
+                    chats = new ChatRepository(_context);
+                return chats;
+            }
+        }
+
+        public IMessageRepository Messages
+        {
+            get
+            {
+                if (messages == null)
+                    messages = new MessageRepository(_context);
+                return messages;
+            }
+        }
+
         public int Complete() => _context.SaveChanges();
+        public async Task<int> SaveAsync() => await _context.SaveChangesAsync();
         public void Dispose() => _context.Dispose();
     }
 }

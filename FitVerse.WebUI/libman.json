@@ -15,6 +15,13 @@
       "files": [
         "sweetalert2.min.js"
       ]
+    },
+    {
+      "library": "@microsoft/signalr@8.0.0",
+      "destination": "wwwroot/lib/microsoft/signalr/",
+      "files": [
+        "dist/browser/signalr.min.js"
+      ]
     }
   ]
 }

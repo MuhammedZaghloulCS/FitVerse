@@ -134,11 +134,8 @@ namespace FitVerse.Web.Controllers
             var packages = unitOFWorkService.CoachService.GetPackagesByCoachId(coachId);
             return Json(new { data = packages });
         }
+      
+    }
 
-
-
-
-        }
-
-}
+ }
 

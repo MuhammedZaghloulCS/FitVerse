@@ -1,11 +1,15 @@
 using FitVerse.Core.Interfaces;
 using FitVerse.Core.IService;
 using FitVerse.Core.IUnitOfWorkServices;
+using FitVerse.Core.IUnitOfWorkServices;
 using FitVerse.Core.MapperConfigs;
+using FitVerse.Core.Models;
 using FitVerse.Core.UnitOfWork;
+using FitVerse.Core.UnitOfWorkServices;
 using FitVerse.Data.Context;
 using FitVerse.Data.Repositories;
 using FitVerse.Data.Service;
+using FitVerse.Data.Service.FitVerse.Data.Service;
 using FitVerse.Data.Service.FitVerse.Data.Service;
 using FitVerse.Data.UnitOfWork;
 using FitVerse.Data.UnitOfWork;
@@ -17,12 +21,14 @@ using System;
 using FitVerse.Data.Service.FitVerse.Data.Service;
 using FitVerse.Core.IUnitOfWorkServices;
 using FitVerse.Core.Models;
+using FitVerse.Web.Hubs;
+using FitVerse.Data.Seed;
 
 namespace FitVerse.WebUI
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -61,6 +67,8 @@ namespace FitVerse.WebUI
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.PropertyNamingPolicy = null;
+                    options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+
                 });
 
 
@@ -71,11 +79,26 @@ namespace FitVerse.WebUI
             builder.Services.AddScoped<IAnatomyRepository, AnatomyRepository>();
             builder.Services.AddScoped<IMuscleRepository, MuscleRepository>();
             builder.Services.AddScoped<ICoachRepository, CoachRepository>();
+            builder.Services.AddScoped<IClientRepository, ClientRepository>();
             builder.Services.AddScoped<IUnitOFWorkService, UnitOfWorkService>();
             builder.Services.AddScoped<IMuscleService, MuscleService>();
             builder.Services.AddScoped<ISpecialtiesRepository, SpecialityRepository>();
             builder.Services.AddScoped<ISpecialtyService, SpecialtyService>();
+            builder.Services.AddScoped<IChatRepository, ChatRepository>();
+            builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+            builder.Services.AddScoped<IChatService, ChatService>();
+            builder.Services.AddScoped<IMessageService, MessageService>();
+            builder.Services.AddScoped<ICoachService, CoachService>();
+            builder.Services.AddScoped<IClientService, ClientService>();
             builder.Services.AddScoped<IImageHandleService, ImageHandleService>();
+
+            // Add SignalR
+            builder.Services.AddSignalR()
+     .AddJsonProtocol(options =>
+     {
+         options.PayloadSerializerOptions.PropertyNamingPolicy = null;
+         options.PayloadSerializerOptions.PropertyNameCaseInsensitive = true;
+     });
 
 
 
@@ -108,6 +131,26 @@ namespace FitVerse.WebUI
                 name: "default",
                 pattern: "{controller=Account}/{action=Index}/{id?}")
                 .WithStaticAssets();
+
+            // Map SignalR Hub
+            app.MapHub<ChatHub>("/chatHub");
+
+            // Seed roles and default admin user
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    // Include sample data only in development environment
+                    bool includeSampleData = app.Environment.IsDevelopment();
+                    await DatabaseSeeder.SeedAsync(services, includeSampleData);
+                }
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "An error occurred while seeding the database.");
+                }
+            }
 
             app.Run();
         }

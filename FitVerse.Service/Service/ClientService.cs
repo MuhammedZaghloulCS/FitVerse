@@ -2,17 +2,14 @@
 using FitVerse.Core.IService;
 using FitVerse.Core.UnitOfWork;
 using FitVerse.Core.ViewModels.Client;
-using FitVerse.Core.ViewModels.Coach;
 using FitVerse.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FitVerse.Service.Service
 {
-    public class ClientService: FitVerse.Core.IService.IClientService
+    public class ClientService : IClientService
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
@@ -27,15 +24,11 @@ namespace FitVerse.Service.Service
 
         public (bool Success, string Message) AddClient(AddClientVM model)
         {
-
             try
             {
                 string? imagePath = null;
                 if (model.ClientImageFile != null && model.ClientImageFile.Length > 0)
-                {
-                    // افترض أن imageService.SaveImage تقبل IFormFile وتعيد مسار الصورة أو null
                     imagePath = imageService.SaveImage(model.ClientImageFile);
-                }
 
                 var client = mapper.Map<Client>(model);
                 client.UserId = "6A29B02B-7643-48C3-9B47-6ECF12F4B9F9";
@@ -50,18 +43,46 @@ namespace FitVerse.Service.Service
             {
                 return (false, ex.Message);
             }
+        }
 
+        public (bool Success, string Message) DeleteClient(string clientId)
+        {
+            throw new NotImplementedException();
         }
 
         public List<ClientDashVM> GetAllClients()
         {
-            //Guid coachId = Guid.Parse("11111111-1111-1111-1111-111111111111");// Coach logged in ID
-
             var clients = unitOfWork.Clients.GetAll();
             return mapper.Map<List<ClientDashVM>>(clients);
         }
-        
-    
 
-}
+        public Client? GetById(string clientId)
+        {
+            return unitOfWork.Clients
+                .Find(c => c.Id == clientId)
+                .FirstOrDefault();
+        }
+
+        public List<DailyLog> GetClientLogs(string clientId)
+        {
+            return unitOfWork.DailyLogsRepository
+                .Find(dl => dl.ClientId == clientId)
+                .ToList();
+        }
+
+        // جلب كل العملاء لكوتش معين
+        public List<ClientDashVM> GetClientsByCoachId(string coachId)
+        {
+            var clients = unitOfWork.Clients
+                .Find(c => c.ClientSubscriptions.Any(cs => cs.CoachId == coachId))
+                .ToList();
+
+            return mapper.Map<List<ClientDashVM>>(clients);
+        }
+
+        public (bool Success, string Message) UpdateClient(AddClientVM model)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

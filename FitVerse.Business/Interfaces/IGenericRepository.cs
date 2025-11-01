@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +17,11 @@ namespace FitVerse.Core.Interfaces
         void Update(T entity);
         void Delete(T entity);
         public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter = null, string includeProperties = "");
+        IQueryable<T> GetQueryable();
 
+
+        void RemoveRange(IEnumerable<T> entities);
+        void complete();
 
     }
 }
