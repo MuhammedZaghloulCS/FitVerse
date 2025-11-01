@@ -93,7 +93,7 @@ namespace FitVerse.Data.UnitOfWork
                 if (clients == null)
                     clients = new ClientRepository(_context);
                 return clients; // <--- صحح هنا
-                return clients;
+               
 
             }
         }
