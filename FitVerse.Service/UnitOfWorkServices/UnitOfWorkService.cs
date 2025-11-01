@@ -28,7 +28,7 @@ namespace FitVerse.Data.UnitOfWork
         private IImageHandleService imageHandleService;
         private IClientService clientService;
         private IAnatomyService anatomyService;
-        private IUsers users;
+        //private IUsers users;
         private IEquipmentService equipmentService;
         private IDietPlan dietPlanService;
         private IUsersService users;
@@ -61,7 +61,7 @@ namespace FitVerse.Data.UnitOfWork
         public IAnatomyService AnatomyService => anatomyService ??= new AnatomyService(unitOfWork, mapper, ImageHandleService);
         public IClientService ClientService => clientService ??= new ClientService(unitOfWork, mapper, ImageHandleService);
         public IEquipmentService EquipmentService => equipmentService ??= new EquipmentService(unitOfWork, mapper, ImageHandleService);
-        public IUsers UsersService => users ??= new UsersService(userManager, mapper);
+        //public IUsers UsersService => users ??= new UsersService(userManager, mapper);
         public IDietPlan DietPlanService => dietPlanService ??= new DietPlanService(unitOfWork, mapper);
         public IUsersService UsersService => users ??= new UsersService(userManager, mapper);
         public IAccountService AccountService => account ??= new AccountService(userManager, mapper,signInManager);       

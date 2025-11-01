@@ -186,24 +186,23 @@ function addExercise() {
         data: exercise,
         success: function (response) {
             if (response.success) {
-                // إظهار رسالة نجاح
                 swal({
                     title: "✅ Added Successfully!",
                     icon: "success",
                 }).then(() => {
-                    // لما يضغط OK، نخفي المودال ونفض الفورم
                     $('#addExerciseModal').modal('hide');
-                    clearForm();
-                    loadExercisesPaged();
+                    $('#exerciseForm')[0].reset();
+                    loadExercisesPaged(); // يعيد تحميل التمارين
                 });
-            } else swal("Error", response.message, "error");
+            } else {
+                swal("Error", response.message, "error");
+            }
         },
         error: function () {
             swal("Error", "Failed to add exercise!", "error");
         }
     });
 }
-
 
 function getExerciseById(Id) {
     $.ajax({

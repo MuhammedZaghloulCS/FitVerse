@@ -30,8 +30,8 @@
 
                 if (res.data && res.data.length > 0) {
                     res.data.forEach(item => {
-                        let imgSrc = item.imagePath
-                            ? (item.imagePath.startsWith('/Images/') ? item.imagePath : '/Images/' + item.imagePath) + '?t=' + new Date().getTime()
+                        let imgSrc = item.ImagePath
+                            ? (item.ImagePath.startsWith('/Images/') ? item.ImagePath : '/Images/' + item.ImagePath) + '?t=' + new Date().getTime()
                             : '/Images/default.jpg';
 
                         //let imgSrc = item.imagePath ? item.imagePath : '/Images/default.jpg';
@@ -41,13 +41,13 @@
                                 <img src="${imgSrc}" 
                                      class="rounded mb-3" 
                                      style="height:100px;object-fit:cover;">
-                                <h5 class="fw-bold mb-2">${item.name}</h5>
+                                <h5 class="fw-bold mb-2">${item.Name}</h5>
                                 
                                 <div class="d-flex gap-2">
-                                    <button class="btn btn-outline-custom btn-sm flex-grow-1 editEquipmentBtn" data-id="${item.id}">
+                                    <button class="btn btn-outline-custom btn-sm flex-grow-1 editEquipmentBtn" data-id="${item.Id}">
                                         <i class="bi bi-pencil"></i> Edit
                                     </button>
-                                    <button class="btn btn-danger-custom btn-sm deleteEquipmentBtn" data-id="${item.id}">
+                                    <button class="btn btn-danger-custom btn-sm deleteEquipmentBtn" data-id="${item.Id}">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
@@ -108,11 +108,11 @@
         let id = $(this).data('id');
         $.get(`/Equipment/GetById/${id}`, function (res) {
             if (res.success) {
-                $('#editEquipmentName').val(res.data.name);
-                let newSrc = res.data.imagePath + '?t=' + new Date().getTime();
+                $('#editEquipmentName').val(res.data.Name);
+                let newSrc = res.data.ImagePath + '?t=' + new Date().getTime();
                 $('#currentEquipmentImage').attr('src', newSrc);
 
-                $('#editSaveBtn').data('id', res.data.id);
+                $('#editSaveBtn').data('id', res.data.Id);
                 $('#editEquipmentModal').modal('show');
             } else {
                 Swal.fire('Error', res.message, 'error');
@@ -150,8 +150,8 @@
                     loadEquipment();
 
                     // ✅ تحديث الصورة الحالية في المودال لو محتاج
-                    let imgSrc = res.data.imagePath
-                        ? (res.data.imagePath.startsWith('/Images/') ? res.data.imagePath : '/Images/' + res.data.imagePath) + '?t=' + new Date().getTime()
+                    let imgSrc = res.data.ImagePath
+                        ? (res.data.ImagePath.startsWith('/Images/') ? res.data.ImagePath : '/Images/' + res.data.ImagePath) + '?t=' + new Date().getTime()
                         : '/Images/default.jpg';
                     $('#currentEquipmentImage').attr('src', imgSrc);
 
