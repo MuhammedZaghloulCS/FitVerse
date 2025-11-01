@@ -32,7 +32,9 @@ namespace FitVerse.Web.Controllers
 
 
         public IActionResult Dashboard() {
-            string coachId ="1";
+            string coachId =User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var coachName = User.FindFirstValue(ClaimTypes.Name);
+            ViewBag.CoachName = coachName;
             var model = unitOFWorkService.CoachService.GetDashboardData(coachId);
             return View("Dashboard",model);
         }
@@ -120,7 +122,7 @@ namespace FitVerse.Web.Controllers
         public IActionResult GetAllClients()
         {
             //var coachId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            string coachId = "1";// Coach logged in ID
+            string coachId = "C1";// Coach logged in ID
 
             var clients = unitOFWorkService.CoachRepository.GetAllClientsByCoach(coachId);
 

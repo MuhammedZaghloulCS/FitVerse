@@ -35,22 +35,22 @@ function loadCoachesWithSpecialties() {
             $('#coachesContainer').empty();
 
             response.data.forEach(coach => {
-                const imageUrl = coach.imagePath
-                    ? `/Images/${coach.imagePath}`
-                    : `https://ui-avatars.com/api/?name=${encodeURIComponent(coach.name)}&background=6366f1&color=fff`;
+                const imageUrl = coach.ImagePath
+                    ? `/Images/${coach.ImagePath}`
+                    : `https://ui-avatars.com/api/?name=${encodeURIComponent(coach.Name)}&background=6366f1&color=fff`;
 
-                let specialtiesText = coach.specialties && coach.specialties.length > 0
-                    ? coach.specialties.join(', ')
+                let specialtiesText = coach.Specialties && coach.Specialties.length > 0
+                    ? coach.Specialties.join(', ')
                     : 'General';
 
                 let card = `
                     <div class="col-lg-4 col-md-6">
                         <div class="card-custom h-100 coach-card">
                             <div class="card-body-custom text-center">
-                                <img src="${imageUrl}" alt="${coach.name}" 
+                                <img src="${imageUrl}" alt="${coach.Name}" 
                                      style="width: 100px; height: 100px; border-radius: 50%; margin-bottom: 16px; object-fit: cover;">
                                 
-                                <h5 class="fw-bold mb-2 coach-name">${coach.name}</h5>
+                                <h5 class="fw-bold mb-2 coach-name">${coach.Name}</h5>
 
                                 <div class="mb-2">
                                     <span class="badge-custom badge-primary mb-3 coach-specialty">
@@ -58,17 +58,17 @@ function loadCoachesWithSpecialties() {
                                     </span>
                                 </div>
 
-                                <p class="text-muted small mb-3">${coach.about ?? 'No description available.'}</p>
+                                <p class="text-muted small mb-3">${coach.About ?? 'No description available.'}</p>
 
                                 <div class="d-flex justify-content-around mb-3 py-3" 
                                      style="border-top: 1px solid #e5e7eb; border-bottom: 1px solid #e5e7eb;">
                                     <div>
-                                        <div class="fw-bold">${coach.experienceYears ?? 0}</div>
+                                        <div class="fw-bold">${coach.ExperienceYears ?? 0}</div>
                                         <small class="text-muted">Years Experience.</small>
                                     </div>
                                     <div>
-                                        <div class="badge-custom mb-3 ${coach.isActive ? 'badge-success' : 'badge-danger'}">
-                                            ${coach.isActive ? 'Active' : 'Not Active'}
+                                        <div class="badge-custom mb-3 ${coach.IsActive ? 'badge-success' : 'badge-danger'}">
+                                            ${coach.IsActive ? 'Active' : 'Not Active'}
                                         </div>  
                                     </div>
                                 </div>
@@ -76,8 +76,8 @@ function loadCoachesWithSpecialties() {
                                 <button class="btn btn-primary-custom w-100 view-packages"
                                         data-bs-toggle="modal" 
                                         data-bs-target="#coachPackagesModal"
-                                        data-coach-id="${coach.id}" 
-                                        data-coach-name="${coach.name}">
+                                        data-coach-id="${coach.Id}" 
+                                        data-coach-name="${coach.Name}">
                                     <i class="bi bi-box-seam me-2"></i> View Packages
                                 </button>
                             </div>
@@ -118,7 +118,7 @@ $(document).on("click", ".view-packages", function () {
             } else {
                 packages.forEach(p => {
                     // استخدم الـ Description لتقسيم الـ Features
-                    let features = p.description ? p.description.split(',') : [];
+                    let features = p.Description ? p.Description.split(',') : [];
 
                     let featureList = '<ul class="list-unstyled text-start mb-4">';
                     features.forEach(f => {
@@ -133,13 +133,13 @@ $(document).on("click", ".view-packages", function () {
                         <div class="col-md-4">
                             <div class="card-custom h-100">
                                 <div class="card-body-custom text-center">
-                                    <h5 class="fw-bold mb-3">${p.name}</h5>
+                                    <h5 class="fw-bold mb-3">${p.Name}</h5>
                                     <div class="mb-3">
-                                        <h2 class="fw-bold mb-0" style="color: #6366f1;">$${p.price}</h2>
+                                        <h2 class="fw-bold mb-0" style="color: #6366f1;">$${p.Price}</h2>
                                         <small class="text-muted">/month</small>
                                     </div>
                                     ${featureList}
-                                    <a href="/Client/Payment?packageId=${p.id}&coachId=${coachId}" 
+                                    <a href="/Client/Payment?packageId=${p.Id}&coachId=${coachId}" 
                                        class="btn btn-outline-custom w-100">
                                        Select Package
                                     </a>

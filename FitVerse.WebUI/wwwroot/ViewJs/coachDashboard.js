@@ -8,6 +8,9 @@ $(document).ready(function () {
     loadMuscles();
     loadEquipments();
     loadExercisesPaged();
+    $('#saveExerciseBtn').click(function () {
+        addExercise();
+    });
 
     // ✅ live search
     $('#searchInput').on('input', function () {
@@ -47,7 +50,7 @@ function loadMuscles() {
             let dropdown = $('#muscleId');
             dropdown.empty().append('<option value="" disabled selected>Select muscle</option>');
             response.data.forEach(m => {
-                dropdown.append(`<option value="${m.id}">${m.name}</option>`);
+                dropdown.append(`<option value="${m.Id}">${m.Name}</option>`);
             });
         },
         error: function () {
@@ -64,7 +67,7 @@ function loadEquipments() {
             let dropdown = $('#equipmentId');
             dropdown.empty().append('<option value="" disabled selected>Select equipment</option>');
             response.data.forEach(eq => {
-                dropdown.append(`<option value="${eq.id}">${eq.name}</option>`);
+                dropdown.append(`<option value="${eq.Id}">${eq.Name}</option>`);
             });
         },
         error: function () {
@@ -232,15 +235,7 @@ function getExerciseById(Id) {
 
 
 
-//$('#allClientsContainer').html(html);
-//        },
-//error: function () {
-//    $('#allClientsContainer').html('<div class="text-center text-danger">Failed to load clients.</div>');
-//}
-//    });
 
-//$('#viewAllClientsModal').modal('show');
-//});
 
 
 
@@ -270,13 +265,13 @@ $('#viewAllClientsBtn').on('click', function () {
                         <div class="d-flex align-items-center justify-content-between mb-3 pb-3 border-bottom">
                             <div class="d-flex align-items-center gap-3">
                                 <div>
-                                    <div class="fw-semibold">${client.name}</div>
-                                    <div class="text-muted small">Last payment: ${client.lastPaymentAgo}</div>
+                                    <div class="fw-semibold">${client.Name}</div>
+                                    <div class="text-muted small">Last payment: ${client.LastPaymentAgo}</div>
                                 </div>
                             </div>
                             <div>
-                                <span class="badge-custom ${client.isActive ? 'badge-success' : 'badge-warning'}">
-                                    ${client.isActive ? 'Active' : 'Inactive'}
+                                <span class="badge-custom ${client.IsActive ? 'badge-success' : 'badge-warning'}">
+                                    ${client.IsActive ? 'Active' : 'Inactive'}
                                 </span>
                             </div>
                         </div>
