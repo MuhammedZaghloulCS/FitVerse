@@ -1,4 +1,4 @@
-﻿@* Views/Shared/_CoachLayout.cshtml *@
+@* Views/Shared/_CoachLayout.cshtml *@
 @{
     var title = ViewBag.Title ?? "Coach Dashboard - FitVerse";
 }
@@ -77,6 +77,33 @@
             font-size: 0.9rem;
             color: #6b7280;
         }
+
+        .notification-item {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .notification-item:hover {
+            background-color: #f8fafc;
+        }
+
+        .notification-item.unread {
+            background-color: #f0f9ff;
+            border-left: 3px solid #3b82f6;
+        }
+
+        .notification-content {
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .notification-time {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 0.25rem;
+        }
     </style>
 
     @RenderSection("Styles", required: false)
@@ -147,11 +174,24 @@
                         </a>
                     </li>
                     <!-- ✅ Notifications -->
-                    <li class="nav-item position-relative">
-                        <a class="nav-link notification-bell" asp-controller="Notifications" asp-action="Index">
+                    <li class="nav-item dropdown position-relative">
+                        <a class="nav-link dropdown-toggle notification-bell" href="#" role="button" data-bs-toggle="dropdown" id="notificationDropdown">
                             <i class="bi bi-bell fs-5"></i>
-                            <span class="notification-badge">3</span>
+                            <span class="notification-badge" id="notificationCount" style="display: none;">0</span>
                         </a>
+                        <div class="dropdown-menu dropdown-menu-end shadow-lg" style="width: 350px; max-height: 400px; overflow-y: auto;">
+                            <div class="dropdown-header d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0">Notifications</h6>
+                                <button class="btn btn-sm btn-link text-primary p-0" id="markAllAsRead" style="font-size: 0.8rem;">Mark all as read</button>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div id="notificationsList">
+                                <div class="dropdown-item-text text-center text-muted py-3">
+                                    <i class="bi bi-bell-slash fs-4"></i>
+                                    <div>No notifications</div>
+                                </div>
+                            </div>
+                        </div>
                     </li>
 
                     <!-- ✅ User Profile -->
@@ -190,6 +230,156 @@
     <script src="~/js/script.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- SignalR -->
+    <script src="https://unpkg.com/@@microsoft/signalr@8.0.0/dist/browser/signalr.min.js" 
+            onload="console.log('SignalR loaded successfully')" 
+            onerror="console.error('Failed to load SignalR from CDN')"></script>
+    
+    <!-- Notification System -->
+    <script>
+        let notificationConnection;
+
+        $(document).ready(function () {
+            // Check if SignalR is loaded
+            if (typeof signalR === 'undefined') {
+                console.error('SignalR is not loaded. Please check the SignalR script reference.');
+                return;
+            }
+
+            // إنشاء اتصال SignalR
+            notificationConnection = new signalR.HubConnectionBuilder()
+                .withUrl("/chatHub")
+                .build();
+
+            // بدء الاتصال
+            notificationConnection.start().then(function () {
+                console.log("Notification connection established");
+                // طلب تحميل الإشعارات عند الاتصال
+                notificationConnection.invoke("GetNotifications");
+            }).catch(function (err) {
+                console.error("Notification connection error: " + err.toString());
+            });
+
+            // استقبال إشعار جديد
+            notificationConnection.on("ReceiveNotification", function (notification) {
+                addNotificationToList(notification);
+                showNotificationToast(notification.Content);
+            });
+
+            // تحديث عداد الإشعارات
+            notificationConnection.on("UpdateNotificationCount", function (count) {
+                updateNotificationCount(count);
+            });
+
+            // تحميل الإشعارات
+            notificationConnection.on("LoadNotifications", function (notifications) {
+                loadNotifications(notifications);
+            });
+
+            // إشعار تم قراءته
+            notificationConnection.on("NotificationMarkedAsRead", function (notificationId) {
+                markNotificationAsReadInUI(notificationId);
+            });
+
+            // جميع الإشعارات تم قراءتها
+            notificationConnection.on("AllNotificationsMarkedAsRead", function () {
+                markAllNotificationsAsReadInUI();
+            });
+
+            // النقر على "تحديد الكل كمقروء"
+            $('#markAllAsRead').click(function () {
+                notificationConnection.invoke("MarkAllNotificationsAsRead");
+            });
+
+            // فتح قائمة الإشعارات
+            $('#notificationDropdown').on('click', function () {
+                notificationConnection.invoke("GetNotifications");
+            });
+        });
+
+        function updateNotificationCount(count) {
+            const badge = $('#notificationCount');
+            if (count > 0) {
+                badge.text(count).show();
+            } else {
+                badge.hide();
+            }
+        }
+
+        function loadNotifications(notifications) {
+            const container = $('#notificationsList');
+            container.empty();
+
+            if (notifications.length === 0) {
+                container.html(`
+                    <div class="dropdown-item-text text-center text-muted py-3">
+                        <i class="bi bi-bell-slash fs-4"></i>
+                        <div>No notifications</div>
+                    </div>
+                `);
+                return;
+            }
+
+            notifications.forEach(function (notification) {
+                addNotificationToList(notification, false);
+            });
+
+            // تحديث العداد
+            const unreadCount = notifications.filter(n => !n.IsRead).length;
+            updateNotificationCount(unreadCount);
+        }
+
+        function addNotificationToList(notification, prepend = true) {
+            const container = $('#notificationsList');
+            const readClass = notification.IsRead ? '' : 'unread';
+            
+            const notificationHtml = `
+                <div class="notification-item ${readClass}" data-id="${notification.Id}">
+                    <div class="notification-content">${notification.Content}</div>
+                    <div class="notification-time">${notification.CreatedAt}</div>
+                </div>
+            `;
+
+            if (container.find('.dropdown-item-text').length > 0) {
+                container.empty();
+            }
+
+            if (prepend) {
+                container.prepend(notificationHtml);
+            } else {
+                container.append(notificationHtml);
+            }
+
+            // إضافة حدث النقر لتحديد الإشعار كمقروء
+            container.find(`[data-id="${notification.Id}"]`).click(function () {
+                if (!notification.IsRead) {
+                    notificationConnection.invoke("MarkNotificationAsRead", notification.Id.toString());
+                }
+            });
+        }
+
+        function markNotificationAsReadInUI(notificationId) {
+            $(`[data-id="${notificationId}"]`).removeClass('unread');
+        }
+
+        function markAllNotificationsAsReadInUI() {
+            $('.notification-item').removeClass('unread');
+        }
+
+        function showNotificationToast(message) {
+            // يمكنك استخدام مكتبة التنبيهات المفضلة لديك
+            if (typeof swal !== 'undefined') {
+                swal({
+                    title: "New Notification",
+                    text: message,
+                    icon: "info",
+                    timer: 3000,
+                    buttons: false
+                });
+            }
+        }
+    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

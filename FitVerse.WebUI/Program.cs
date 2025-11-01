@@ -1,4 +1,5 @@
 using FitVerse.Core.Interfaces;
+using FitVerse.Data.Repositories;
 using FitVerse.Core.IService;
 using FitVerse.Core.IUnitOfWorkServices;
 using FitVerse.Core.IUnitOfWorkServices;
@@ -86,8 +87,10 @@ namespace FitVerse.WebUI
             builder.Services.AddScoped<ISpecialtyService, SpecialtyService>();
             builder.Services.AddScoped<IChatRepository, ChatRepository>();
             builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+            builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
             builder.Services.AddScoped<IChatService, ChatService>();
             builder.Services.AddScoped<IMessageService, MessageService>();
+            builder.Services.AddScoped<INotificationService, NotificationService>();
             builder.Services.AddScoped<ICoachService, CoachService>();
             builder.Services.AddScoped<IClientService, ClientService>();
             builder.Services.AddScoped<IImageHandleService, ImageHandleService>();
