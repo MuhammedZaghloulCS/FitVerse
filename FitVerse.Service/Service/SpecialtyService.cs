@@ -1,7 +1,9 @@
 ﻿using FitVerse.Core.IService;
 using FitVerse.Core.UnitOfWork;
 using FitVerse.Core.ViewModels.Specialist;
+using FitVerse.Core.ViewModels.Specialty;
 using FitVerse.Data.Models;
+using FitVerse.Data.Service;
 using FitVerse.Data.UnitOfWork;
 using System;
 using System.Collections.Generic;
@@ -15,19 +17,32 @@ namespace FitVerse.Service.Service
     public class SpecialtyService : ISpecialtyService
     {
        private readonly IUnitOfWork _unitOfWork;
-       public  SpecialtyService(IUnitOfWork unitOfWork)
+       private readonly IImageHandleService _imageHandleService = new ImageHandleService();
+        public  SpecialtyService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
         public (bool Success, string Message) AddSpecialty(AddSpecialtyVM model)
         {
-            _unitOfWork.Specialties.Add(new Specialty
+            try
             {
-                Name = model.Name,
-                Description = model.Description,
-                Icon = model.Icon,
-            });
-            return _unitOfWork.Complete() > 0 ? (true, "Specialty Added Successfully") : (false, "Something Went Wrong");
+                // استخدمي الـ ImageHandleService لحفظ الصورة
+                string? imagePath = _imageHandleService.SaveImage(model.Image);
+
+                _unitOfWork.Specialties.Add(new Specialty
+                {
+                    Name = model.Name,
+                    Description = model.Description,
+                    Image = imagePath
+                });
+
+                var result = _unitOfWork.Complete() > 0;
+                return result ? (true, "Specialty Added Successfully") : (false, "Something Went Wrong");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Error: {ex.Message}");
+            }
         }
 
         public(bool Success, string Message) DeleteSpecialty(int id)
@@ -50,8 +65,7 @@ namespace FitVerse.Service.Service
                 Id = s.Id,
                 Name = s.Name,
                 Description = s.Description,
-                Icon = s.Icon,
-                Color = s.Color,
+               Image = s.Image,
                 CoachesCount = allCoachSpecialties.Count(cs => cs.SpecialtyId == s.Id)
             }).ToList();
 
@@ -69,7 +83,7 @@ namespace FitVerse.Service.Service
                 Id = specialty.Id,
                 Name = specialty.Name,
                 Description = specialty.Description,
-                Icon = specialty.Icon,
+               Image =specialty.Image,
                 CoachesCount = specialty.CoachSpecialties.Count(),
                 TotalSpecialties = totalSpecialties
 
@@ -84,20 +98,27 @@ namespace FitVerse.Service.Service
             return (totalSpecialties, totalCoaches);
         }
 
-       public (bool Success, string Message) UpdateSpecialty(SpecialtyVM model)
+        public (bool Success, string Message) UpdateSpecialty(UpdateSpecialtyVM model)
         {
-            var specialty=_unitOfWork.Specialties.GetById(model.Id);
-            if (specialty == null) return (false, "Specialty Not Found");
+            var specialty = _unitOfWork.Specialties.GetById(model.Id);
+            if (specialty == null)
+                return (false, "Specialty not found");
+
             specialty.Name = model.Name;
             specialty.Description = model.Description;
-            specialty.Icon = model.Icon;
+
+            if (model.Image != null)
+            {
+                var imagePath = _imageHandleService.SaveImage(model.Image);
+                specialty.Image = imagePath;
+            }
 
             _unitOfWork.Specialties.Update(specialty);
-            return _unitOfWork.Complete() > 0 ? (true, "specialty updated successfully") : (false, "Something went wrong!");
-
-
+            return _unitOfWork.Complete() > 0
+                ? (true, "Specialty updated successfully")
+                : (false, "Something went wrong!");
         }
 
-       
+      
     }
 }

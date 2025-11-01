@@ -21,6 +21,7 @@ namespace FitVerse.Core.ViewModels.Coach
         public IFormFile CoachImageFile { get; set; }
         public bool IsActive { get; set; }
         public string? UserId { get; set; } 
+        public List<string>? Specialties { get; set; }
 
     }
 }

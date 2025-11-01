@@ -1,4 +1,5 @@
-﻿using FitVerse.Core.Interfaces;
+using FitVerse.Core.Interfaces;
+using FitVerse.Core.Repositories;
 using FitVerse.Core.UnitOfWork;
 using FitVerse.Data.Context;
 using FitVerse.Data.Models;
@@ -18,9 +19,28 @@ namespace FitVerse.Data.UnitOfWork
         CoachRepository coaches;
         ClientRepository clients;
         SpecialityRepository specialties;
+        DietPlanRepository dietPlans;
         PaymentRepository payments;
         CoachFeedbackRepository coachFeedbacks;
         CoachSpecialtiesRepository coachSpecialties;
+        CoachPackageRepository coachPackageRepository;
+        IDailyLogRepository dailyLogRepository;
+        DietPlanRepository dietPlanRepository;
+        ExercisePlanDetailRepository ExercisePlanDetail;
+        ChatRepository chats;
+        MessageRepository messages;
+        NotificationRepository notifications;
+
+        CoachSpecialtiesRepository coachSpecialties;
+        SpecialityRepository speciality;
+        ExercisePlanRepository exercisePlans;
+        ExercisePlanDetailRepository exercisePlanDetail;
+        
+
+        
+
+
+
 
         public UnitOfWork(FitVerseDbContext context)
         {
@@ -34,6 +54,15 @@ namespace FitVerse.Data.UnitOfWork
                 if (muscles == null)
                     muscles = new MuscleRepository(_context);
                 return muscles;
+            }
+        }
+        public IDietPlanRepository DietPlans
+        {
+            get
+            {
+                if (dietPlans == null)
+                    dietPlans = new DietPlanRepository(_context);
+                return dietPlans;
             }
         }
         public IAnatomyRepository Anatomies
@@ -64,7 +93,7 @@ namespace FitVerse.Data.UnitOfWork
                 return package;
             }
         }
-        public IClientRepository Clients 
+        public IClientRepository Clients
         {
             get
             {
@@ -73,7 +102,8 @@ namespace FitVerse.Data.UnitOfWork
                 return clients;
 
             }
-
+        }
+                return clients;
         }
         public IExerciseRepository Exercises
         {
@@ -112,16 +142,7 @@ namespace FitVerse.Data.UnitOfWork
             }
 
         }
-        public ICoachSpecialtiesRepository CoachSpecialties
-        {
-            get
-            {
-                if (coachSpecialties == null)
-                    coachSpecialties = new CoachSpecialtiesRepository(_context);
-                return coachSpecialties;
-            }
-        }
-
+          
         public ICoachFeedbackRepository CoachFeedbacks
         {
             get
@@ -133,7 +154,114 @@ namespace FitVerse.Data.UnitOfWork
 
         }
 
+         public  ICoachSpecialtiesRepository CoachSpecialties
+        {
+            get
+            {
+                 if (coachSpecialties == null)
+                coachSpecialties = new CoachSpecialtiesRepository(_context);
+                return coachSpecialties;
+            }
+        }
+
+        public ICoachFeedbackRepository CoachFeedbacks
+        {
+            get
+            {
+            {
+                if (coachFeedbacks == null)
+        public IExercisePlanRepository ExercisePlans
+                    coachFeedbacks = new CoachFeedbackRepository(_context);
+                return coachFeedbacks;
+            }
+
+        }
+
+      
+        ICoachPackageRepository IUnitOfWork.coachPackageRepository
+        {
+            get
+            {
+                if (coachPackageRepository == null)
+                    coachPackageRepository = new CoachPackageRepository(_context);
+                return coachPackageRepository;
+            }
+
+
+        }
+
+                if(exercisePlans == null)
+                    exercisePlans= new ExercisePlanRepository(_context);
+                return exercisePlans;
+            }
+        }
+        public IExercisePlanDetailRepository ExercisePlanDetails { 
+        public IExercisePlanDetailRepository ExercisePlanDetails
+        {
+            get
+            {
+                if(exercisePlanDetail== null)
+                    exercisePlanDetail= new ExercisePlanDetailRepository(_context);
+                return exercisePlanDetail;
+            }
+        public IExercisePlanDetailRepository ExercisePlanDetails { 
+            get
+            {
+                if (ExercisePlanDetail == null)
+                    ExercisePlanDetail = new ExercisePlanDetailRepository(_context);
+                return ExercisePlanDetail;
+            }
+        }
+
+
+
+
+
+        IDailyLogRepository IUnitOfWork.DailyLogsRepository
+        {
+            get
+            {
+                if (dailyLogRepository == null)
+                    dailyLogRepository = new DailyLogRepository(_context);
+                return dailyLogRepository;
+            }
+        }
+
+        public IExercisePlanRepository ExercisePlans => new ExercisePlanRepository(_context);
+
+
+        public IChatRepository Chats
+        {
+            get
+            {
+                if (chats == null)
+                    chats = new ChatRepository(_context);
+                return chats;
+            }
+        }
+
+        public IMessageRepository Messages
+        {
+            get
+            {
+                if (messages == null)
+                    messages = new MessageRepository(_context);
+                return messages;
+            }
+        }
+
+        public INotificationRepository Notifications
+        {
+            get
+            {
+                if (notifications == null)
+                    notifications = new NotificationRepository(_context);
+                return notifications;
+            }
+        }
+
         public int Complete() => _context.SaveChanges();
+        public async Task<int> SaveAsync() => await _context.SaveChangesAsync();
         public void Dispose() => _context.Dispose();
     }
 }

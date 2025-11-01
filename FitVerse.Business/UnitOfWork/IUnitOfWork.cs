@@ -1,4 +1,4 @@
-﻿using FitVerse.Core.Interfaces;
+using FitVerse.Core.Interfaces;
 using FitVerse.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -15,20 +15,30 @@ namespace FitVerse.Core.UnitOfWork
         ICoachRepository Coaches { get; }
         IClientRepository Clients { get; }
         IAnatomyRepository Anatomies { get; }
+        //ICoachSpecialtiesRepository CoachSpecialties { get; }
+        //ICoachFeedbackRepository CoachFeedbacks { get; }
+        IDietPlanRepository DietPlans { get; }
         ICoachSpecialtiesRepository CoachSpecialties { get; }
+
         ICoachFeedbackRepository CoachFeedbacks { get; }
-        //IDietPlanRepository DietPlans { get; }
+        ICoachPackageRepository coachPackageRepository { get; }
+        IDailyLogRepository DailyLogsRepository { get; }
+        IExercisePlanDetailRepository ExercisePlanDetails { get; }  
+
+
         IEquipmentRepository Equipments { get; }
         IExerciseRepository Exercises { get; }
-        //IMessageRepository Messages { get; }
-        //IChatRepository Chats { get; }
+        IMessageRepository Messages { get; }
+        IChatRepository Chats { get; }
         //IExerciseRepository Exercises { get; }
-        //IExercisePlanRepository ExercisePlans { get; }
-        //IExercisePlanDetailRepository ExercisePlanDetails { get; }
-        //INotificationRepository Notifications { get; }
+        IExercisePlanRepository ExercisePlans { get; }
+        INotificationRepository Notifications { get; }
         IPackageRepository Packages { get; }
         IPaymentRepository Payments { get; }
         ISpecialtiesRepository Specialties { get; }
+
+        
         int Complete();
+        Task<int> SaveAsync();
     }
 }

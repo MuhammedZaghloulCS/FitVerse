@@ -1,0 +1,945 @@
+﻿@model FitVerse.Core.ViewModels.ClientDashboard.ClientDashboardViewModel
+@{
+    ViewData["Title"] = "لوحة تحكم العميل - FitVerse";
+    Layout = "~/Views/Shared/_ClientLayout.cshtml";
+}
+
+<style>
+    :root {
+        --primary-color: #5B46E5;
+        --primary-dark: #4A36CA;
+        --primary-light: #F0EDFF; 
+        --secondary-color: #10B981; 
+        --secondary-dark: #0D9F7F;
+        --accent-color: #F59E0B;
+        --light-bg: #F8FAFF;
+        --card-bg: #FFFFFF;
+        --exercise-bg: #F0F4FF;
+        --diet-bg: #F0FDF5;
+        --text-primary: #1F2937;
+        --text-secondary: #4B5563;
+        --border-color: #E5E7EB;
+        --success-color: #10B981;
+        --warning-color: #F59E0B;
+        --danger-color: #EF4444;
+        --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.04);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --border-radius: 14px;
+        --border-radius-lg: 18px;
+    }
+
+    /* Base Styles */
+    [dir="rtl"] {
+        font-family: 'Tajawal', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    }
+
+    body {
+        background-color: var(--light-bg);
+        color: var(--text-primary);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    .main-content {
+        padding: 2rem;
+        max-width: 1440px;
+        margin: 0 auto;
+    }
+
+    /* Card Styles */
+    .card-custom {
+        background: var(--card-bg);
+        border-radius: var(--border-radius-lg);
+        box-shadow: var(--shadow-md);
+        margin-bottom: 2rem;
+        border: 1px solid var(--border-color);
+        overflow: hidden;
+        transition: var(--transition);
+    }
+
+        .card-custom:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+    .card-header-custom {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        color: white;
+        padding: 1.5rem 2rem;
+        font-weight: 700;
+        font-size: 1.2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: none;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .card-header-custom::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.15) 100%);
+            transform: translateX(100%);
+            transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+    .card-custom:hover .card-header-custom::after {
+        transform: translateX(0);
+    }
+
+    .card-body {
+        padding: 2rem;
+    }
+
+    /* Badge Styles */
+    .badge-custom {
+        background-color: var(--primary-light);
+        color: var(--primary-dark);
+        font-size: 0.8rem;
+        border-radius: 20px;
+        padding: 0.5rem 1rem;
+        font-weight: 600;
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition);
+        border: 1px solid rgba(91, 70, 229, 0.15);
+        backdrop-filter: blur(4px);
+    }
+
+        .badge-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(91, 70, 229, 0.15);
+        }
+
+    /* Coach Avatar */
+    .coach-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 20px;
+        object-fit: cover;
+        margin-left: 2rem;
+        border: 4px solid white;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        transition: var(--transition);
+    }
+
+        .coach-avatar:hover {
+            transform: scale(1.05) rotate(2deg);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+    /* Plan Grid */
+    .row-plans {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: 1.75rem;
+        margin-top: 1.5rem;
+    }
+
+    /* Sub Card Styles */
+    .sub-card {
+        background: var(--card-bg);
+        padding: 1.75rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition);
+        border: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+        animation: fadeIn 0.6s ease-out forwards;
+        opacity: 0;
+    }
+
+        .sub-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary-color);
+            transition: var(--transition);
+        }
+
+        .sub-card.diet::before {
+            background: var(--secondary-color);
+        }
+
+        .sub-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+            .sub-card:hover::before {
+                width: 6px;
+            }
+
+    /* Day Header */
+    .day-header {
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 1rem;
+        margin-bottom: 1rem;
+        position: relative;
+    }
+
+        .day-header strong {
+            color: var(--primary-dark);
+            font-size: 1.3rem;
+            font-weight: 800;
+            display: block;
+            margin-bottom: 0.5rem;
+            position: relative;
+            display: inline-block;
+            letter-spacing: -0.3px;
+        }
+
+            .day-header strong::after {
+                content: '';
+                position: absolute;
+                bottom: -8px;
+                right: 0;
+                width: 50px;
+                height: 3px;
+                background: var(--primary-color);
+                border-radius: 3px;
+                transition: var(--transition);
+            }
+
+    .sub-card:hover .day-header strong::after {
+        width: 100%;
+    }
+
+    .day-subheader {
+        color: var(--secondary-color);
+        font-size: 0.95rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        background: rgba(16, 185, 129, 0.1);
+        padding: 0.5rem 1.1rem;
+        border-radius: 20px;
+        margin-top: 0.75rem;
+        transition: var(--transition);
+        backdrop-filter: blur(4px);
+    }
+
+    .sub-card:hover .day-subheader {
+        background: rgba(16, 185, 129, 0.15);
+        transform: translateX(5px);
+    }
+
+    /* Exercise List */
+    .exercise-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.9rem;
+    }
+
+    .exercise-item {
+        padding: 1rem 1.25rem;
+        border-radius: 12px;
+        background: var(--light-bg);
+        border-right: 3px solid var(--primary-color);
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .exercise-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(91, 70, 229, 0.05) 0%, rgba(91, 70, 229, 0.1) 100%);
+            transition: var(--transition);
+            z-index: 0;
+        }
+
+        .exercise-item:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-sm);
+        }
+
+            .exercise-item:hover::before {
+                width: 100%;
+            }
+
+    /* Rest Day Styling */
+    .rest-day {
+        background: linear-gradient(135deg, #F8FAFF 0%, #F1F5FF 100%);
+        border: 1px dashed #C7D2FE;
+    }
+
+        .rest-day .day-header strong {
+            color: #64748B;
+        }
+
+    /* Meal Time Styles */
+    .meal-time {
+        color: var(--secondary-dark);
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-size: 1rem;
+        position: relative;
+        padding-right: 1.75rem;
+    }
+
+        .meal-time i {
+            font-size: 1.2em;
+            color: var(--secondary-color);
+            transition: var(--transition);
+        }
+
+        .meal-time::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            bottom: -3px;
+            width: 0;
+            height: 2px;
+            background: var(--secondary-color);
+            transition: var(--transition);
+        }
+
+    .exercise-item:hover .meal-time::after {
+        width: 35px;
+    }
+
+    /* Buttons */
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        color: white;
+        padding: 0.8rem 2rem;
+        border-radius: 12px;
+        text-decoration: none;
+        transition: var(--transition);
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        box-shadow: 0 4px 15px rgba(91, 70, 229, 0.3);
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+        font-size: 0.95rem;
+    }
+
+        .btn-primary-custom::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-dark), #3A36A9);
+            transition: var(--transition);
+            z-index: -1;
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(91, 70, 229, 0.4);
+        }
+
+            .btn-primary-custom:hover::before {
+                width: 100%;
+            }
+
+    /* Empty States */
+    .empty-state {
+        text-align: center;
+        padding: 3.5rem 2rem;
+        border-radius: 16px;
+        background: var(--light-bg);
+        border: 2px dashed var(--border-color);
+        transition: var(--transition);
+    }
+
+        .empty-state:hover {
+            background: white;
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .empty-state i {
+            font-size: 2.75rem;
+            color: #CBD5E1;
+            margin-bottom: 1.25rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: white;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+
+    /* Client Info Cards */
+    .info-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.75rem;
+        height: 100%;
+        border: 1px solid var(--border-color);
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+    }
+
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            transition: var(--transition);
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+            .info-card:hover::before {
+                height: 6px;
+            }
+
+        .info-card i {
+            font-size: 1.75rem;
+            color: var(--primary-color);
+            background: var(--primary-light);
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.25rem;
+            transition: var(--transition);
+        }
+
+        .info-card:hover i {
+            transform: scale(1.1) rotate(5deg);
+            color: white;
+            background: var(--primary-color);
+        }
+
+    /* Responsive Adjustments */
+    @@media (max-width: 1400px) {
+        .main-content {
+            padding: 1.75rem;
+        }
+    }
+
+    @@media (max-width: 1200px) {
+        .main-content {
+            padding: 1.5rem;
+        }
+
+        .row-plans {
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .card-body {
+            padding: 1.75rem;
+        }
+
+        .coach-avatar {
+            width: 100px;
+            height: 100px;
+        }
+
+        .row-plans {
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .main-content {
+            padding: 1.25rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .coach-avatar {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .row-plans {
+            grid-template-columns: 1fr;
+        }
+
+        .info-card {
+            margin-bottom: 1.25rem;
+        }
+
+        .btn-primary-custom {
+            width: 100%;
+            justify-content: center;
+            padding: 0.9rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .main-content {
+            padding: 1rem;
+        }
+
+        .card-header-custom {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 1.25rem;
+        }
+
+        .card-body {
+            padding: 1.25rem;
+        }
+
+        .coach-avatar {
+            width: 80px;
+            height: 80px;
+        }
+
+        .btn-primary-custom {
+            width: 100%;
+        }
+    }
+
+    /* Animations */
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(15px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @@keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.03);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    .pulse {
+        animation: pulse 2s infinite;
+    }
+
+    /* RTL Support */
+    [dir="rtl"] {
+        text-align: right;
+    }
+
+        [dir="rtl"] .coach-avatar {
+            margin-right: 2rem;
+            margin-left: 0;
+        }
+
+        [dir="rtl"] .sub-card::before {
+            right: auto;
+            left: 0;
+        }
+
+        [dir="rtl"] .exercise-item {
+            border-right: none;
+            border-left: 3px solid var(--primary-color);
+            padding-right: 1.25rem;
+            padding-left: 1.25rem;
+        }
+
+            [dir="rtl"] .exercise-item:hover {
+                transform: translateX(-5px);
+            }
+
+        [dir="rtl"] .day-header strong::after {
+            right: auto;
+            left: 0;
+        }
+
+        [dir="rtl"] .meal-time {
+            padding-right: 0;
+            padding-left: 1.75rem;
+        }
+
+            [dir="rtl"] .meal-time::after {
+                right: auto;
+                left: 0;
+            }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: var(--light-bg);
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--primary-color);
+        border-radius: 10px;
+    }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+    /* Print Styles */
+    @@media print {
+        .card-custom {
+            box-shadow: none;
+            border: 1px solid #e5e7eb;
+            break-inside: avoid;
+        }
+
+        .btn-primary-custom, .badge-custom {
+            display: none;
+        }
+
+        .main-content {
+            padding: 0;
+        }
+    }
+</style>
+
+ 
+<div class="main-content">
+    <!-- Coach Info -->
+    <div class="card-custom mb-4" style="animation: slideInRight 0.6s ease-out;">
+        <div class="card-body d-flex align-items-center">
+            <div class="flex-grow-1">
+                <h4 class="mb-1">@Model.CoachName</h4>
+                <div class="text-muted mb-3">مدرب معتمد</div>
+
+                <div class="d-flex gap-2 mb-3 flex-wrap">
+                    @if (Model.Specialists != null && Model.Specialists.Any())
+                    {
+                        foreach (var spec in Model.Specialists)
+                        {
+                            <span class="badge-custom">
+                                @((spec?.GetType().GetProperty("Name") != null) ? spec.Name : spec.ToString())
+                            </span>
+                        }
+                    }
+                </div>
+
+                <p class="text-secondary mb-3">
+                    @Model.CoachExperience سنوات من الخبرة في التدريب والتغذية
+                </p>
+
+                <a href="#" class="btn-primary-custom">
+                    <i class="bi bi-chat-left-text"></i> تواصل مع المدرب
+                </a>
+            </div>
+
+            <img src="@(string.IsNullOrEmpty(Model.CoachImagePath)
+                              ? $"https://ui-avatars.com/api/?name={Model.CoachName}&background=4f46e5&color=fff"
+                              : Url.Content(Model.CoachImagePath))"
+                 class="coach-avatar" alt="@Model.CoachName" />
+        </div>
+    </div>
+
+    <!-- Exercise Plan -->
+    <div class="card-custom mb-4">
+        <div class="card-header-custom">
+            <h5 class="mb-0">خطة التمارين</h5>
+            <span class="badge bg-primary bg-opacity-10 text-white pulse">أحدث خطة</span>
+        </div>
+        <div class="card-body">
+            @{
+                var exerciseSections = !string.IsNullOrWhiteSpace(Model.ExercisePlanSummary)
+                ? Model.ExercisePlanSummary.Split(new[] { ",,," }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(x => x.Trim())
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .ToList()
+                : new List<string>();
+            }
+
+            @if (exerciseSections.Any())
+            {
+                <div class="row-plans">
+                    @{
+                        int cardIndex = 0;
+                        foreach (var section in exerciseSections)
+                        {
+                            var isRestDay = section.IndexOf("راحة", StringComparison.OrdinalIgnoreCase) >= 0;
+                            <div class="sub-card @(isRestDay ? "rest-day" : "")" style="animation-delay: @(cardIndex * 0.1)s">
+                                @{
+                                    var lines = section.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                                    if (lines.Length > 0)
+                                    {
+                                        <div class="day-header">
+                                            <strong>@lines[0]</strong>
+                                            @if (lines.Length > 1 && !string.IsNullOrWhiteSpace(lines[1]))
+                                            {
+                                                <div class="day-subheader">
+                                                    <i class="bi @(isRestDay ? "bi-emoji-smile" : "bi-activity")"></i>
+                                                    @lines[1]
+                                                </div>
+                                            }
+                                        </div>
+
+                                        if (lines.Length > 2)
+                                        {
+                                            <div class="exercise-list">
+                                                @foreach (var line in lines.Skip(2).Where(l => !string.IsNullOrWhiteSpace(l)))
+                                                {
+                                                    <div class="exercise-item">
+                                                        @if (line.Contains(":"))
+                                                        {
+                                                            var parts = line.Split(new[] { ':' }, 2);
+                                                            <div class="d-flex align-items-start">
+                                                                <i class="bi bi-check-circle-fill text-success me-2 mt-1" style="font-size: 0.9rem;"></i>
+                                                                <div>
+                                                                    <strong>@parts[0]:</strong> @parts[1].Trim()
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="d-flex align-items-start">
+                                                                <i class="bi bi-check-circle-fill text-success me-2 mt-1" style="font-size: 0.9rem;"></i>
+                                                                <div>@line</div>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                    }
+                                }
+                            </div>
+                            cardIndex++;
+                        }
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <i class="bi bi-calendar-x"></i>
+                    <h5 class="mb-2">لا توجد خطة تمارين متاحة</h5>
+                    <p class="text-muted mb-0">سيتم إضافة الخطة قريباً، يرجى التواصل مع المدرب</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Diet Plan -->
+    <div class="card-custom mb-4">
+        <div class="card-header-custom">
+            <h5 class="mb-0">الخطة الغذائية</h5>
+            <span class="badge bg-success bg-opacity-10 text-white pulse">نشطة</span>
+        </div>
+        <div class="card-body">
+            @{
+                var dietSections = !string.IsNullOrWhiteSpace(Model.DietPlanSummary)
+                ? Model.DietPlanSummary.Split(new[] { ",,," }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(x => x.Trim())
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .ToList()
+                : new List<string>();
+            }
+
+            @if (dietSections.Any())
+            {
+                <div class="row-plans">
+                    @{
+                        int dietCardIndex = 0;
+                        foreach (var section in dietSections)
+                        {
+                            <div class="sub-card diet" style="animation-delay: @(dietCardIndex * 0.1)s">
+                                @{
+                                    var lines = section.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                                    if (lines.Length > 0)
+                                    {
+                                        <div class="day-header">
+                                            <strong>@lines[0]</strong>
+                                            @if (lines.Length > 1 && !string.IsNullOrWhiteSpace(lines[1]))
+                                            {
+                                                <div class="day-subheader">
+                                                    <i class="bi bi-@(lines[1].Contains("إفطار") ? "cup-hot" : lines[1].Contains("غداء") ? "egg-fried" : "egg")"></i>
+                                                    @lines[1]
+                                                </div>
+                                            }
+                                        </div>
+
+                                        if (lines.Length > 2)
+                                        {
+                                            <div class="exercise-list">
+                                                @foreach (var line in lines.Skip(2).Where(l => !string.IsNullOrWhiteSpace(l)))
+                                                {
+                                                    <div class="exercise-item">
+                                                        @if (line.Contains(":"))
+                                                        {
+                                                            var parts = line.Split(new[] { ':' }, 2);
+                                                            <div class="meal-time">
+                                                                <i class="bi bi-@(GetMealIcon(parts[0]))"></i>
+                                                                <span>@parts[0]:</span>
+                                                            </div>
+                                                            <div class="ps-3">@parts[1].Trim()</div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="d-flex align-items-start">
+                                                                <i class="bi bi-check-circle-fill text-success me-2 mt-1" style="font-size: 0.9rem;"></i>
+                                                                <div>@line</div>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                    }
+                                }
+                            </div>
+                            dietCardIndex++;
+                        }
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <i class="bi bi-egg-fried"></i>
+                    <h5 class="mb-2">لا توجد خطة غذائية متاحة</h5>
+                    <p class="text-muted mb-0">سيتم إضافة الخطة قريباً، يرجى التواصل مع المدرب</p>
+                </div>
+            }
+        </div>
+    </div>
+    <!-- Client Info -->
+    <div class="card-custom">
+        <div class="card-header-custom">
+            <h6 class="mb-0">معلومات العميل</h6>
+        </div>
+        <div class="card-body">
+            <div class="row align-items-center">
+
+                <!-- Client Image & Name -->
+                <div class="col-md-4 mb-3 mb-md-0 text-center">
+                    <div class="info-card h-100 d-flex flex-column align-items-center">
+                        <img src="@(string.IsNullOrEmpty(Model.ClientImagePath)
+                                                              ? $"https://ui-avatars.com/api/?name={Model.ClientName}&background=10b981&color=fff"
+                                                              : Url.Content(Model.ClientImagePath))"
+                             class="coach-avatar mb-2" style="width:100px; height:100px;" alt="@Model.ClientName" />
+                        <h6 class="text-muted small mb-1">العميل</h6>
+                        <h5 class="mb-0">@Model.ClientName</h5>
+                    </div>
+                </div>
+
+                <!-- Membership Number -->
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <div class="info-card h-100 text-center">
+                        <i class="bi bi-person-badge"></i>
+                        <h6 class="text-muted small mb-1">رقم العضوية</h6>
+                        <h5 class="mb-0">@Model.ClientId</h5>
+                    </div>
+                </div>
+
+                <!-- Coach Info -->
+                <div class="col-md-4">
+                    <div class="info-card h-100 text-center">
+                        <i class="bi bi-person-workspace"></i>
+                        <h6 class="text-muted small mb-1">المدرب</h6>
+                        <h5 class="mb-0">@Model.CoachName</h5>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+@functions {
+    string GetMealIcon(string mealName)
+    {
+        if (string.IsNullOrEmpty(mealName)) return "cup";
+
+        mealName = mealName.Trim().ToLower();
+
+        return mealName switch
+        {
+            "breakfast" or "إفطار" => "cup-hot",
+            "lunch" or "غداء" => "egg-fried",
+            "dinner" or "عشاء" => "egg",
+            "snack" or "وجبة خفيفة" => "apple",
+            "pre-workout" or "قبل التمرين" => "lightning-charge",
+            "post-workout" or "بعد التمرين" => "cup-straw",
+            _ => "cup"
+        };
+    }
+
+    string GetMealTime(string mealName)
+    {
+        if (string.IsNullOrEmpty(mealName)) return "Meal";
+
+        mealName = mealName.Trim().ToLower();
+
+        return mealName switch
+        {
+            "breakfast" or "إفطار" => "🌅 إفطار",
+            "lunch" or "غداء" => "🌞 غداء",
+            "dinner" or "عشاء" => "🌙 عشاء",
+            "snack" or "وجبة خفيفة" => "🍎 وجبة خفيفة",
+            "pre-workout" or "قبل التمرين" => "💪 قبل التمرين",
+            "post-workout" or "بعد التمرين" => "🥤 بعد التمرين",
+            _ => mealName
+        };
+    }
+}

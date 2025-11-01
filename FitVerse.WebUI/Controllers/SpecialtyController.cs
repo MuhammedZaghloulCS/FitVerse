@@ -2,6 +2,7 @@
 using FitVerse.Core.UnitOfWork;
 using FitVerse.Core.ViewModels.Equipment;
 using FitVerse.Core.ViewModels.Specialist;
+using FitVerse.Core.ViewModels.Specialty;
 using FitVerse.Service.Service;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,18 +39,24 @@ namespace FitVerse.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] AddSpecialtyVM model)
+        public IActionResult Create([FromForm] AddSpecialtyVM model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(new { success = false, message = "Invalid data" });
 
-            var result = _specialtyService.AddSpecialty(model);
-            return Json(result);
+            try
+            {
+                var result = _specialtyService.AddSpecialty(model);
+                return Json(new { success = true, message = "Specialty added successfully." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Error: {ex.Message}" });
+            }
+
         }
 
-     
+
         [HttpPut]
-        public IActionResult Update([FromBody] SpecialtyVM model)
+        public IActionResult Update([FromForm] UpdateSpecialtyVM model)
         {
             var result = _specialtyService.UpdateSpecialty(model);
             return Json(new { Success = result.Success, Message = result.Message });

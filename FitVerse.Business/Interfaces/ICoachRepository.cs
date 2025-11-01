@@ -25,6 +25,10 @@ namespace FitVerse.Core.Interfaces
         public List<ClientDashVM> GetAllClientsByCoach(string coachId);
         public void DeleteByUserId(string UserId);
         
+        IQueryable<Coach> GetAllWithPackages();
+        public List<Specialty> GetCoachspecialtiesByCoachId(string CoachId);
+
+
 
     }
 }

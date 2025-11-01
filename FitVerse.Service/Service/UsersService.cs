@@ -15,7 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Data;
 namespace FitVerse.Service.Service
 {
-    internal class UsersService : IUsersService
+    public class UsersService : IUsersService
     {
         UserManager<ApplicationUser> userManager;
         IUnitOfWork UnitOfWork;

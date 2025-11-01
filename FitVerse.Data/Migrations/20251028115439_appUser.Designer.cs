@@ -12,8 +12,13 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitVerse.Data.Migrations
 {
     [DbContext(typeof(FitVerseDbContext))]
+<<<<<<<< HEAD:FitVerse.Data/Migrations/20251028115439_appUser.Designer.cs
     [Migration("20251028115439_appUser")]
     partial class appUser
+========
+    [Migration("20251101195532_update-ExercisePlan")]
+    partial class updateExercisePlan
+>>>>>>>> a8322c205f4414005279601e993ea357a36c2c50:FitVerse.Data/Migrations/20251101195532_update-ExercisePlan.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -196,6 +201,38 @@ namespace FitVerse.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Anatomies");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Image = "/images/anatomy/chest.png",
+                            Name = "Chest"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Image = "/images/anatomy/back.png",
+                            Name = "Back"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Image = "/images/anatomy/legs.png",
+                            Name = "Legs"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Image = "/images/anatomy/arms.png",
+                            Name = "Arms"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Image = "/images/anatomy/shoulders.png",
+                            Name = "Shoulders"
+                        });
                 });
 
             modelBuilder.Entity("FitVerse.Data.Models.Chat", b =>
@@ -279,49 +316,105 @@ namespace FitVerse.Data.Migrations
                         {
                             Id = "C1",
                             About = "Expert in Strength and Conditioning",
+<<<<<<<< HEAD:FitVerse.Data/Migrations/20251028115439_appUser.Designer.cs
                             ExperienceYears = 8
+========
+                            ExperienceYears = 8,
+                            ImagePath = "/images/coaches/john.jpg",
+                            IsActive = true,
+                            Name = "John Smith"
+>>>>>>>> a8322c205f4414005279601e993ea357a36c2c50:FitVerse.Data/Migrations/20251101195532_update-ExercisePlan.Designer.cs
                         },
                         new
                         {
                             Id = "C2",
                             About = "Cardio and endurance specialist with personalized HIIT plans.",
+<<<<<<<< HEAD:FitVerse.Data/Migrations/20251028115439_appUser.Designer.cs
                             ExperienceYears = 6
+========
+                            ExperienceYears = 6,
+                            ImagePath = "/images/coaches/sarah.jpg",
+                            IsActive = true,
+                            Name = "Sarah Johnson"
+>>>>>>>> a8322c205f4414005279601e993ea357a36c2c50:FitVerse.Data/Migrations/20251101195532_update-ExercisePlan.Designer.cs
                         },
                         new
                         {
                             Id = "C3",
                             About = "Yoga and mobility instructor focused on flexibility and wellness.",
+<<<<<<<< HEAD:FitVerse.Data/Migrations/20251028115439_appUser.Designer.cs
                             ExperienceYears = 7
+========
+                            ExperienceYears = 7,
+                            ImagePath = "/images/coaches/michael.jpg",
+                            IsActive = true,
+                            Name = "Michael Lee"
+>>>>>>>> a8322c205f4414005279601e993ea357a36c2c50:FitVerse.Data/Migrations/20251101195532_update-ExercisePlan.Designer.cs
                         },
                         new
                         {
                             Id = "C4",
                             About = "CrossFit certified coach delivering high-intensity programs.",
+<<<<<<<< HEAD:FitVerse.Data/Migrations/20251028115439_appUser.Designer.cs
                             ExperienceYears = 5
+========
+                            ExperienceYears = 5,
+                            ImagePath = "/images/coaches/chris.jpg",
+                            IsActive = true,
+                            Name = "Chris Evans"
+>>>>>>>> a8322c205f4414005279601e993ea357a36c2c50:FitVerse.Data/Migrations/20251101195532_update-ExercisePlan.Designer.cs
                         },
                         new
                         {
                             Id = "C5",
                             About = "Boxing and MMA trainer with focus on endurance and strength.",
+<<<<<<<< HEAD:FitVerse.Data/Migrations/20251028115439_appUser.Designer.cs
                             ExperienceYears = 4
+========
+                            ExperienceYears = 4,
+                            ImagePath = "/images/coaches/amanda.jpg",
+                            IsActive = true,
+                            Name = "Amanda Davis"
+>>>>>>>> a8322c205f4414005279601e993ea357a36c2c50:FitVerse.Data/Migrations/20251101195532_update-ExercisePlan.Designer.cs
                         },
                         new
                         {
                             Id = "C6",
                             About = "Professional bodybuilder and muscle growth expert.",
+<<<<<<<< HEAD:FitVerse.Data/Migrations/20251028115439_appUser.Designer.cs
                             ExperienceYears = 10
+========
+                            ExperienceYears = 10,
+                            ImagePath = "/images/coaches/robert.jpg",
+                            IsActive = true,
+                            Name = "Robert Wilson"
+>>>>>>>> a8322c205f4414005279601e993ea357a36c2c50:FitVerse.Data/Migrations/20251101195532_update-ExercisePlan.Designer.cs
                         },
                         new
                         {
                             Id = "C7",
                             About = "Running and endurance coach with marathon training expertise.",
+<<<<<<<< HEAD:FitVerse.Data/Migrations/20251028115439_appUser.Designer.cs
                             ExperienceYears = 5
+========
+                            ExperienceYears = 5,
+                            ImagePath = "/images/coaches/emily.jpg",
+                            IsActive = true,
+                            Name = "Emily Clark"
+>>>>>>>> a8322c205f4414005279601e993ea357a36c2c50:FitVerse.Data/Migrations/20251101195532_update-ExercisePlan.Designer.cs
                         },
                         new
                         {
                             Id = "C8",
                             About = "Nutrition and weight loss expert with balanced diet programs.",
+<<<<<<<< HEAD:FitVerse.Data/Migrations/20251028115439_appUser.Designer.cs
                             ExperienceYears = 6
+========
+                            ExperienceYears = 6,
+                            ImagePath = "/images/coaches/david.jpg",
+                            IsActive = true,
+                            Name = "David Harris"
+>>>>>>>> a8322c205f4414005279601e993ea357a36c2c50:FitVerse.Data/Migrations/20251101195532_update-ExercisePlan.Designer.cs
                         });
                 });
 
@@ -494,6 +587,38 @@ namespace FitVerse.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Equipments");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Image = "/images/equipment/barbell.png",
+                            Name = "Barbell"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Image = "/images/equipment/bodyweight.png",
+                            Name = "Bodyweight"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Image = "/images/equipment/dumbbell.png",
+                            Name = "Dumbbell"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Image = "/images/equipment/machine.png",
+                            Name = "Machine"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Image = "/images/equipment/cable.png",
+                            Name = "Cable"
+                        });
                 });
 
             modelBuilder.Entity("FitVerse.Data.Models.Exercise", b =>
@@ -527,6 +652,71 @@ namespace FitVerse.Data.Migrations
                     b.HasIndex("MuscleId");
 
                     b.ToTable("Exercises");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Classic chest exercise using a barbell.",
+                            EquipmentId = 1,
+                            MuscleId = 1,
+                            Name = "Bench Press",
+                            VideoLink = "https://www.youtube.com/watch?v=rT7DgCr-3pg"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Bodyweight exercise targeting the chest and triceps.",
+                            EquipmentId = 2,
+                            MuscleId = 1,
+                            Name = "Push Ups",
+                            VideoLink = "https://www.youtube.com/watch?v=_l3ySVKYVJ8"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Upper back exercise using body weight.",
+                            EquipmentId = 2,
+                            MuscleId = 3,
+                            Name = "Pull Ups",
+                            VideoLink = "https://www.youtube.com/watch?v=eGo4IYlbE5g"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Compound movement targeting the back.",
+                            EquipmentId = 1,
+                            MuscleId = 3,
+                            Name = "Barbell Rows",
+                            VideoLink = "https://www.youtube.com/watch?v=vT2GjY_Umpw"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "Leg exercise working quads and glutes.",
+                            EquipmentId = 1,
+                            MuscleId = 5,
+                            Name = "Squats",
+                            VideoLink = "https://www.youtube.com/watch?v=aclHkVaku9U"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Description = "Isolated arm exercise for biceps.",
+                            EquipmentId = 1,
+                            MuscleId = 6,
+                            Name = "Bicep Curls",
+                            VideoLink = "https://www.youtube.com/watch?v=ykJmrZ5v0Oo"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Description = "Overhead press targeting the deltoid.",
+                            EquipmentId = 1,
+                            MuscleId = 7,
+                            Name = "Shoulder Press",
+                            VideoLink = "https://www.youtube.com/watch?v=B-aVuyhvLHU"
+                        });
                 });
 
             modelBuilder.Entity("FitVerse.Data.Models.ExercisePlan", b =>
@@ -548,7 +738,7 @@ namespace FitVerse.Data.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DurationInDays")
+                    b.Property<int>("DurationWeeks")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -578,6 +768,9 @@ namespace FitVerse.Data.Migrations
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("bit");
@@ -664,6 +857,57 @@ namespace FitVerse.Data.Migrations
                     b.HasIndex("AnatomyId");
 
                     b.ToTable("Muscles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AnatomyId = 1,
+                            Description = "Main chest muscle responsible for pushing movements.",
+                            Name = "Pectoralis Major"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AnatomyId = 1,
+                            Description = "Smaller chest muscle beneath pectoralis major.",
+                            Name = "Pectoralis Minor"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AnatomyId = 2,
+                            Description = "Large back muscle used in pulling actions.",
+                            Name = "Latissimus Dorsi"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            AnatomyId = 2,
+                            Description = "Upper back and neck muscle responsible for posture.",
+                            Name = "Trapezius"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            AnatomyId = 3,
+                            Description = "Front thigh muscle responsible for leg extension.",
+                            Name = "Quadriceps"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            AnatomyId = 4,
+                            Description = "Front upper arm muscle responsible for arm flexion.",
+                            Name = "Biceps"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            AnatomyId = 5,
+                            Description = "Main shoulder muscle responsible for arm rotation.",
+                            Name = "Deltoid"
+                        });
                 });
 
             modelBuilder.Entity("FitVerse.Data.Models.Notification", b =>
@@ -780,14 +1024,10 @@ namespace FitVerse.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Icon")
+                    b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -797,72 +1037,6 @@ namespace FitVerse.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Specialties");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Color = "#007bff",
-                            Description = "Building muscle and power",
-                            Icon = "fa-solid fa-dumbbell",
-                            Name = "Strength Training"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Color = "#dc3545",
-                            Description = "Cardiovascular fitness",
-                            Icon = "fa-solid fa-heartbeat",
-                            Name = "Cardio & HIIT"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Color = "#20c997",
-                            Description = "Mobility and stretching",
-                            Icon = "fa-solid fa-person-praying",
-                            Name = "Flexibility & Yoga"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Color = "#fd7e14",
-                            Description = "High-intensity functional training",
-                            Icon = "fa-solid fa-bolt",
-                            Name = "CrossFit"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Color = "#6610f2",
-                            Description = "Combat sports training",
-                            Icon = "fa-solid fa-hand-fist",
-                            Name = "Boxing & MMA"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Color = "#ffc107",
-                            Description = "Muscle hypertrophy focus",
-                            Icon = "fa-solid fa-trophy",
-                            Name = "Bodybuilding"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Color = "#198754",
-                            Description = "Distance and stamina",
-                            Icon = "fa-solid fa-person-running",
-                            Name = "Running & Endurance"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Color = "#0dcaf0",
-                            Description = "Fat loss and nutrition",
-                            Icon = "fa-solid fa-scale-balanced",
-                            Name = "Weight Loss"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

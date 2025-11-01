@@ -1,4 +1,4 @@
-﻿let currentPage = 1;
+let currentPage = 1;
 let pageSize = 6;
 let currentSearch = "";
 
@@ -44,15 +44,51 @@ function loadMuscles() {
         success: function (response) {
             let dropdown = $('#muscleId');
             dropdown.empty().append('<option value="" disabled selected>Select muscle</option>');
-            response.data.forEach(m => {
-                dropdown.append(`<option value="${m.Id}">${m.Name}</option>`);
-            });
+            
+            console.log('Muscles API response:', response); // Debug log
+            
+            let muscles = [];
+            
+            // Handle different response formats
+            if (response && response.data && Array.isArray(response.data)) {
+                muscles = response.data;
+            } else if (response && Array.isArray(response)) {
+                muscles = response;
+            } else if (response && response.result && Array.isArray(response.result)) {
+                muscles = response.result;
+            } else if (response && response.items && Array.isArray(response.items)) {
+                muscles = response.items;
+            } else if (response && typeof response === 'object') {
+                // If it's an object, try to find array properties
+                const possibleArrays = Object.values(response).filter(val => Array.isArray(val));
+                if (possibleArrays.length > 0) {
+                    muscles = possibleArrays[0];
+                } else {
+                    console.error('No array found in response object:', response);
+                    return;
+                }
+            } else {
+                console.error('Invalid response format for muscles:', response);
+                return;
+            }
+            
+            if (muscles.length > 0) {
+                muscles.forEach(m => {
+                    // Handle different property name formats
+                    const id = m.Id || m.id || m.ID;
+                    const name = m.Name || m.name || m.title || m.Title;
+                    if (id && name) {
+                        dropdown.append(`<option value="${id}">${name}</option>`);
+                    }
+                });
+            }
         },
         error: function () {
             swal("Error", "Failed to load muscles!", "error");
         }
     });
 }
+
 
 function loadEquipments() {
     $.ajax({
@@ -61,9 +97,44 @@ function loadEquipments() {
         success: function (response) {
             let dropdown = $('#equipmentId');
             dropdown.empty().append('<option value="" disabled selected>Select equipment</option>');
-            response.data.forEach(eq => {
-                dropdown.append(`<option value="${eq.Id}">${eq.Name}</option>`);
-            });
+            
+            console.log('Equipment API response:', response); // Debug log
+            
+            let equipment = [];
+            
+            // Handle different response formats
+            if (response && response.data && Array.isArray(response.data)) {
+                equipment = response.data;
+            } else if (response && Array.isArray(response)) {
+                equipment = response;
+            } else if (response && response.result && Array.isArray(response.result)) {
+                equipment = response.result;
+            } else if (response && response.items && Array.isArray(response.items)) {
+                equipment = response.items;
+            } else if (response && typeof response === 'object') {
+                // If it's an object, try to find array properties
+                const possibleArrays = Object.values(response).filter(val => Array.isArray(val));
+                if (possibleArrays.length > 0) {
+                    equipment = possibleArrays[0];
+                } else {
+                    console.error('No array found in response object:', response);
+                    return;
+                }
+            } else {
+                console.error('Invalid response format for equipment:', response);
+                return;
+            }
+            
+            if (equipment.length > 0) {
+                equipment.forEach(eq => {
+                    // Handle different property name formats
+                    const id = eq.Id || eq.id || eq.ID;
+                    const name = eq.Name || eq.name || eq.title || eq.Title;
+                    if (id && name) {
+                        dropdown.append(`<option value="${id}">${name}</option>`);
+                    }
+                });
+            }
         },
         error: function () {
             swal("Error", "Failed to load equipment!", "error");
@@ -82,13 +153,26 @@ function loadExercisesPaged() {
             let container = $('#exerciseContainer');
             container.empty();
 
-            if (!response.data || response.data.length === 0) {
+            // Check if response has data property and it's an array
+            let exercises = [];
+            if (response && response.data && Array.isArray(response.data)) {
+                exercises = response.data;
+            } else if (response && Array.isArray(response)) {
+                exercises = response;
+            } else {
+                console.error('Invalid response format for exercises:', response);
+                container.html('<p class="text-center text-muted mt-3">Error loading exercises.</p>');
+                $('.pagination').empty();
+                return;
+            }
+
+            if (exercises.length === 0) {
                 container.html('<p class="text-center text-muted mt-3">No exercises found.</p>');
                 $('.pagination').empty();
                 return;
             }
 
-            response.data.forEach(item => {
+            exercises.forEach(item => {
                 let imageUrl = item.ImageUrl && item.ImageUrl.trim() !== "" ? item.ImageUrl : '/images/default-exercise.jpg';
                 let muscleName = item.MuscleName || "Unknown";
                 let equipmentName = item.EquipmentName || "None";
@@ -144,23 +228,24 @@ function loadExercisesPaged() {
 
 
 // ======================= PAGINATION =========================
+// ==========================
+// Pagination
+// ==========================
 function renderPagination(currentPage, totalPages) {
     const pagination = $('.pagination');
     pagination.empty();
 
-    if (totalPages <= 1) return;
-
     const prevDisabled = currentPage === 1 ? 'disabled' : '';
     const nextDisabled = currentPage === totalPages ? 'disabled' : '';
 
-    pagination.append(`<button class="btn-icon" ${prevDisabled} onclick="changePage(${currentPage - 1})"><i class="fas fa-chevron-left"></i></button>`);
+    pagination.append(`<li class="page-item ${prevDisabled}"><a class="page-link" href="#" onclick="changePage(${currentPage - 1})">Previous</a></li>`);
 
     for (let i = 1; i <= totalPages; i++) {
         const active = i === currentPage ? 'active' : '';
-        pagination.append(`<button class="btn-icon ${active}" onclick="changePage(${i})">${i}</button>`);
+        pagination.append(`<li class="page-item ${active}"><a class="page-link" href="#" onclick="changePage(${i})">${i}</a></li>`);
     }
 
-    pagination.append(`<button class="btn-icon" ${nextDisabled} onclick="changePage(${currentPage + 1})"><i class="fas fa-chevron-right"></i></button>`);
+    pagination.append(`<li class="page-item ${nextDisabled}"><a class="page-link" href="#" onclick="changePage(${currentPage + 1})">Next</a></li>`);
 }
 
 function changePage(page) {
@@ -168,7 +253,6 @@ function changePage(page) {
     currentPage = page;
     loadExercisesPaged();
 }
-
 
 // ======================= CRUD =========================
 function addExercise() {
@@ -186,24 +270,23 @@ function addExercise() {
         data: exercise,
         success: function (response) {
             if (response.success) {
-                // إظهار رسالة نجاح
                 swal({
                     title: "✅ Added Successfully!",
                     icon: "success",
                 }).then(() => {
-                    // لما يضغط OK، نخفي المودال ونفض الفورم
                     $('#addExerciseModal').modal('hide');
-                    clearForm();
-                    loadExercisesPaged();
+                    $('#exerciseForm')[0].reset();
+                    loadExercisesPaged(); // يعيد تحميل التمارين
                 });
-            } else swal("Error", response.message, "error");
+            } else {
+                swal("Error", response.message, "error");
+            }
         },
         error: function () {
             swal("Error", "Failed to add exercise!", "error");
         }
     });
 }
-
 
 function getExerciseById(Id) {
     $.ajax({
@@ -281,11 +364,19 @@ function deleteExercise(Id) {
                 }
             });
         }
+        else {
+            html = '<div class="text-center text-muted">No clients found.</div>';
+        }
+    });
+}
+        
+
+
     });
         }  
-else{
-    html = '<div class="text-center text-muted">No clients found.</div>';
-}
+//else{
+//    html = '<div class="text-center text-muted">No clients found.</div>';
+//}
 
 //$('#allClientsContainer').html(html);
 //        },

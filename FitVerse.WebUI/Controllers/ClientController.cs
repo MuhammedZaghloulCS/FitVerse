@@ -10,7 +10,7 @@ namespace FitVerse.Web.Controllers
     {
         private readonly IUnitOFWorkService unitOFWorkService;
 
-       
+
 
         public ClientController(IUnitOFWorkService unitOFWorkService)
         {
@@ -22,7 +22,11 @@ namespace FitVerse.Web.Controllers
             return View();
         }
 
-        
+        public IActionResult DashBoard()
+        {
+            return View();
+        }
+
         public IActionResult GetAll()
         {
             var clients = unitOFWorkService.ClientService.GetAllClients();

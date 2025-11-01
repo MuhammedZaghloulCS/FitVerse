@@ -8,7 +8,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FitVerse.Data.Migrations
 {
     /// <inheritdoc />
+<<<<<<<< HEAD:FitVerse.Data/Migrations/20251026171954_init.cs
     public partial class init : Migration
+========
+    public partial class intialC : Migration
+>>>>>>>> a8322c205f4414005279601e993ea357a36c2c50:FitVerse.Data/Migrations/20251028183319_initial-create.cs
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -125,7 +129,8 @@ namespace FitVerse.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AnatomyId = table.Column<int>(type: "int", nullable: false)
+                    AnatomyId = table.Column<int>(type: "int", nullable: false),
+                    ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -518,19 +523,58 @@ namespace FitVerse.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DailyLogs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClientId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CoachId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    LogDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    CurrentWeight = table.Column<double>(type: "float(5)", precision: 5, scale: 2, nullable: false),
+                    PhotoPath = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClientNotes = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    CoachFeedback = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CoachRating = table.Column<int>(type: "int", nullable: true),
+                    IsReviewed = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DailyLogs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DailyLogs_Clients_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Clients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_DailyLogs_Coaches_CoachId",
+                        column: x => x.CoachId,
+                        principalTable: "Coaches",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DietPlans",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Age = table.Column<int>(type: "int", nullable: false),
+                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Weight = table.Column<double>(type: "float", nullable: false),
+                    Height = table.Column<double>(type: "float", nullable: false),
                     TotalCal = table.Column<double>(type: "float", nullable: false),
                     ProteinInGrams = table.Column<double>(type: "float", nullable: false),
                     CarbInGrams = table.Column<double>(type: "float", nullable: false),
                     FatsInGrams = table.Column<double>(type: "float", nullable: false),
-                    ClientId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    CoachId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Goal = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ClientId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    CoachId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ActivityMultiplier = table.Column<double>(type: "float", nullable: false),
-                    Goal = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -545,8 +589,7 @@ namespace FitVerse.Data.Migrations
                         name: "FK_DietPlans_Coaches_CoachId",
                         column: x => x.CoachId,
                         principalTable: "Coaches",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -623,9 +666,9 @@ namespace FitVerse.Data.Migrations
                     ExerciseId = table.Column<int>(type: "int", nullable: false),
                     NumOfSets = table.Column<int>(type: "int", nullable: false),
                     NumOfRepeats = table.Column<int>(type: "int", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsCompleted = table.Column<bool>(type: "bit", nullable: false)
+                    IsCompleted = table.Column<bool>(type: "bit", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -790,6 +833,16 @@ namespace FitVerse.Data.Migrations
                 column: "SpecialtyId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DailyLogs_ClientId",
+                table: "DailyLogs",
+                column: "ClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DailyLogs_CoachId",
+                table: "DailyLogs",
+                column: "CoachId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DietPlans_ClientId",
                 table: "DietPlans",
                 column: "ClientId");
@@ -889,6 +942,9 @@ namespace FitVerse.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "CoachSpecialties");
+
+            migrationBuilder.DropTable(
+                name: "DailyLogs");
 
             migrationBuilder.DropTable(
                 name: "DietPlans");

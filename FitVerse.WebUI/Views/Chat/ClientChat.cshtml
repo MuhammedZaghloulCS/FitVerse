@@ -1,0 +1,421 @@
+
+@{
+    ViewData["Title"] = "ClientChat";
+    Layout = "~/Views/Shared/_ClientLayout.cshtml";
+}
+
+<div class="row g-4">
+    <!-- Conversations List -->
+    <div class="col-lg-4">
+        <div class="card-custom" style="height: 700px; display: flex; flex-direction: column;">
+            <div class="card-header-custom">
+                <i class="bi bi-chat-dots me-2"></i> Messages
+            </div>
+            <div class="p-3 border-bottom">
+                <input type="text" class="form-control-custom" placeholder="Search conversations...">
+            </div>
+            <div id="conversationsList" class="flex-grow-1 overflow-auto">
+                <!-- Active Chats Section -->
+                <div id="activeChatsSection">
+                    <!-- This will be populated by JavaScript -->
+                </div>
+                
+                <!-- Available Coaches Section -->
+                <div class="p-3 border-bottom bg-light">
+                    <h6 class="mb-2 text-muted">Available Coaches</h6>
+                </div>
+                
+                @if (ViewBag.AvailableCoaches != null)
+                {
+                    @foreach (var coach in (IEnumerable<FitVerse.Data.Models.Coach>)ViewBag.AvailableCoaches)
+                    {
+                        <div class="p-3 border-bottom coach-item" style="cursor: pointer;" data-coach-id="@coach.UserId" data-coach-name="@coach.Name">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="position-relative">
+                                    <img src="@(string.IsNullOrEmpty(coach.ImagePath) ? $"https://ui-avatars.com/api/?name={coach.Name}&background=10b981&color=fff" : coach.ImagePath)" 
+                                         alt="@coach.Name" style="width: 50px; height: 50px; border-radius: 50%;">
+                                    <span class="position-absolute bottom-0 end-0" style="width: 12px; height: 12px; background: @(coach.IsActive ? "#10b981" : "#94a3b8"); border: 2px solid white; border-radius: 50%;"></span>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <div class="fw-semibold">@coach.Name</div>
+                                        <small class="text-muted">@coach.ExperienceYears years exp</small>
+                                    </div>
+                                    <div class="small text-muted text-truncate">@coach.About</div>
+                                </div>
+                                <button class="btn btn-sm btn-primary start-chat-btn" data-coach-id="@coach.UserId">
+                                    <i class="bi bi-chat-dots"></i>
+                                </button>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Window -->
+    <div class="col-lg-8">
+        <div class="chat-container">
+            <!-- Chat Header -->
+            <div id="chatHeader" class="chat-header" style="display: none;">
+                <!-- This will be populated dynamically when a chat is selected -->
+            </div>
+
+            <!-- Chat Messages -->
+            <div id="chatMessages" class="chat-messages">
+                <div class="text-center p-4 text-muted">
+                    <i class="bi bi-chat-dots fs-1"></i>
+                    <p class="mt-2">Select a chat to start messaging</p>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="chat-input-container">
+                <div class="chat-input-wrapper">
+                    <button class="btn btn-light rounded-circle" style="width: 45px; height: 45px;">
+                        <i class="bi bi-paperclip"></i>
+                    </button>
+                    <button class="btn btn-light rounded-circle" style="width: 45px; height: 45px;">
+                        <i class="bi bi-emoji-smile"></i>
+                    </button>
+                    <input type="text" id="messageInput" placeholder="Type your message..." class="form-control">
+                    <button id="sendButton" class="chat-send-btn">
+                        <i class="bi bi-send-fill"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.AntiForgeryToken()
+
+@section Scripts {
+    <script src="https://unpkg.com/@@microsoft/signalr@8.0.0/dist/browser/signalr.min.js"></script>
+    <script>
+        let connection;
+        let currentChatId = null;
+        let currentUserId = '@ViewBag.UserId';
+        let currentReceiverId = null;
+        let typingTimer;
+
+        // Initialize SignalR connection
+        function initializeSignalR() {
+            connection = new signalR.HubConnectionBuilder()
+                .withUrl("/chatHub")
+                .build();
+
+            // Start connection
+            connection.start().then(function () {
+                console.log("✅ SignalR Connected");
+                loadUserChats();
+            }).catch(function (err) {
+                console.error("❌ SignalR Connection Error: ", err);
+            });
+
+            // Handle incoming messages
+            connection.on("ReceiveMessage", function (messageData) {
+                console.log('📩 Received message:', messageData);
+                if (messageData.ChatId == currentChatId) {
+                    appendMessage(messageData);
+                    scrollToBottom();
+                }
+                updateConversationsList();
+            });
+
+            // Handle message read status
+            connection.on("MessageRead", function (messageId) {
+                markMessageAsRead(messageId);
+            });
+
+            // Handle typing indicators
+            connection.on("UserTyping", function (senderId, receiverId) {
+                if (senderId !== currentUserId && senderId === currentReceiverId) {
+                    showTypingIndicator();
+                }
+            });
+
+            connection.on("UserStoppedTyping", function (senderId, receiverId) {
+                if (senderId !== currentUserId && senderId === currentReceiverId) {
+                    hideTypingIndicator();
+                }
+            });
+
+            // Handle online/offline status
+            connection.on("UserOnline", function (userId) {
+                updateUserStatus(userId, true);
+            });
+
+            connection.on("UserOffline", function (userId) {
+                updateUserStatus(userId, false);
+            });
+        }
+
+        // Load user chats
+        function loadUserChats() {
+            fetch('/Chat/GetUserChats')
+                .then(response => response.json())
+                .then(chats => displayChats(chats))
+                .catch(error => console.error('Error loading chats:', error));
+        }
+
+        // Display chats
+        function displayChats(chats) {
+            const activeChatsSection = document.getElementById('activeChatsSection');
+            activeChatsSection.innerHTML = '';
+
+            if (chats && chats.length > 0) {
+                const header = document.createElement('div');
+                header.className = 'p-3 border-bottom bg-light';
+                header.innerHTML = '<h6 class="mb-2 text-muted">Active Chats</h6>';
+                activeChatsSection.appendChild(header);
+
+                chats.forEach(chat => {
+                    const chatElement = createChatElement(chat);
+                    activeChatsSection.appendChild(chatElement);
+                });
+            }
+        }
+
+        // Create chat item
+        function createChatElement(chat) {
+            const div = document.createElement('div');
+            div.className = 'p-3 border-bottom chat-item';
+            div.style.cursor = 'pointer';
+            div.dataset.chatId = chat.Id;
+            div.dataset.receiverId = chat.OtherUserId;
+
+            const unreadBadge = chat.UnreadCount > 0 ?
+                `<span class="badge bg-primary rounded-circle" style="width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">${chat.UnreadCount}</span>` : '';
+
+            div.innerHTML = `
+                <div class="d-flex align-items-center gap-3">
+                    <div class="position-relative">
+                        <img src="${chat.OtherUserAvatar}" alt="User" style="width: 50px; height: 50px; border-radius: 50%;">
+                        <span class="position-absolute bottom-0 end-0 user-status"
+                              style="width: 12px; height: 12px; background: ${chat.IsOnline ? '#10b981' : '#94a3b8'}; border: 2px solid white; border-radius: 50%;"></span>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <div class="fw-semibold">${chat.OtherUserName}</div>
+                            <small class="text-muted">${chat.LatestMessageTime}</small>
+                        </div>
+                        <div class="small text-muted text-truncate">${chat.LatestMessage}</div>
+                    </div>
+                    ${unreadBadge}
+                </div>
+            `;
+
+            div.addEventListener('click', () => selectChat(chat.Id, chat.OtherUserId, chat.OtherUserName));
+            return div;
+        }
+
+        // Select a chat
+        function selectChat(chatId, receiverId, receiverName) {
+            currentChatId = chatId;
+            currentReceiverId = receiverId;
+
+            // Update chat header
+            updateChatHeader(receiverName, receiverId);
+
+            // Highlight active chat
+            document.querySelectorAll('.chat-item').forEach(item => item.style.background = '');
+            document.querySelector(`[data-chat-id="${chatId}"]`).style.background = 'rgba(99, 102, 241, 0.05)';
+
+            // Load messages
+            loadChatMessages(chatId);
+
+            // Mark messages as read
+            markChatAsRead(chatId);
+        }
+
+        // Load chat messages
+        function loadChatMessages(chatId) {
+            fetch(`/Chat/GetChatMessages?chatId=${chatId}`)
+                .then(response => response.json())
+                .then(messages => {
+                    displayMessages(messages);
+                    scrollToBottom();
+                })
+                .catch(error => console.error('Error loading messages:', error));
+        }
+
+        // Display messages
+        function displayMessages(messages) {
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.innerHTML = `
+                <div class="text-center my-3">
+                    <span class="badge bg-secondary">Today</span>
+                </div>
+            `;
+            messages.forEach(message => appendMessage(message));
+        }
+
+        // Append message bubble
+        function appendMessage(message) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            const isCurrentUser = message.SenderId === currentUserId || message.IsCurrentUser;
+
+            messageDiv.className = `message-bubble ${isCurrentUser ? 'sent' : 'received'}`;
+            messageDiv.innerHTML = `
+                <div class="message-content">${message.Content}</div>
+                <div class="message-time ${isCurrentUser ? 'text-end' : ''}">${message.SentAt}</div>
+            `;
+            chatMessages.appendChild(messageDiv);
+        }
+
+        // Send message
+        function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
+
+            if (message && currentChatId && currentReceiverId) {
+                console.log('📤 Sending message:', { chatId: currentChatId, receiverId: currentReceiverId, message });
+                connection.invoke("SendMessage", currentChatId.toString(), currentReceiverId, message)
+                    .catch(err => console.error('Error sending message:', err));
+
+                messageInput.value = '';
+                stopTyping();
+            }
+        }
+
+        // Typing indicators
+        function startTyping() {
+            if (currentReceiverId) {
+                connection.invoke("UserTyping", currentReceiverId);
+            }
+        }
+
+        function stopTyping() {
+            if (currentReceiverId) {
+                connection.invoke("UserStoppedTyping", currentReceiverId);
+            }
+        }
+
+        function showTypingIndicator() {
+            const chatMessages = document.getElementById('chatMessages');
+            if (!document.getElementById('typingIndicator')) {
+                const typingDiv = document.createElement('div');
+                typingDiv.id = 'typingIndicator';
+                typingDiv.className = 'message-bubble received';
+                typingDiv.innerHTML = `
+                    <div class="message-content">
+                        <div class="d-flex gap-1">
+                            <span class="spinner-grow spinner-grow-sm" style="width: 8px; height: 8px;"></span>
+                            <span class="spinner-grow spinner-grow-sm" style="width: 8px; height: 8px;"></span>
+                            <span class="spinner-grow spinner-grow-sm" style="width: 8px; height: 8px;"></span>
+                        </div>
+                    </div>
+                `;
+                chatMessages.appendChild(typingDiv);
+                scrollToBottom();
+            }
+        }
+
+        function hideTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            if (indicator) indicator.remove();
+        }
+
+        // Utility
+        function scrollToBottom() {
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function updateChatHeader(receiverName, receiverId) {
+            const chatHeader = document.getElementById('chatHeader');
+            chatHeader.innerHTML = `
+                <img src="https://ui-avatars.com/api/?name=${receiverName}&background=10b981&color=fff" alt="User" class="user-avatar">
+                <div class="user-info flex-grow-1">
+                    <h6>${receiverName}</h6>
+                    <p>Coach • Online</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-light rounded-circle"><i class="bi bi-telephone"></i></button>
+                    <button class="btn btn-sm btn-light rounded-circle"><i class="bi bi-camera-video"></i></button>
+                    <button class="btn btn-sm btn-light rounded-circle"><i class="bi bi-three-dots-vertical"></i></button>
+                </div>
+            `;
+            chatHeader.style.display = 'flex';
+        }
+
+        function markChatAsRead(chatId) {
+            fetch('/Chat/MarkAsRead', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                },
+                body: JSON.stringify({ chatId })
+            });
+        }
+
+        function markMessageAsRead(messageId) {
+            console.log(`✅ Message ${messageId} marked as read`);
+        }
+
+        function updateUserStatus(userId, isOnline) {
+            const statusElements = document.querySelectorAll(`[data-receiver-id="${userId}"] .user-status`);
+            statusElements.forEach(element => {
+                element.style.background = isOnline ? '#10b981' : '#94a3b8';
+            });
+        }
+
+        function updateConversationsList() {
+            loadUserChats();
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSignalR();
+
+            document.getElementById('sendButton').addEventListener('click', sendMessage);
+
+            document.getElementById('messageInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+            document.getElementById('messageInput').addEventListener('input', function() {
+                startTyping();
+                clearTimeout(typingTimer);
+                typingTimer = setTimeout(stopTyping, 1000);
+            });
+
+            document.querySelectorAll('.start-chat-btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const coachId = this.getAttribute('data-coach-id');
+                    startChatWithUser(coachId);
+                });
+            });
+        });
+
+        // Start a new chat
+        function startChatWithUser(otherUserId) {
+            console.log('💬 Starting chat with user ID:', otherUserId);
+            fetch('/Chat/CreateChat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                },
+                body: JSON.stringify({ OtherUserId: otherUserId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    loadUserChats();
+                    selectChat(data.chatId, otherUserId, data.otherUserName);
+                } else {
+                    console.error('Error creating chat:', data.message);
+                }
+            })
+            .catch(error => console.error('Error starting chat:', error));
+        }
+    </script>
+}

@@ -11,8 +11,11 @@ namespace FitVerse.Data.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public DateTime Date { get; set; }
-        public int DurationInDays { get; set; }
-        public string? Notes { get; set; }
+       
+        public int DurationWeeks { get; set; }
+
+        public string? Notes { get; set; } 
+  
         public string ClientId { get; set; }
         public virtual Client? Client { get; set; }
         public string CoachId { get; set; }
