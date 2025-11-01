@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using FitVerse.Core.Models;
 using System.Threading.Tasks;
+using FitVerse.Core.ViewModels.Profile;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace FitVerse.Web.Controllers
 {
@@ -63,28 +65,44 @@ namespace FitVerse.Web.Controllers
             TempData["AddUserMessage"] = "User added successfully!";
             return RedirectToAction("Index");
         }
-        [HttpPost("UpdateUser")]
-        public async Task<IActionResult> UpdateUser(AddUserByAdmin myUser)
+        [HttpGet("profile/{UserName}")]
+        public async Task<IActionResult> Profile(string UserName)
         {
-            ModelState.Remove("Id");
-            ModelState.Remove("Password");
-            ModelState.Remove("ConfirmPassword");
-            if (!ModelState.IsValid)
-            {
-                ViewBag.ShowUpdateUserModal = true;
-                return View("index", myUser);
-            }
-            var (success, message) = await unitOFWorkService.UsersService.UpdateUserAsync(myUser);
-
-            if (!success)
-            {
-                ModelState.AddModelError("ModelOnly", message);
-                ViewBag.ShowUpdateUserModal = true;
-                return View("Index", myUser);
-            }
-
-            return RedirectToAction("Index");
+            var res=await unitOFWorkService.UsersService.GetUserByUserNameAsync(UserName);
+           string role=await unitOFWorkService.UsersService.showByRole(res.user);
+            ProfileViewModel newUser = new ProfileViewModel() ;
+            newUser.UserInfo =unitOFWorkService.UsersService.MapToGetAllUsersViewModel(res.user, role);
+            
+            return View("profile",newUser);
         }
+
+        [HttpPost("UploadImage")]
+        public async Task<IActionResult> UploadImage(ProfileViewModel userImage)
+        {
+           await unitOFWorkService.UsersService.SaveOrUpdateImageInWWWRoot(userImage.UserInfo.Image, userImage.UserInfo.UserName);
+            return RedirectToAction("Profile", new { userImage.UserInfo.UserName });
+
+        }
+
+        [HttpPost("UpdatePersonalInfo")]
+        public async Task<IActionResult> UpdatePersonalInfo(GetAllUsersViewModel myUser)
+        {
+            if(!ModelState.IsValid)
+                {
+                return Json(new { Succeeded = false, Message = "Invalid data provided." });
+            }
+
+            var res=await unitOFWorkService.UsersService.UpdatePersonalInfoAsync(myUser);
+
+            return Json(new { Succeeded = res.Item1, Message = res.Item2 });
+        }
+        [HttpPost("ChangeUserRole")]
+        public async Task<IActionResult> ChangeUserRole(ChangeUserRoleViewModel userWithRole)
+        {
+            var res = await unitOFWorkService.UsersService.ChangeUserRoleAsync(userWithRole);
+            return Json(new { Succeeded = res.Success, Message = res.Message });
+        }
+    
         [HttpGet("DeleteUser/{Id}")]
         public async Task<IActionResult> DeleteUser(string Id)
         {
@@ -94,6 +112,85 @@ namespace FitVerse.Web.Controllers
             
             return RedirectToAction("Index");
         }
+        [HttpPost("ChangePasswordByAdmin")]
+
+        public async Task<IActionResult> ChangePasswordByAdmin( ProfileViewModel userPass)
+        {
+            var keysToKeep = new[]
+     {
+                    "ChangePasswordByAdmin.Password",
+                    "ChangePasswordByAdmin.ConfirmPassword",
+                    "UserInfo.UserName"
+                };
+
+            // Remove all other keys from ModelState
+            foreach (var key in ModelState.Keys.Except(keysToKeep).ToList())
+            {
+                ModelState.Remove(key);
+            }
+            (bool Success, string Message) res = (false, "Change Password Failed, Please try again.");
+
+            if (ModelState.IsValid)
+            {
+                res = await unitOFWorkService.UsersService
+                    .ChangePasswordByAdminAsync(userPass.UserInfo.UserName, userPass.ChangePasswordByAdmin);
+            }
+            else
+            {
+                res = (false, "Invalid input data. Please check your form.");
+            }
+
+            return Json(new { Success = res.Success, Message = res.Message });
+        }
+        [HttpPost("ChangePasswordByUser")]
+
+        public async Task<IActionResult> ChangePasswordByUser(ProfileViewModel userPass)
+        {
+           
+
+            var keysToKeep = new[]
+                {
+                    "ChangePasswordByUser.OldPassword",
+                    "ChangePasswordByUser.Password",
+                    "ChangePasswordByUser.ConfirmPassword",
+                    "UserInfo.UserName"
+                };
+
+            // Remove all other keys from ModelState
+            foreach (var key in ModelState.Keys.Except(keysToKeep).ToList())
+            {
+                ModelState.Remove(key);
+            }
+            (bool Success, string Message) res = (false, "Change Password Failed, Please try again.");
+
+            if (ModelState.IsValid)
+            {
+                res = await unitOFWorkService.UsersService
+                    .ChangePasswordByUserAsync(userPass.UserInfo.UserName, userPass.ChangePasswordByUser);
+            }
+           else
+            {
+                res = (false, "Invalid input data. Please check your form.");
+            }
+
+            return Json(new { Success = res.Success, Message = res.Message });
+        }
+
+        //todo: Update Client Goals
+        [HttpPost("UpdateClientGoals")]
+        public IActionResult UpdateClientGoals(string userName, double? height, double? startWeight, string goal)
+        {
+            var clientInfo = new ClientViewModel
+            {
+                Height = height,
+                StartWeight = startWeight,
+                Goal = goal
+            };
+
+            var result = unitOFWorkService.ClientService.UpdateClientGoals(userName, clientInfo);
+            return Json(new { result });
+        }
+
     }
 
 }

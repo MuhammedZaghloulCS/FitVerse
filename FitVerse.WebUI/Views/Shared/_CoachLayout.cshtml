@@ -140,7 +140,7 @@
 
                     <li class="nav-item">
                         <a class="nav-link @(ViewBag.Active == "Plans" ? "active" : "")"
-                           asp-controller="Coach" asp-action="Plans">
+                           asp-controller="ExercisePlan" asp-action="index">
                             <i class="bi bi-calendar-check"></i> Plans
                         </a>
                     </li>
@@ -150,6 +150,12 @@
                            asp-controller="Dietplan" asp-action="Index">
                             <i class="bi bi-egg-fried"></i> Diet Plans
                         </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewBag.Active == "MyClients" ? "active" : "")"
+                           asp-controller="Coach" asp-action="MyClients">
+                            <i class="bi bi-calendar-check"></i> MyClients
+                        </a>
            
 
                     <li class="nav-item">
@@ -158,6 +164,9 @@
                             <i class="bi bi-people"></i> Daily Logs
                         </a>
                     </li>
+                    @* <li class="nav-item">
+                        <a asp-controller="Coach" asp-action="MyClients"><i class="bi bi-people"></i> Clients</a>
+                    </li> *@
 
 
                     <li class="nav-item">
@@ -165,6 +174,8 @@
                            asp-controller="Coach" asp-action="Clients">
                             <i class="bi bi-people"></i> Clients
                         </a>
+                        <li class="nav-item">
+                        <a class="nav-link" href="coach-daily-logs.html"><i class="bi bi-journal-text"></i> Daily Logs</a>
                     </li>
 
                     <li class="nav-item">
@@ -225,6 +236,7 @@
 
 
     <!-- Chart.js -->
+    <!-- default scripts -->
     <script src="~/jquery/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="~/js/script.js"></script>
@@ -381,6 +393,8 @@
         }
     </script>
 
+    <!-- optional page-specific scripts -->
     @await RenderSectionAsync("Scripts", required: false)
+  
 </body>
 </html>

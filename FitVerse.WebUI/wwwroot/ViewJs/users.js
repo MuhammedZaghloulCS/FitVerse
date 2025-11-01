@@ -75,7 +75,7 @@ function filterAll() {
     // Search filter
     if (searchVal) {
         filteredData = filteredData.filter(u =>
-            u.UserName.toLowerCase().includes(searchVal) ||
+            u.FullName.toLowerCase().includes(searchVal) ||
             u.Email.toLowerCase().includes(searchVal)
         );
     }
@@ -139,10 +139,10 @@ function renderUsersPaginated(users, page) {
                 <td><input type="checkbox" class="form-check-input"></td>
                 <td>
                     <div class="d-flex align-items-center gap-3">
-                        <img src="https://ui-avatars.com/api/?name=${user.UserName}&background=6366f1&color=fff" 
+                        <img src="https://ui-avatars.com/api/?name=${user.FullName}&background=6366f1&color=fff" 
                              alt="User" style="width: 40px; height: 40px; border-radius: 50%;">
                         <div>
-                            <div class="fw-semibold">${user.UserName}</div>
+                            <div class="fw-semibold">${user.FullName}</div>
                             <small class="text-muted">Phone: ${user.PhoneNumber}</small>
                         </div>
                     </div>
@@ -258,11 +258,11 @@ function EditUser() {
         const index = row.index();
         const userIndex = (currentPage - 1) * rowsPerPage + index;
         const user = filteredData.length ? filteredData[userIndex] : allData[userIndex];
-
-        $('#UpdateUserModal').modal('show');
-
+        console.log(user.UserName);
+        //$('#UpdateUserModal').modal('show');
+        window.location.href = `/Admin/Users/Profile/${user.UserName}`;
         // Split full name into first and last
-        const names = user.UserName.split(' ');
+        const names = user.FullName.split(' ');
         $('#UpdateId').val(user.Id);
         $('#UpdateFirstName').val(names[0] || '');
         $('#UpdateLastName').val(names.slice(1).join(' ') || '');
@@ -283,7 +283,7 @@ function DeleteUser() {
 
         Swal.fire({
             title: `Are you sure?`,
-            text: `Do you want to delete ${user.UserName}?`,
+            text: `Do you want to delete ${user.FullName}?`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
@@ -298,7 +298,7 @@ function DeleteUser() {
                     success: function () {
                         Swal.fire(
                             'Deleted!',
-                            `${user.UserName} has been deleted.`,
+                            `${user.FullName} has been deleted.`,
                             'success'
                         );
                         // تحديث البيانات
@@ -332,7 +332,7 @@ function ExportData() {
 
         const exportData = dataToExport.map(u => ({
             "ID": u.Id,
-            "Name": u.UserName,
+            "Name": u.FullName,
             "Email": u.Email,
             "Role": u.Role,
             "Status": u.Status,

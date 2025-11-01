@@ -6,6 +6,7 @@ using FitVerse.Data.Models;
 using FitVerse.Data.UnitOfWork;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FitVerse.Web.Controllers
 {
@@ -24,7 +25,7 @@ namespace FitVerse.Web.Controllers
             return View();
         }
 
- 
+
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -32,7 +33,6 @@ namespace FitVerse.Web.Controllers
             var data = muscles.Select(m => new { m.Id, m.Name }).ToList();
             return Json(new { data = data }); 
         }
-
 
         [HttpGet]
         public IActionResult GetById(int id)
@@ -44,7 +44,6 @@ namespace FitVerse.Web.Controllers
             return Json(new { Success = true, Data = muscle });
         }
 
-    
         [HttpPost]
         public IActionResult Create(AddMuscleVM model)
         {
@@ -59,7 +58,6 @@ namespace FitVerse.Web.Controllers
             return Json(new { Success = result.Success, Message = result.Message });
         }
 
-
         [HttpPost]
         public IActionResult Delete(int id)
         {
@@ -67,20 +65,18 @@ namespace FitVerse.Web.Controllers
             return Json(new { Success = result.Success, Message = result.Message });
         }
 
-
         [HttpGet]
         public IActionResult GetPaged(int page = 1, int pageSize = 6, string? search = null, int? anatomyId = null)
         {
             var (data, totalItems) = _muscleService.GetPagedMuscles(page, pageSize, search, anatomyId);
             return Json(new
             {
-                data = data,
-                currentPage = page,
-                totalPages = (int)Math.Ceiling((double)totalItems / pageSize)
+                Data = data,
+                CurrentPage = page,
+                TotalPages = (int)Math.Ceiling((double)totalItems / pageSize)
             });
         }
 
-   
         [HttpGet]
         public IActionResult GetAnatomyGroups()
         {
@@ -89,10 +85,8 @@ namespace FitVerse.Web.Controllers
                 .Distinct()
                 .ToList();
 
-            return Json(new { success = true, data = anatomies });
+            return Json(new { Success = true, Data = anatomies });
         }
-
-        // ==========================
 
         [HttpGet]
         public IActionResult GetStats()

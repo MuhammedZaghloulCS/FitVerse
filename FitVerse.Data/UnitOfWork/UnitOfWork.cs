@@ -31,6 +31,13 @@ namespace FitVerse.Data.UnitOfWork
         MessageRepository messages;
         NotificationRepository notifications;
 
+        CoachSpecialtiesRepository coachSpecialties;
+        SpecialityRepository speciality;
+        ExercisePlanRepository exercisePlans;
+        ExercisePlanDetailRepository exercisePlanDetail;
+        
+
+        
 
 
 
@@ -92,10 +99,12 @@ namespace FitVerse.Data.UnitOfWork
             {
                 if (clients == null)
                     clients = new ClientRepository(_context);
-                return clients; // <--- صحح هنا
+                return clients; // <--- ??? ???
                
 
             }
+        }
+                return clients;
         }
         public IExerciseRepository Exercises
         {
@@ -134,22 +143,35 @@ namespace FitVerse.Data.UnitOfWork
             }
 
         }
-        public ICoachSpecialtiesRepository CoachSpecialties
-        {
-            get
-            {
-                if (coachSpecialties == null)
-                    coachSpecialties = new CoachSpecialtiesRepository(_context);
-                return coachSpecialties;
-            }
-        }
-
-
+          
         public ICoachFeedbackRepository CoachFeedbacks
         {
             get
             {
                 if (coachFeedbacks == null)
+                    coachFeedbacks = new CoachFeedbackRepository(_context);
+                return coachFeedbacks;
+            }
+
+        }
+
+         public  ICoachSpecialtiesRepository CoachSpecialties
+        {
+            get
+            {
+                 if (coachSpecialties == null)
+                coachSpecialties = new CoachSpecialtiesRepository(_context);
+                return coachSpecialties;
+            }
+        }
+
+        public ICoachFeedbackRepository CoachFeedbacks
+        {
+            get
+            {
+            {
+                if (coachFeedbacks == null)
+        public IExercisePlanRepository ExercisePlans
                     coachFeedbacks = new CoachFeedbackRepository(_context);
                 return coachFeedbacks;
             }
@@ -169,7 +191,20 @@ namespace FitVerse.Data.UnitOfWork
 
         }
 
-
+                if(exercisePlans == null)
+                    exercisePlans= new ExercisePlanRepository(_context);
+                return exercisePlans;
+            }
+        }
+        public IExercisePlanDetailRepository ExercisePlanDetails { 
+        public IExercisePlanDetailRepository ExercisePlanDetails
+        {
+            get
+            {
+                if(exercisePlanDetail== null)
+                    exercisePlanDetail= new ExercisePlanDetailRepository(_context);
+                return exercisePlanDetail;
+            }
         public IExercisePlanDetailRepository ExercisePlanDetails { 
             get
             {

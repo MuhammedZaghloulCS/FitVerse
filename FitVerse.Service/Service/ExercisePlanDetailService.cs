@@ -1,10 +1,4 @@
-﻿//using FitVerse.Core.IService;
-//using FitVerse.Core.UnitOfWork;
-//using FitVerse.Data.Models;
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-
+﻿
 //namespace FitVerse.Service.Service
 //{
 //    public class ExercisePlanDetailService : IExercisePlanDetailService
@@ -24,7 +18,31 @@
 //                .ToList();
 //        }
 
+        public bool AddDetail(ExercisePlanDetail detail)
+        {
+            try
+            {
+                _detailRepo.Add(detail);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
+        public bool UpdateDetail(ExercisePlanDetail detail)
+        {
+            try
+            {
+                _detailRepo.Update(detail);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
 //        // إضافة تمرين جديد
 //        public void AddExercisePlanDetail(ExercisePlanDetail exercise)
@@ -32,6 +50,12 @@
 //            _unitOfWork.ExercisePlanDetails.Add(exercise);
 //            _unitOfWork.Complete();
 //        }
+        public bool DeleteDetail(int id)
+        {
+            try
+            {
+                var detail = _detailRepo.GetById(id);
+                if (detail == null) return false;
 
 //        public List<ExercisePlanDetail> GetTodayWorkouts(string clientId)
 //        {
@@ -39,3 +63,13 @@
 //        }
 //    }
 //}
+                _detailRepo.Delete(detail);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+    }
+}

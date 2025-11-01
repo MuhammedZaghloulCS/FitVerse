@@ -19,6 +19,7 @@ namespace FitVerse.Core.UnitOfWork
         //ICoachFeedbackRepository CoachFeedbacks { get; }
         IDietPlanRepository DietPlans { get; }
         ICoachSpecialtiesRepository CoachSpecialties { get; }
+
         ICoachFeedbackRepository CoachFeedbacks { get; }
         ICoachPackageRepository coachPackageRepository { get; }
         IDailyLogRepository DailyLogsRepository { get; }
@@ -35,6 +36,8 @@ namespace FitVerse.Core.UnitOfWork
         IPackageRepository Packages { get; }
         IPaymentRepository Payments { get; }
         ISpecialtiesRepository Specialties { get; }
+
+        
         int Complete();
         Task<int> SaveAsync();
     }

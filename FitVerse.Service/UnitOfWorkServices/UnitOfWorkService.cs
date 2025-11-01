@@ -19,7 +19,7 @@ using System.Collections.Generic;
 
 namespace FitVerse.Data.UnitOfWork
 {
-    public class UnitOfWorkService : IUnitOFWorkService
+    public class UnitOfWorkService :IUnitOFWorkService
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
@@ -37,7 +37,11 @@ namespace FitVerse.Data.UnitOfWork
         private IDietPlan dietPlanService;
         private IUsersService users;
         private IAccountService account;
+        //private IUsers users;
         private IAdminService adminService;
+        private IClientOnCoachesService clientOnCoachesService;
+        private IExercisePlanService exercisePlanService;
+        private IExercisePlanDetailService exercisePlanDetailService;
         private IPackageAppService packageAppService;
         private IDailyLogService dailyLogService;
         private IClientDashboardService clientDashboardService;
@@ -52,6 +56,9 @@ namespace FitVerse.Data.UnitOfWork
         private IDailyLogRepository dailyLogRepository;
         private IExercisePlanDetailRepository exercisePlanDetailRepository;
         private IDietPlanRepository dietPlanRepository;
+        private IExercisePlanRepository exercisePlanRepository;
+        private IExercisePlanDetailRepository exercisePlanDetailRepository;
+       
 
         public UnitOfWorkService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
@@ -66,6 +73,56 @@ namespace FitVerse.Data.UnitOfWork
         public UserManager<ApplicationUser> UserManager => userManager;
 
         // Services
+        public IImageHandleService ImageHandleService
+        {
+            get
+            {
+                if (imageHandleService == null)
+                    imageHandleService = new ImageHandleService();
+                return imageHandleService;
+            }
+        }
+
+        public ICoachService CoachService
+        {
+            get
+            {
+                if (coachService == null)
+                    coachService = new CoachService(unitOfWork, mapper, ImageHandleService);
+                return coachService;
+            }
+        }
+
+        public IClientService ClientService
+        {
+            get
+            {
+                if (clientService == null)
+                    clientService = new ClientService(unitOfWork, mapper, ImageHandleService,userManager);
+                return clientService;
+            }
+        }
+
+        public IUsersService UsersService
+        {
+            get
+            {
+                if (users == null)
+                    users = new UsersService(userManager, mapper, unitOfWork);
+                return users;
+            }
+        }
+
+        public IAccountService AccountService
+        {
+            get
+            {
+                if (account == null)
+                    account = new AccountService(userManager, mapper, signInManager);
+                return account;
+            }
+        }
+
         public IImageHandleService ImageHandleService => imageHandleService ??= new ImageHandleService();
         public ICoachService CoachService => coachService ??= new CoachService(unitOfWork, mapper, ImageHandleService);
         public IAnatomyService AnatomyService => anatomyService ??= new AnatomyService(unitOfWork, mapper, ImageHandleService);
@@ -75,13 +132,75 @@ namespace FitVerse.Data.UnitOfWork
         public IDietPlan DietPlanService => dietPlanService ??= new DietPlanService(unitOfWork, mapper);
         public IPackageAppService PackageAppService => packageAppService ??= new PackageAppService(unitOfWork, mapper);
         public IUsersService UsersService => users ??= new UsersService(userManager, mapper);
+        public IAccountService AccountService => account ??= new AccountService(userManager, mapper,signInManager);
+        //public IUsersService UsersService => users ??= new UsersService(userManager, mapper);
         public IAccountService AccountService => account ??= new AccountService(userManager, mapper, signInManager);
         public IAdminService AdminService => adminService ??= new AdminService(unitOfWork, userManager);
         public IDailyLogService DailyLogService => dailyLogService ??= new DailyLogService(unitOfWork);
         public IClientDashboardService ClientDashboardService => clientDashboardService
             ??= new ClientDashboardService(unitOfWork, ClientService, CoachService,imageHandleService);
 
+
+        public IAdminService AdminService
+        {
+            get
+            {
+                if (adminService == null)
+                    adminService = new AdminService(unitOfWork, userManager);
+                return adminService;
+            }
+        }
+
         // Repositories
+        public IEquipmentRepository EquipmentRepository
+        {
+            get
+            {
+                if (equipmentRepository == null)
+                    equipmentRepository = new EquipmentRepository(context);
+                return equipmentRepository;
+            }
+        }
+
+        public IAnatomyRepository AnatomyRepository
+        {
+            get
+            {
+                if (anatomyRepository == null)
+                    anatomyRepository = new AnatomyRepository(context);
+                return anatomyRepository;
+            }
+        }
+
+        public IMuscleRepository MuscleRepository
+        {
+            get
+            {
+                if (muscleRepository == null)
+                    muscleRepository = new MuscleRepository(context);
+                return muscleRepository;
+            }
+        }
+
+        public ICoachRepository CoachRepository
+        {
+            get
+            {
+                if (coachRepository == null)
+                    coachRepository = new CoachRepository(context);
+                return coachRepository;
+            }
+        }
+
+        public IClientRepository ClientRepository
+        {
+            get
+            {
+                if (clientRepository == null)
+                    clientRepository = new ClientRepository(context);
+                return clientRepository;
+            }
+        }
         public IEquipmentRepository EquipmentRepository => equipmentRepository ??= new EquipmentRepository(context);
         public IAnatomyRepository AnatomyRepository => anatomyRepository ??= new AnatomyRepository(context);
         public IMuscleRepository MuscleRepository => muscleRepository ??= new MuscleRepository(context);
@@ -96,9 +215,20 @@ namespace FitVerse.Data.UnitOfWork
         public IExercisePlanRepository ExercisePlanRepository => new ExercisePlanRepository(context);
         public ICoachPackageRepository CoachPackageRepository => new CoachPackageRepository(context);
 
+        public ISpecialtiesRepository SpecialtiesRepository => new SpecialityRepository(context);
+
+        public ICoachSpecialtiesRepository CoachSpecialtiesRepository =>  new CoachSpecialtiesRepository(context);
+
+         //public IClientOnCoachesService clientOnCoachesService =>  new ClientOnCoachesService(unitOfWork);
+
+        public IExercisePlanDetailRepository ExercisePlanDetailRepository => new ExercisePlanDetailRepository(context);
+
+        public IExercisePlanRepository ExercisePlanRepository => new ExercisePlanRepository(context);
         //public IDietPlan DietPlanService => throw new NotImplementedException();
 
         public ISpecialtiesRepository SpecialtiesRepository => throw new NotImplementedException();
+
+        IClientOnCoachesService IUnitOFWorkService.clientOnCoachesService => new ClientOnCoachesService(unitOfWork);
         public ICoachSpecialtiesRepository CoachSpecialtiesRepository => throw new NotImplementedException();
     }
 }

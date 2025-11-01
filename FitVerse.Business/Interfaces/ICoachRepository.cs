@@ -2,6 +2,7 @@
 using FitVerse.Core.ViewModels.Coach;
 using FitVerse.Core.ViewModels.Equipment;
 using FitVerse.Data.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +23,8 @@ namespace FitVerse.Core.Interfaces
 
         public List<ClientDashVM> GetRecentClients(string coachId);
         public List<ClientDashVM> GetAllClientsByCoach(string coachId);
+        public void DeleteByUserId(string UserId);
+        
         IQueryable<Coach> GetAllWithPackages();
         public List<Specialty> GetCoachspecialtiesByCoachId(string CoachId);
 

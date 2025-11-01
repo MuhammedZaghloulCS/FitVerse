@@ -36,9 +36,25 @@ namespace FitVerse.Data.Service
 
                     var coach = mapper.Map<Coach>(model);
                     coach.UserId ="6A29B02B-7643-48C3-9B47-6ECF12F4B9F9";
-                    coach.ImagePath = imagePath ?? "/Images/default.jpg";
+                    //coach.ImagePath = imagePath ?? "/Images/default.jpg";
 
                     unitOfWork.Coaches.Add(coach);
+                    unitOfWork.Complete();
+
+                    return (true, "Coach added successfully.");
+                }
+                catch (Exception ex)
+                {
+                    return (false, ex.Message);
+                }
+            }
+            public (bool Success, string Message) AddCoachByAdmin(Coach model)
+            {
+
+                try
+                {
+
+                    unitOfWork.Coaches.Add(model);
                     unitOfWork.Complete();
 
                     return (true, "Coach added successfully.");
@@ -98,13 +114,13 @@ namespace FitVerse.Data.Service
                         string? imagePath = imageService.SaveImage(model.CoachImageFile);
                         if (!string.IsNullOrEmpty(imagePath))
                         {
-                            existingCoach.ImagePath = imagePath;
+                            //existingCoach.ImagePath = imagePath;
                         }
                     }
-                    existingCoach.Name = model.Name;
+                    //existingCoach.Name = model.Name;
                     existingCoach.ExperienceYears = model.ExperienceYears;
                     existingCoach.About = model.About;
-                    existingCoach.IsActive = model.IsActive;
+                    //existingCoach.IsActive = model.IsActive;
 
                     unitOfWork.Coaches.Update(existingCoach);
                     unitOfWork.Complete();

@@ -46,7 +46,8 @@ namespace FitVerse.Data.Repositories
 
         public int GetActiveClientsCount()
         {
-            return Clients.Count(c => c.IsActive);
+            // return Clients.Count(c => c.IsActive);
+            return 0;
         }
 
         public int GetTotalExercises()
@@ -131,8 +132,8 @@ namespace FitVerse.Data.Repositories
 
             var clientVMs = clientsList.Select(c => new ClientDashVM
             {
-                Name = c.Name,
-                IsActive = c.IsActive,
+                //Name = c.,
+               // IsActive = c.IsActive,
                 LastPaymentAgo = c.ClientSubscriptions
                     .Where(cs => cs.CoachId == coachId)
                     .OrderByDescending(cs => cs.StartDate)
@@ -150,6 +151,15 @@ namespace FitVerse.Data.Repositories
                 .ThenInclude(cp => cp.Package);
         }
 
+        public void DeleteByUserId(string UserId)
+        {
+            var user = Find(c => c.UserId == UserId).FirstOrDefault();
+            if (user != null)
+            {
+                Coaches.Remove(user);
+                context.SaveChanges();
+            }
+        }
         public List<Specialty> GetCoachspecialtiesByCoachId(string CoachId)
         {
             var specialties = (from cs in context.Set<CoachSpecialties>()

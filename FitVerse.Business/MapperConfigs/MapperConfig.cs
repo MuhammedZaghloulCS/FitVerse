@@ -1,11 +1,15 @@
 ﻿using AutoMapper;
+using FitVerse.Core.Models;
 using FitVerse.Core.viewModels;
-
+using FitVerse.Core.ViewModels;
 using FitVerse.Core.ViewModels.Anatomy;
 using FitVerse.Core.ViewModels.Client;
+using FitVerse.Core.ViewModels.Coach;
+using FitVerse.Core.ViewModels.ExerciseVM;
 using FitVerse.Core.ViewModels.Meuscle;
 using FitVerse.Core.ViewModels.Package;
-
+using FitVerse.Core.ViewModels.Plan;
+using FitVerse.Core.ViewModels.User;
 using FitVerse.Data.Models;
 using FitVerse.Core.ViewModels;
 using FitVerse.Core.ViewModels.Coach;
@@ -48,6 +52,9 @@ namespace FitVerse.Core.MapperConfigs
             CreateMap<DietPlan, DietPlanVM>().ReverseMap();
 
 
+            CreateMap<Client, ClientsVM>().ReverseMap();
+            CreateMap<ExercisePlan, ExercisePlanVM>().ReverseMap();
+            CreateMap<ExercisePlanDetail, ExercisePlanDetailVM>().ReverseMap();
         }
 
     }

@@ -6,13 +6,12 @@ using FitVerse.Core.IUnitOfWorkServices;
 using FitVerse.Core.MapperConfigs;
 using FitVerse.Core.Models;
 using FitVerse.Core.UnitOfWork;
-using FitVerse.Core.UnitOfWorkServices;
+using FitVerse.Data.Configurations;
 using FitVerse.Data.Context;
 using FitVerse.Data.Repositories;
 using FitVerse.Data.Service;
 using FitVerse.Data.Service.FitVerse.Data.Service;
 using FitVerse.Data.Service.FitVerse.Data.Service;
-using FitVerse.Data.UnitOfWork;
 using FitVerse.Data.UnitOfWork;
 using FitVerse.Service.Service;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -61,7 +60,6 @@ namespace FitVerse.WebUI
                   options.AccessDeniedPath = new PathString("/Account/AccessDenied");
               });
             //Allow UserName Duplication
-            builder.Services.AddScoped<IUserValidator<ApplicationUser>, AllowDuplicateUsernameValidator<ApplicationUser>>();
 
 
             builder.Services.AddControllers()//make json case sensitive
@@ -94,6 +92,11 @@ namespace FitVerse.WebUI
             builder.Services.AddScoped<ICoachService, CoachService>();
             builder.Services.AddScoped<IClientService, ClientService>();
             builder.Services.AddScoped<IImageHandleService, ImageHandleService>();
+            builder.Services.AddScoped<IClientOnCoachesService, ClientOnCoachesService>();
+            builder.Services.AddScoped<IExerciseService, ExerciseService>();
+            
+            builder.Services.AddScoped<IExercisePlanRepository, ExercisePlanRepository>();
+            builder.Services.AddScoped<IExercisePlanService, ExercisePlanService>();
 
             // Add SignalR
             builder.Services.AddSignalR()
@@ -103,6 +106,9 @@ namespace FitVerse.WebUI
          options.PayloadSerializerOptions.PropertyNameCaseInsensitive = true;
      });
 
+            
+            builder.Services.AddScoped<IExercisePlanDetailRepository, ExercisePlanDetailRepository>();
+            builder.Services.AddScoped<IExercisePlanDetailService, ExercisePlanDetailService>();
 
 
 
@@ -111,6 +117,7 @@ namespace FitVerse.WebUI
 
             var app = builder.Build();
 
+        
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -125,9 +132,7 @@ namespace FitVerse.WebUI
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapStaticAssets();
-            app.MapControllerRoute(
-                name: "areas",
-                pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
+
 
 
             app.MapControllerRoute(

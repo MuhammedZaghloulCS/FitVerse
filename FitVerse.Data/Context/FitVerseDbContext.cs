@@ -1,15 +1,19 @@
 ﻿using FitVerse.Core.Models;
+using FitVerse.Data.Configurations;
 using FitVerse.Data.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using System.IO;
+using FitVerse.Data.Configurations;
 
 
 namespace FitVerse.Data.Context
@@ -44,10 +48,9 @@ namespace FitVerse.Data.Context
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             base.OnModelCreating(modelBuilder);
-
+      
         }
+       
     }
-
-
     
 }

@@ -1,0 +1,326 @@
+﻿@{
+    Layout = "_AdminLayout";
+}
+@model ProfileViewModel
+
+<input id="hiddenUserName" asp-for="@Model.UserInfo.UserName" type="hidden" />
+
+<div class="container-fluid px-4 py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">My Profile</h2>
+            <p class="text-muted mb-0">View and update your personal and professional information</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="profile-card">
+                <div class="profile-header text-center p-4">
+                    <img src="@(Model.UserInfo.ImagePath ?? $"https://ui-avatars.com/api/?name={Model.UserInfo.FullName.Split(' ').FirstOrDefault()}+{Model.UserInfo.FullName.Split(' ')[1]}&background=10b981&color=fff&size=120")"
+                         alt="Profile" class="profile-avatar">
+                    <div id="profile-name" class="profile-name mt-2">@Model.UserInfo.FullName</div>
+                    <div class="profile-role">@Model.UserInfo.Role</div>
+                </div>
+                <div class="profile-body p-3">
+                    <div class="profile-info-item d-flex justify-content-between">
+                        <span class="profile-info-label">Member Since</span>
+                        <span class="profile-info-value">@(Model.UserInfo.JoinedDate.ToString("dd-MMM-yyyy"))</span>
+                    </div>
+             
+					<form asp-action="UploadImage" asp-controller="Users" method="post" enctype="multipart/form-data">
+                    <button type="button" id="btnChangeAvatar" class="btn btn-outline-custom w-100 mt-3">
+                        <i class="bi bi-camera me-2"></i> Change Photo
+                    </button>
+                    <button type="submit"  class="btn btn-outline-custom w-100 mt-3">
+                            <i class="bi bi-check-circle me-2"></i> Save Changes
+                    </button>
+                        <input id="avatarFile" asp-for="@Model.UserInfo.Image" type="file" accept="image/*" class="d-none" />
+                        <input asp-for="@Model.UserInfo.UserName" type="hidden" />
+
+                    </form>
+                </div>
+            </div>
+            <div class="card-custom mt-5">
+                <div class="card-header-custom">
+                    <i class="bi bi-person-badge me-2"></i> Admin Functions
+                </div>
+                <div class="card-body-custom">
+                    <div class="col-12">
+                        <label asp-for=@Model.UserInfo.Role class="form-label-custom mb-4"></label>
+                        <select id="select-role" asp-for=@Model.UserInfo.Role class="form-control-custom">
+                            <option hidden selected>Select Role</option>
+                            <option value="Admin">Admin</option>
+                            <option value="Coach">Coach</option>
+                            <option value="Client">Client</option>
+                        </select>
+                        <span asp-validation-for="@Model.UserInfo.Role" class="text-danger"></span>
+                    </div>
+                    <form id="AdminFunctions">
+                        <div class="mb-3">
+                            <label asp-for="@Model.ChangePasswordByAdmin.Password" class="form-label-custom">New Password</label>
+                            <input asp-for="@Model.ChangePasswordByAdmin.Password" type="password" class="form-control-custom" placeholder="Enter new password" required>
+                            <span asp-validation-for="@Model.ChangePasswordByAdmin.Password" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="@Model.ChangePasswordByAdmin.ConfirmPassword" class="form-label-custom">
+                                Confirm New Password
+                            </label>
+                            <input asp-for="@Model.ChangePasswordByAdmin.ConfirmPassword" type="password" class="form-control-custom" placeholder="Confirm new password" required>
+                            <span asp-validation-for="@Model.ChangePasswordByAdmin.ConfirmPassword" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary-custom">
+                            <i class="bi bi-check-circle me-2"></i> Change Password
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card-custom mb-4">
+                <div class="card-header-custom">
+                    <i class="bi bi-person me-2"></i> Personal Information
+                </div>
+                <div class="card-body-custom">
+                    <form id="personalForm">
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label-custom">First Name</label>
+                                <input asp-for="@(Model.UserInfo.FirstName)" type="text" class="form-control-custom"" required>
+								<span asp-validation-for="@Model.UserInfo.FirstName" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label-custom">Last Name</label>
+                                <input asp-for="@Model.UserInfo.LastName" type="text" class="form-control-custom" required>
+								<span asp-validation-for="@Model.UserInfo.LastName" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label-custom">Email Address</label>
+                            <input asp-for="@Model.UserInfo.Email" type="email" class="form-control-custom" required>
+							<span asp-validation-for="@Model.UserInfo.Email" class="text-danger"></span>
+
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label-custom">Phone Number</label>
+                            <input asp-for="@Model.UserInfo.PhoneNumber" type="tel" class="form-control-custom" >
+							<span asp-validation-for="@Model.UserInfo.PhoneNumber" class="text-danger"></span>
+
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label-custom">Age</label>
+                            <input asp-for="@Model.UserInfo.Age" type="number" min="0" class="form-control-custom"/>
+							<span asp-validation-for="@Model.UserInfo.Age" class="text-danger"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for=@Model.UserInfo.Gender class="form-label-custom mb-4"></label>
+                            <select asp-for=@Model.UserInfo.Gender class="form-control-custom">
+                                <option hidden selected>Select Role</option>
+                                <option value="1">Male</option>
+                                <option value="2">Female</option>
+                            </select>
+                            <span asp-validation-for="@Model.UserInfo.Gender" class="text-danger"></span>
+                        </div>
+
+                        <input asp-for="@Model.UserInfo.UserName" hidden>
+
+                        <button type="submit" class="btn btn-primary-custom">
+                            <i class="bi bi-check-circle me-2"></i> Save Changes
+                        </button>
+                    </form>
+                </div>
+            </div>
+            @if (Model.UserInfo.Role == "Coach")
+            {
+                               <div class="card-custom mb-4">
+                    <div class="card-header-custom">
+                        <i class="bi bi-briefcase me-2"></i> Professional Information
+                    </div>
+                    <div class="card-body-custom">
+                        <form id="professionalForm">
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-5">
+                                    <label class="form-label-custom">Years of Experience</label>
+                                    <input asp-for=@Model.coachProfessionalInfo.ExperienceYears type="number" min="0" class="form-control-custom" >
+									<span asp-validation-for="@Model.coachProfessionalInfo.ExperienceYears" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-5">
+                                    <label class="form-label-custom">Salary (EGP)</label>
+                                    <input asp-for=@Model.coachProfessionalInfo.Salary type="number" min="0"  class="form-control-custom" >
+									<span asp-validation-for="@Model.coachProfessionalInfo.Salary" class="text-danger"></span>
+                                </div>
+                            
+                            </div>
+                            
+                            <div class="mb-3 d-flex align-items-center">
+                                <label class="form-label-custom me-3">About</label>
+                                <textarea asp-for=@Model.coachProfessionalInfo.About class="form-control-custom" rows="3" placeholder="Tell us about yourself and your coaching approach..."></textarea>
+                                <span asp-validation-for="@Model.coachProfessionalInfo.About" class="text-danger"></span>
+
+                            </div>
+
+
+                            <div class="mb-3 d-flex align-items-center">
+                                <label class="form-label-custom me-3">Certificates</label>
+                                <input asp-for=@Model.coachProfessionalInfo.Certificates class="form-control-custom col-md-8 p-4"  placeholder="List your certifications and qualifications"/>
+                                <span asp-validation-for="@Model.coachProfessionalInfo.Certificates" class="text-danger"></span>
+
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label-custom d-block mb-2">Specialties</label>
+                                <div class="row g-3" id="specialtiesContainer">
+                                    <div class="col-12 col-sm-6 col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="specialties" value="Weight Loss" id="specialty1">
+                                            <label class="form-check-label" for="specialty1">Weight Loss</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-sm-6 col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="specialties" value="Muscle Gain" id="specialty2">
+                                            <label class="form-check-label" for="specialty2">Muscle Gain</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-sm-6 col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="specialties" value="Strength Training" id="specialty3">
+                                            <label class="form-check-label" for="specialty3">Strength Training</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-sm-6 col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="specialties" value="Yoga" id="specialty4">
+                                            <label class="form-check-label" for="specialty4">Yoga</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-sm-6 col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="specialties" value="CrossFit" id="specialty5">
+                                            <label class="form-check-label" for="specialty5">CrossFit</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-sm-6 col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="specialties" value="Nutrition" id="specialty6">
+                                            <label class="form-check-label" for="specialty6">Nutrition</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+
+                            <button type="submit" class="btn btn-primary-custom">
+                                <i class="bi bi-check-circle me-2"></i> Update Professional Info
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+            }
+      
+            
+            @if (Model.UserInfo.Role == "Client")
+            {
+                <div class="card-custom mb-4">
+                    <div class="card-header-custom">
+                        <i class="bi bi-bullseye me-2"></i> Client Goals
+                    </div>
+                    <div class="card-body-custom">
+                        <form id="goalsForm">
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label-custom">Height (cm)</label>
+                                    <input asp-for="@Model.clientPhysicalInfo.Height" type="number" min="140" step="0.5"  class="form-control-custom" placeholder="Enter height">
+									<span asp-validation-for="@Model.clientPhysicalInfo.Height" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label-custom">Start Weight (kg)</label>
+                                    <input asp-for="@Model.clientPhysicalInfo.StartWeight"  type="number" min="50" step="0.1" class="form-control-custom" placeholder="Enter start weight">
+                                    <span asp-validation-for="@Model.clientPhysicalInfo.StartWeight" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <label asp-for="@Model.clientPhysicalInfo.Goal"  class="form-label-custom">Goal</label>
+                                    <input asp-for="@Model.clientPhysicalInfo.Goal"  class="form-control-custom" placeholder="Enter your Goal">
+
+                                    <span asp-validation-for="@Model.clientPhysicalInfo.Goal" class="text-danger"></span>
+
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary-custom">
+                                <i class="bi bi-check-circle me-2"></i> Save Goals
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            }
+                
+
+            <div class="card-custom">
+                <div class="card-header-custom">
+                    <i class="bi bi-shield-lock me-2"></i> Change Password
+                </div>
+                <div class="card-body-custom">
+                    <form id="passwordForm">
+                        <div class="mb-3">
+                            <label class="form-label-custom">Current Password</label>
+                            <input asp-for=@Model.ChangePasswordByUser.OldPassword type="password" class="form-control-custom" placeholder="Enter current password" required>
+							<span asp-validation-for="@Model.ChangePasswordByUser.OldPassword" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label-custom">New Password</label>
+                            <input asp-for=@Model.ChangePasswordByUser.Password type="password" class="form-control-custom" placeholder="Enter new password" minlength="6" required>
+                            <span asp-validation-for="@Model.ChangePasswordByUser.Password" class="text-danger"></span>
+
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label-custom">Confirm New Password</label>
+                            <input asp-for=@Model.ChangePasswordByUser.ConfirmPassword type="password" class="form-control-custom" placeholder="Confirm new password" minlength="6" required>
+                            <span asp-validation-for="@Model.ChangePasswordByUser.ConfirmPassword" class="text-danger"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary-custom">
+                            <i class="bi bi-check-circle me-2"></i> Change Password
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="alertContainer" class="mt-4"></div>
+</div>
+
+@section Scripts {
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const alertContainer = document.getElementById('alertContainer');
+    function showAlert(type, message) {
+        const wrapper = document.createElement('div');
+        wrapper.className = `alert alert-${type}`;
+        wrapper.textContent = message;
+        alertContainer.innerHTML = '';
+        alertContainer.appendChild(wrapper);
+        setTimeout(() => wrapper.remove(), 3000);
+    }
+
+    document.getElementById('btnChangeAvatar').addEventListener('click', () => {
+        document.getElementById('avatarFile').click();
+    });
+
+    document.getElementById('personalForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        showAlert('success', 'Personal information saved.');
+    });
+
+
+
+
+   
+
+  
+</script>
+    <script src="~/ViewJs/Profile.js"></script>
+
+}
