@@ -74,13 +74,14 @@ function ChangeRole() {
                     },
                     success: function (response) {
                         if (response.Succeeded) {
+                            location.reload();
+
                             Swal.fire({
                                 title: "Role Changed",
                                 text: response.message,
                                 icon: "success"
                             });
                             
-                            location.reload();
 
                         } else {
                             Swal.fire({

@@ -18,7 +18,6 @@ namespace FitVerse.Core.IService
         //AddClientVM GetClientById(Guid id);
         List<ClientDashVM> GetAllClients();
         Task<(bool Success, string Message)> UpdateClientGoals(string userName, ClientViewModel clientPhysicalInfo);
-        public void DeleteByUserId(string UserId);
        
     }
 }

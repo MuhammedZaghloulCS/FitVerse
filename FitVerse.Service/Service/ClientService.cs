@@ -77,6 +77,8 @@ namespace FitVerse.Service.Service
             }
 
         }
+
+    
         public List<ClientDashVM> GetAllClients()
         {
             //Guid coachId = Guid.Parse("11111111-1111-1111-1111-111111111111");// Coach logged in ID
