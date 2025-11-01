@@ -1,4 +1,4 @@
-﻿using FitVerse.Core.Interfaces;
+using FitVerse.Core.Interfaces;
 using FitVerse.Core.Repositories;
 using FitVerse.Core.UnitOfWork;
 using FitVerse.Data.Context;
@@ -29,6 +29,7 @@ namespace FitVerse.Data.UnitOfWork
         ExercisePlanDetailRepository ExercisePlanDetail;
         ChatRepository chats;
         MessageRepository messages;
+        NotificationRepository notifications;
 
 
 
@@ -212,6 +213,16 @@ namespace FitVerse.Data.UnitOfWork
                 if (messages == null)
                     messages = new MessageRepository(_context);
                 return messages;
+            }
+        }
+
+        public INotificationRepository Notifications
+        {
+            get
+            {
+                if (notifications == null)
+                    notifications = new NotificationRepository(_context);
+                return notifications;
             }
         }
 

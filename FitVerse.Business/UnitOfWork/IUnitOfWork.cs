@@ -31,7 +31,7 @@ namespace FitVerse.Core.UnitOfWork
         IChatRepository Chats { get; }
         //IExerciseRepository Exercises { get; }
         IExercisePlanRepository ExercisePlans { get; }
-        //INotificationRepository Notifications { get; }
+        INotificationRepository Notifications { get; }
         IPackageRepository Packages { get; }
         IPaymentRepository Payments { get; }
         ISpecialtiesRepository Specialties { get; }
