@@ -1,51 +1,34 @@
 ﻿using AutoMapper;
-using FitVerse.Core.Interfaces; // IUnitOfWork
-using FitVerse.Core.Models; // الكلاسات الأساسية
-using FitVerse.Core.UnitOfWork;
+using FitVerse.Core.IService;
+using FitVerse.Core.IUnitOfWorkServices;
 using FitVerse.Core.ViewModels.Package;
-using FitVerse.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FitVerse.Web.Controllers
 {
     public class PackageController : Controller
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IUnitOFWorkService unitOFWorkService;
+        private readonly IPackageAppService packageService;
         private readonly IMapper mapper;
 
-        public PackageController(IUnitOfWork unitOfWork, IMapper mapper)
+        public PackageController(IUnitOFWorkService unitOFWorkService, IMapper mapper)
         {
-            this.unitOfWork = unitOfWork;
+            this.unitOFWorkService = unitOFWorkService;
+            this.packageService = unitOFWorkService.PackageAppService;
             this.mapper = mapper;
         }
 
-        public IActionResult index()
+        public IActionResult Index()
         {
             return View();
-
         }
 
         // ================== GET PAGED ==================
         [HttpGet]
         public IActionResult GetPaged(int page = 1, int pageSize = 5, string search = "")
         {
-            var query = unitOfWork.Packages.GetAll(); 
-
-            if (!string.IsNullOrWhiteSpace(search))
-            {
-                query = query.Where(p => p.Name.Contains(search));
-            }
-
-            var totalItems = query.Count();
-            var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
-
-            var data = query
-                .OrderBy(p => p.Id)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .Select(p => mapper.Map<PackageVM>(p))
-                .ToList();
-
+            var data = packageService.GetPaged(page, pageSize, search, out int totalPages);
             return Json(new { data, currentPage = page, totalPages });
         }
 
@@ -53,61 +36,38 @@ namespace FitVerse.Web.Controllers
         [HttpGet]
         public IActionResult GetById(int id)
         {
-            var pkg = unitOfWork.Packages.GetById(id);
+            var pkg = packageService.GetById(id);
             if (pkg == null)
                 return Json(new { success = false, message = "Package not found!" });
 
-            var vm = mapper.Map<PackageVM>(pkg);
-            return Json(new { success = true, data = vm });
+            return Json(new { success = true, data = pkg });
         }
 
         // ================== CREATE ==================
         [HttpPost]
-        public IActionResult Create(AddPackageVM package)
+        public IActionResult Create([FromForm] AddPackageVM package)
         {
             if (!ModelState.IsValid)
                 return Json(new { success = false, message = "Invalid data!" });
 
-            var pkg = mapper.Map<Package>(package);
-            unitOfWork.Packages.Add(pkg);
-
-            if (unitOfWork.Complete() > 0)
-                return Json(new { success = true, message = "Package created successfully" });
-
-            return Json(new { success = false, message = "Something went wrong!" });
+            var success = packageService.Create(package, out string message);
+            return Json(new { success, message });
         }
 
         // ================== UPDATE ==================
         [HttpPost]
-        public IActionResult Update(PackageVM package)
+        public IActionResult Update([FromForm] PackageVM package)
         {
-            var pkg = unitOfWork.Packages.GetById(package.Id);
-            if (pkg == null)
-                return Json(new { success = false, message = "Package not found!" });
-
-            mapper.Map(package, pkg);
-            unitOfWork.Packages.Update(pkg);
-
-            if (unitOfWork.Complete() > 0)
-                return Json(new { success = true, message = "Package updated successfully" });
-
-            return Json(new { success = false, message = "Something went wrong!" });
+            var success = packageService.Update(package, out string message);
+            return Json(new { success, message });
         }
 
         // ================== DELETE ==================
         [HttpPost]
         public IActionResult Delete(int id)
         {
-            var pkg = unitOfWork.Packages.GetById(id);
-            if (pkg == null)
-                return Json(new { success = false, message = "Package not found!" });
-
-            unitOfWork.Packages.Delete(pkg);
-
-            if (unitOfWork.Complete() > 0)
-                return Json(new { success = true, message = "Package deleted successfully" });
-
-            return Json(new { success = false, message = "Something went wrong!" });
+            var success = packageService.Delete(id, out string message);
+            return Json(new { success, message });
         }
     }
 }

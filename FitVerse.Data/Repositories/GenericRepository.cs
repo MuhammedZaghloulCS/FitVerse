@@ -1,4 +1,4 @@
-﻿using FitVerse.Core.Interfaces;
+using FitVerse.Core.Interfaces;
 using FitVerse.Core.ViewModels.Equipment;
 using FitVerse.Data.Context;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace FitVerse.Data.Repositories
 {
+
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         protected readonly FitVerseDbContext context;
@@ -28,6 +29,11 @@ namespace FitVerse.Data.Repositories
             dbSet.Add(entity);
             return entity;
 
+        }
+
+        public void complete()
+        {
+            context.SaveChanges();
         }
 
         public void Delete(T entity)
@@ -59,6 +65,28 @@ namespace FitVerse.Data.Repositories
             return query.ToList();
         }
 
+        public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter = null, string includeProperties = "")
+        {
+            IQueryable<T> query = dbSet; // dbSet = context.Set<T>()
+
+            // لو فيه فلتر، نطبقه
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            // نضيف الـ include properties لو موجودة
+            if (!string.IsNullOrWhiteSpace(includeProperties))
+            {
+                foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp.Trim());
+                }
+            }
+
+            return query.ToList();
+        }
+
         public T GetById(int id)
         {
             if (id == null)
@@ -66,11 +94,23 @@ namespace FitVerse.Data.Repositories
             return dbSet.Find(id);
         }
 
+        public void RemoveRange(IEnumerable<T> entities)
+        {
+            if (entities == null)
+                throw new ArgumentNullException(nameof(entities));
+            dbSet.RemoveRange(entities);
+        }
+
         public void Update(T entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
             dbSet.Update(entity);
+        }
+
+        public IQueryable<T> GetQueryable()
+        {
+            return dbSet;
         }
 
 

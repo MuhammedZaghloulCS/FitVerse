@@ -14,7 +14,7 @@ namespace FitVerse.Data.Repositories
     {
         private readonly FitVerseDbContext _context;
         public ExercisePlanRepository(FitVerseDbContext context) : base(context)
-        {
+    {
             this._context = context;
         }
         public IEnumerable<ExercisePlan> GetAllWithDetails()

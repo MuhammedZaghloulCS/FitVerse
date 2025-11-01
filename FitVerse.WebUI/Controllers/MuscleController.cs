@@ -3,6 +3,7 @@ using FitVerse.Core.UnitOfWork;
 using FitVerse.Core.ViewModels.ExerciseVM;
 using FitVerse.Core.ViewModels.Meuscle;
 using FitVerse.Data.Models;
+using FitVerse.Data.UnitOfWork;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -28,8 +29,9 @@ namespace FitVerse.Web.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var data = _muscleService.GetAllMuscles();
-            return Json(new { Success = true, Data = data });
+            var muscles = _muscleService.GetAllMuscles();
+            var data = muscles.Select(m => new { m.Id, m.Name }).ToList();
+            return Json(new { data = data }); 
         }
 
         [HttpGet]

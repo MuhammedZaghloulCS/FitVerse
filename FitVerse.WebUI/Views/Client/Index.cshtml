@@ -1,4 +1,7 @@
-﻿
+﻿@{
+    ViewData["Title"] = "Client";
+    Layout = "~/Views/Shared/_ClientLayout.cshtml";
+}
 <table class="table table-bordered" id="clientsTable">
     <thead>
         <tr>
@@ -11,33 +14,33 @@
     <tbody></tbody>
 </table>
 
-<script>
-    $(document).ready(function () {
-        loadClients();
-    });
+@* <script> *@
+@*     $(document).ready(function () { *@
+@*         loadClients(); *@
+@*     }); *@
 
-    function loadClients() {
-        $.ajax({
-            url: '/Client/GetAll',
-            method: 'GET',
-            success: function (response) {
-                $('#clientsTable tbody').empty();
-                response.data.forEach(function (item) {
-                    $('#clientsTable tbody').append(`
-                        <tr>
-                            <td>${item.Name}</td>
-                            <td>${item.Age}</td>
-                            <td>${item.IsActive ? 'Active' : 'Inactive'}</td>
-                            <td>
-                                <button class="btn btn-sm btn-primary" onclick="editClient('${item.Id}')">Edit</button>
-                                <button class="btn btn-sm btn-danger" onclick="deleteClient('${item.Id}')">Delete</button>
-                            </td>
-                        </tr>
-                    `);
-                });
-            }
-        });
-    }
+@*     function loadClients() { *@
+@*         $.ajax({ *@
+@*             url: '/Client/GetAll', *@
+@*             method: 'GET', *@
+@*             success: function (response) { *@
+@*                 $('#clientsTable tbody').empty(); *@
+@*                 response.data.forEach(function (item) { *@
+@*                     $('#clientsTable tbody').append(` *@
+@*                         <tr> *@
+@*                             <td>${item.Name}</td> *@
+@*                             <td>${item.Age}</td> *@
+@*                             <td>${item.IsActive ? 'Active' : 'Inactive'}</td> *@
+@*                             <td> *@
+@*                                 <button class="btn btn-sm btn-primary" onclick="editClient('${item.Id}')">Edit</button> *@
+@*                                 <button class="btn btn-sm btn-danger" onclick="deleteClient('${item.Id}')">Delete</button> *@
+@*                             </td> *@
+@*                         </tr> *@
+@*                     `); *@
+@*                 }); *@
+@*             } *@
+@*         }); *@
+@*     } *@
 
  
-</script>
+@* </script> *@

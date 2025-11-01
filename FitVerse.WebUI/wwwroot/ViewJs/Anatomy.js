@@ -1,205 +1,219 @@
-﻿let currentPage = 1;
-let pageSize = 5;
-let currentSearch = "";
+﻿
 
 $(document).ready(function () {
-    loadAnatomy();
-});
-function loadAnatomy() {
-    $.ajax({
-        url: '/Anatomy/GetAll',
-        method: 'GET',
-        success: function (response) {
 
-            $('#Data').empty();
-            response.data.forEach(function (item) {
-                $('#Data').append(`
-                <tr>
-                        <td>#${item.id}</td>
-                        <td>${item.name}</td>
-                        <td class="actions">
-                            <button type="button" onclick="getById(${item.id})" class="btn-icon" title="Edit">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button type="button" onclick="Delete(${item.id})" class="btn-icon text-danger" title="Delete">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </td>
-                    </tr>`);
-            });
-        },
-    })
-}
-function addAnatomy() {
-    var name = $('#name').val();
-    if (name === '') {
+ 
 
-        swal("Error", "Name is required!", "error");
-        return;
-    }
-    $.ajax({
-        url: '/Anatomy/Create',
-        method: 'POST',
-        data: { name: name },
-        success: function (response) {
-            if (response.success) {
+    function loadAnatomy(searchTerm = "") {
+        $.ajax({
+            url: '/Anatomy/GetAll',
+            method: 'GET',
+            data: { search: searchTerm },
+            success: function (res) {
+                $('#anatomyContainer').empty();
 
-                swal("Good job!", `${response.message}`, "success");
+                if (res.data && res.data.length > 0) {
+                    res.data.forEach(item => {
+                        let imgSrc = item.ImagePath
+                            ? (item.ImagePath.startsWith('/Images/') ? item.ImagePath : '/Images/' + item.ImagePath) + '?t=' + new Date().getTime()
+                            : '/Images/default.jpg';
 
-                loadAnatomy();
-                $('#Name').val('');
-            } else {
-                swal("Error", `${response.message}`, "error");
-
-            }
-        },
-    })
-}
-
-function getById(id) {
-    $.ajax({
-        url: '/Anatomy/GetById?id=' + id,
-        method: 'GET',
-        success: function (response) {
-            if (response.success) {
-                $('#Id').val(response.data.id);
-                $('#name').val(response.data.name);
-                $('#addBtn').hide();
-                $('#editBtn').show();
-            } else {
-                Swal.fire({
-                    title: "Error",
-                    text: `${response.message}`,
-                    icon: "error"
-                });
-            }
-        },
-    });
-}
-
-function updateAnatomy() {
-    var id = $('#Id').val();
-    var name = $('#name').val();
-    if (name === '') {
-        swal("Error", "Name is required!", "error");
-
-        return;
-    }
-    $.ajax({
-        url: '/Anatomy/Update',
-        method: 'POST',
-        data: { id: id, name: name },
-        success: function (response) {
-            if (response.success) {
-                swal("Good job!", `${response.message}`, "success");
-
-                $('#addBtn').show();
-                $('#editBtn').hide();
-                loadAnatomy();
-                $('#Id').val('');
-                $('#name').val('');
-            } else {
-                swal("Error", `${response.message}`, "error");
-
-            }
-        },
-    })
-}
-
-function Delete(id) {
-    swal({
-        title: "Are you sure?",
-        text: "Once deleted, you will not be able to recover this !",
-        icon: "warning",
-        buttons: true,
-        dangerMode: true,
-    })
-        .then((willDelete) => {
-            if (willDelete) {
-                $.ajax({
-                    url: '/Anatomy/Delete?id=' + id,
-                    method: 'POST',
-                    success: function (response) {
-                        if (response.success) {
-                            swal("Good job!", `${response.message}`, "success");
-                            loadAnatomy();
-                        } else {
-                            swal("Error", `${response.message}`, "error");
-                        }
-                    },
-                })
-
-            } else {
-                swal("Your imaginary file is safe!");
+                        //let imgSrc = item.imagePath ? item.imagePath : '/Images/default.jpg';
+                        $('#anatomyContainer').append(`
+                        <div class="col-lg-3 col-md-4 col-sm-6">
+                            <div class="card-custom text-center p-3 shadow-sm">
+                                <img src="${imgSrc}" 
+                                     class="rounded mb-3" 
+                                     style="height:100px;object-fit:cover;">
+                                <h5 class="fw-bold mb-2">${item.Name}</h5>
+                                
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-outline-custom btn-sm flex-grow-1 editAnatomyBtn" data-id="${item.Id}">
+                                        <i class="bi bi-pencil"></i> Edit
+                                    </button>
+                                    <button class="btn btn-danger-custom btn-sm deleteAnatomyBtn" data-id="${item.Id}">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                    });
+                } else {
+                    $('#anatomyContainer').html('<div class="text-center text-muted py-5">No anatomy found.</div>');
+                }
+            },
+            error: function () {
+                Swal.fire('Error', 'Failed to load anatomy data.', 'error');
             }
         });
-}
-
-
-
-$(document).ready(function () {
-    loadAnatomyPaged();
-
-    $('#searchAnatomy').on('input', function () {
-        currentSearch = $(this).val().trim();
-        currentPage = 1; 
-        loadAnatomyPaged();
-    });
-});
-
-function loadAnatomyPaged() {
-    $.ajax({
-        url: '/Anatomy/GetPaged',
-        method: 'GET',
-        data: {
-            page: currentPage,
-            pageSize: pageSize,
-            search: currentSearch
-        },
-        success: function (response) {
-            $('#Data').empty();
-            response.data.forEach(function (item) {
-                $('#Data').append(`
-                    <tr>
-                        <td>#${item.id}</td>
-                        <td>${item.name}</td>
-                        <td class="actions">
-                            <button type="button" onclick="getById(${item.id})" class="btn-icon" title="Edit">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button type="button" onclick="Delete(${item.id})" class="btn-icon text-danger" title="Delete">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `);
-            });
-
-            renderPagination(response.currentPage, response.totalPages);
-        }
-    });
-}
-
-function renderPagination(currentPage, totalPages) {
-    const pagination = $('.pagination');
-    pagination.empty();
-
-    const prevDisabled = currentPage === 1 ? 'disabled' : '';
-    const nextDisabled = currentPage === totalPages ? 'disabled' : '';
-
-    pagination.append(`<button class="btn-icon" ${prevDisabled} onclick="changePage(${currentPage - 1})"><i class="fas fa-chevron-left"></i></button>`);
-
-    for (let i = 1; i <= totalPages; i++) {
-        const active = i === currentPage ? 'active' : '';
-        pagination.append(`<button class="btn-icon ${active}" onclick="changePage(${i})">${i}</button>`);
     }
 
-    pagination.append(`<button class="btn-icon" ${nextDisabled} onclick="changePage(${currentPage + 1})"><i class="fas fa-chevron-right"></i></button>`);
-}
 
-function changePage(page) {
-    if (page < 1) return;
-    currentPage = page;
-    loadAnatomyPaged();
-}
+    // ==============================
+    // 🌟 3. إضافة معدة جديدة
+    // ==============================
+    $('#saveAnatomyBtn').click(function () {
+        console.log("✅ Add button clicked");
+        let formData = new FormData();
+        formData.append("Name", $('#Name').val());
+        if ($('#Image')[0].files[0]) {
+            formData.append("ImageFile", $('#Image')[0].files[0]);
+        }
+
+        $.ajax({
+            url: '/Anatomy/AddAnatomy',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            beforeSend: () => Swal.showLoading(),
+            success: function (res) {
+                Swal.close();
+                if (res.success) {
+                    Swal.fire('Success', res.message, 'success');
+                    $('#addAnatomyModal').modal('hide');
+                    $('#anatomyForm')[0].reset();
+                    $('#addImagePreview').hide();
+                    loadEquipment();
+                    loadStats();
+                } else {
+                    Swal.fire('Error', res.message, 'error');
+                }
+            },
+            error: () => Swal.fire('Error', 'Server error while adding anatomy.', 'error')
+        });
+    });
+
+    // ==============================
+    // 🌟 4. فتح مودال التعديل
+    // ==============================
+    $(document).on('click', '.editAnatomyBtn', function () {
+        let id = $(this).data('id');
+        $.get(`/Anatomy/GetById/${id}`, function (res) {
+            if (res.success) {
+                $('#editAnatomyName').val(res.data.Name);
+                let newSrc = res.data.ImagePath + '?t=' + new Date().getTime();
+                $('#currentAnatomyImage').attr('src', newSrc);
+
+                $('#editSaveBtn').data('id', res.data.Id);
+                $('#editAnatomyModal').modal('show');
+            } else {
+                Swal.fire('Error', res.message, 'error');
+            }
+        });
+    });
+
+    // ==============================
+    // 🌟 5. حفظ التعديل
+    // ==============================
+    $('#editSaveBtn').click(function () {
+        let id = $(this).data('id');
+        let formData = new FormData();
+        formData.append("Id", id);
+        formData.append("Name", $('#editAnatomyName').val());
+
+        if ($('#editAnatomyImage')[0].files[0]) {
+            formData.append("ImageFile", $('#editAnatomyImage')[0].files[0]);
+        }
+
+        $.ajax({
+            url: '/Anatomy/Update',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            beforeSend: () => Swal.showLoading(),
+            success: function (res) {
+                Swal.close();
+                if (res.success) {
+                    Swal.fire('Updated', res.message, 'success');
+                    $('#editAnatomyModal').modal('hide');
+
+                    // ✅ إعادة تحميل الكاردات مع منع الكاش
+                    loadAnatomy();
+
+                    // ✅ تحديث الصورة الحالية في المودال لو محتاج
+                    let imgSrc = res.data.ImagePath
+                        ? (res.data.ImagePath.startsWith('/Images/') ? res.data.ImagePath : '/Images/' + res.data.imagePath) + '?t=' + new Date().getTime()
+                        : '/Images/default.jpg';
+                    $('#currentAnatomyImage').attr('src', imgSrc);
+
+                } else {
+                    Swal.fire('Error', res.message, 'error');
+                }
+            },
+            error: () => Swal.fire('Error', 'Server error while updating.', 'error')
+        });
+    });
+
+
+    // ==============================
+    // 🌟 6. حذف معدة
+    // ==============================
+    $(document).on('click', '.deleteAnatomyBtn', function () {
+        let id = $(this).data('id');
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You are about to delete this anatomy!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!'
+        }).then(result => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `/Anatomy/Delete/${id}`,
+                    type: 'DELETE',
+                    success: function (res) {
+                        if (res.success) {
+                            Swal.fire('Deleted!', res.message, 'success');
+                            loadAnatomy();
+                          
+                        } else {
+                            Swal.fire('Error', res.message, 'error');
+                        }
+                    },
+                    error: () => Swal.fire('Error', 'Server error while deleting.', 'error')
+                });
+            }
+        });
+    });
+
+    // ==============================
+    // 🌟 7. البحث
+    // ==============================
+    $('.btn-outline-custom').click(function () {
+        currentSearch = $('.form-control-custom').val();
+        loadAnatomy();
+    });
+
+    $('.form-control-custom').on('keyup', function (e) {
+        if (e.key === 'Enter') {
+            currentSearch = $(this).val();
+            loadAnatomy();
+        }
+    });
+    $(document).ready(function () {
+        // ✅ زرار فتح مودال الإضافة
+        $('#openAddModal').click(function () {
+            
+            $('#addAnatomyModal').modal('show');
+        });
+    });
+    $('#searchAnatomy').on('input', function () {
+        let term = $(this).val().trim();
+        loadAnatomy(term);
+    });
+    loadAnatomy();
+
+
+});
+
+
+
+
+
+
+
 

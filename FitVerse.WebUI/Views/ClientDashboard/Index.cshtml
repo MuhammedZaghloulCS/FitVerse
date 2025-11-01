@@ -1,0 +1,383 @@
+﻿@{
+    ViewData["Title"] = "Client Dashboard";
+    Layout = "~/Views/Shared/_ClientLayout.cshtml";
+}
+
+
+
+    <div class="container-fluid px-4 py-4">
+        <!-- Welcome Section -->
+        <div class="row g-4 mb-4">
+            <div class="col-lg-8">
+                <div class="card-custom" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white;">
+                    <div class="card-body-custom">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h3 class="fw-bold mb-2">Welcome back, Sarah! 🎯</h3>
+                                <p class="mb-3 opacity-90">You're doing great! Keep up the momentum and crush your fitness goals.</p>
+                                <div class="d-flex gap-3 mb-3">
+                                    <div>
+                                        <div class="fw-bold fs-4">12</div>
+                                        <small class="opacity-75">Days Active</small>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold fs-4">45</div>
+                                        <small class="opacity-75">Workouts Done</small>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold fs-4">-5kg</div>
+                                        <small class="opacity-75">Weight Lost</small>
+                                    </div>
+                                </div>
+                                <button class="btn btn-light">
+                                    <i class="bi bi-play-circle me-2"></i> Start Today's Workout
+                                </button>
+                            </div>
+                            <div class="col-md-4 text-center d-none d-md-block">
+                                <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=200&h=200&fit=crop" alt="Fitness" class="img-fluid rounded-circle" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid white;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+        <!-- Stats Cards -->
+        <div class="row g-4 mb-4">
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card primary">
+                    <div class="stat-icon primary">
+                        <i class="bi bi-fire"></i>
+                    </div>
+                    <div class="stat-value">2,450</div>
+                    <div class="stat-label">Calories Burned</div>
+                    <div class="stat-change positive">
+                        <i class="bi bi-arrow-up"></i> This week
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card success">
+                    <div class="stat-icon success">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                    <div class="stat-value">45</div>
+                    <div class="stat-label">Workouts Completed</div>
+                    <div class="stat-change positive">
+                        <i class="bi bi-arrow-up"></i> +3 this week
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card warning">
+                    <div class="stat-icon warning">
+                        <i class="bi bi-clock"></i>
+                    </div>
+                    <div class="stat-value">18h</div>
+                    <div class="stat-label">Total Training Time</div>
+                    <div class="stat-change positive">
+                        <i class="bi bi-arrow-up"></i> +2h this week
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card danger">
+                    <div class="stat-icon danger">
+                        <i class="bi bi-trophy"></i>
+                    </div>
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">Streak Days</div>
+                    <div class="stat-change positive">
+                        <i class="bi bi-arrow-up"></i> Keep it up!
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Main Content -->
+        <div class="container-fluid px-4 py-4">
+            <div class="row g-4">
+                <!-- Main Workout Area -->
+                <div class="col-lg-8">
+                    <div class="card-custom mb-4" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white;">
+                        <div class="card-body-custom">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h3 class="fw-bold mb-1">Today's Workout</h3>
+                                    <p class="mb-0 opacity-90">Wednesday, October 18, 2024</p>
+                                </div>
+                                <div class="text-end">
+                                    <div class="fw-bold fs-4">40%</div>
+                                    <small class="opacity-75">Completed</small>
+                                </div>
+                            </div>
+                            <div class="progress" style="height: 8px; background: rgba(255,255,255,0.2);">
+                                <div class="progress-bar" style="width: 40%; background: white;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-custom">
+                        <div class="card-header-custom">
+                            <i class="bi bi-lightning me-2"></i> Upper Body Strength
+                        </div>
+                        <div class="card-body-custom">
+                            <p class="text-muted mb-4">Focus on chest, back, and arms. Take 60-90 seconds rest between sets.</p>
+
+                            <!-- Exercise 1 - Completed -->
+                            <div class="exercise-item">
+                                <input type="checkbox" class="exercise-checkbox" checked onclick="this.parentElement.classList.toggle('exercise-completed')">
+                                <div class="exercise-info exercise-completed">
+                                    <div class="exercise-name">Barbell Bench Press</div>
+                                    <div class="exercise-details">
+                                        4 sets × 8-10 reps • 60kg
+                                        <span class="mx-2">•</span>
+                                        <i class="bi bi-lightning-fill" style="color: #6366f1;"></i> Chest
+                                    </div>
+                                </div>
+                                <span class="badge-custom badge-success">Completed</span>
+                            </div>
+
+                            <!-- Exercise 2 - Completed -->
+                            <div class="exercise-item">
+                                <input type="checkbox" class="exercise-checkbox" checked onclick="this.parentElement.classList.toggle('exercise-completed')">
+                                <div class="exercise-info exercise-completed">
+                                    <div class="exercise-name">Dumbbell Rows</div>
+                                    <div class="exercise-details">
+                                        4 sets × 10-12 reps • 25kg each
+                                        <span class="mx-2">•</span>
+                                        <i class="bi bi-lightning-fill" style="color: #10b981;"></i> Back
+                                    </div>
+                                </div>
+                                <span class="badge-custom badge-success">Completed</span>
+                            </div>
+
+                            <!-- Exercise 3 - In Progress -->
+                            <div class="exercise-item" style="border-left: 4px solid #6366f1;">
+                                <input type="checkbox" class="exercise-checkbox" onclick="this.parentElement.classList.toggle('exercise-completed')">
+                                <div class="exercise-info">
+                                    <div class="exercise-name">Shoulder Press</div>
+                                    <div class="exercise-details">
+                                        3 sets × 10-12 reps • 20kg
+                                        <span class="mx-2">•</span>
+                                        <i class="bi bi-lightning-fill" style="color: #ef4444;"></i> Shoulders
+                                    </div>
+                                </div>
+                                <span class="badge-custom badge-warning">Current</span>
+                            </div>
+
+                            <!-- Exercise 4 - Pending -->
+                            <div class="exercise-item">
+                                <input type="checkbox" class="exercise-checkbox" onclick="this.parentElement.classList.toggle('exercise-completed')">
+                                <div class="exercise-info">
+                                    <div class="exercise-name">Bicep Curls</div>
+                                    <div class="exercise-details">
+                                        3 sets × 12-15 reps • 15kg
+                                        <span class="mx-2">•</span>
+                                        <i class="bi bi-lightning-fill" style="color: #f59e0b;"></i> Arms
+                                    </div>
+                                </div>
+                                <span class="badge-custom badge-info">Pending</span>
+                            </div>
+
+                            <!-- Exercise 5 - Pending -->
+                            <div class="exercise-item">
+                                <input type="checkbox" class="exercise-checkbox" onclick="this.parentElement.classList.toggle('exercise-completed')">
+                                <div class="exercise-info">
+                                    <div class="exercise-name">Tricep Dips</div>
+                                    <div class="exercise-details">
+                                        3 sets × 10-12 reps • Bodyweight
+                                        <span class="mx-2">•</span>
+                                        <i class="bi bi-lightning-fill" style="color: #f59e0b;"></i> Arms
+                                    </div>
+                                </div>
+                                <span class="badge-custom badge-info">Pending</span>
+                            </div>
+
+                            <div class="mt-4 d-flex gap-2">
+                                <button class="btn btn-primary-custom flex-grow-1">
+                                    <i class="bi bi-check-circle me-2"></i> Mark Workout Complete
+                                </button>
+                                <button class="btn btn-outline-custom" data-bs-toggle="modal" data-bs-target="#feedbackModal">
+                                    <i class="bi bi-chat-left-text"></i> Send Feedback
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="col-lg-4">
+                    <!-- Weekly Schedule -->
+                    <div class="card-custom mb-4">
+                        <div class="card-header-custom">
+                            <i class="bi bi-calendar-week me-2"></i> This Week
+                        </div>
+                        <div class="card-body-custom">
+                            <div class="mb-3 p-3" style="background: #f8fafc; border-radius: 10px; border-left: 4px solid #10b981;">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="fw-semibold">Monday</span>
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                </div>
+                                <small class="text-muted">Upper Body • 45 min</small>
+                            </div>
+                            <div class="mb-3 p-3" style="background: #f8fafc; border-radius: 10px; border-left: 4px solid #10b981;">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="fw-semibold">Tuesday</span>
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                </div>
+                                <small class="text-muted">Cardio & Core • 30 min</small>
+                            </div>
+                            <div class="mb-3 p-3" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); border-radius: 10px; color: white;">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="fw-semibold">Wednesday</span>
+                                    <span class="badge bg-light text-dark">Today</span>
+                                </div>
+                                <small class="opacity-90">Lower Body • 50 min</small>
+                            </div>
+                            <div class="mb-3 p-3" style="background: #f8fafc; border-radius: 10px; border-left: 4px solid #94a3b8;">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="fw-semibold">Thursday</span>
+                                    <span class="badge-custom badge-info">Upcoming</span>
+                                </div>
+                                <small class="text-muted">Rest Day</small>
+                            </div>
+                            <div class="p-3" style="background: #f8fafc; border-radius: 10px; border-left: 4px solid #94a3b8;">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="fw-semibold">Friday</span>
+                                    <span class="badge-custom badge-info">Upcoming</span>
+                                </div>
+                                <small class="text-muted">Full Body • 45 min</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Workout Stats -->
+                    <div class="card-custom mb-4">
+                        <div class="card-header-custom">
+                            <i class="bi bi-graph-up me-2"></i> This Week's Stats
+                        </div>
+                        <div class="card-body-custom">
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted">Workouts Completed</span>
+                                    <span class="fw-bold">2 / 5</span>
+                                </div>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar" style="width: 40%; background: #10b981;"></div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted">Total Time</span>
+                                    <span class="fw-bold">75 min</span>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted">Calories Burned</span>
+                                    <span class="fw-bold">850 kcal</span>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted">Streak</span>
+                                    <span class="fw-bold">🔥 12 Days</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Coach Info -->
+                    <div class="card-custom">
+                        <div class="card-header-custom">
+                            <i class="bi bi-person-badge me-2"></i> Your Coach
+                        </div>
+                        <div class="card-body-custom">
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <img src="https://ui-avatars.com/api/?name=Alex+Turner&background=10b981&color=fff" alt="Coach" style="width: 50px; height: 50px; border-radius: 50%;">
+                                <div>
+                                    <div class="fw-semibold">Alex Turner</div>
+                                    <small class="text-muted">Certified Personal Trainer</small>
+                                </div>
+                            </div>
+                            <button class="btn btn-outline-custom w-100">
+                                <i class="bi bi-chat-dots me-2"></i> Message Coach
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feedback Modal -->
+        <div class="modal fade" id="feedbackModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="border-radius: 16px; border: none;">
+                    <div class="modal-header" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none;">
+                        <h5 class="modal-title fw-bold">Send Workout Feedback</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label-custom">How was today's workout?</label>
+                            <div class="d-flex gap-2 justify-content-center mb-3">
+                                <button class="btn btn-outline-custom" style="font-size: 2rem;">😫</button>
+                                <button class="btn btn-outline-custom" style="font-size: 2rem;">😐</button>
+                                <button class="btn btn-outline-custom" style="font-size: 2rem;">🙂</button>
+                                <button class="btn btn-outline-custom" style="font-size: 2rem;">😊</button>
+                                <button class="btn btn-outline-custom" style="font-size: 2rem;">🤩</button>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label-custom">Difficulty Level</label>
+                            <select class="form-control-custom">
+                                <option>Too Easy</option>
+                                <option>Just Right</option>
+                                <option>Too Hard</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label-custom">Additional Comments</label>
+                            <textarea class="form-control-custom" rows="4" placeholder="Share your thoughts, questions, or concerns..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary-custom">Send Feedback</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            // Toggle exercise completion
+            document.querySelectorAll('.exercise-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', function () {
+                    const item = this.closest('.exercise-item');
+                    const info = item.querySelector('.exercise-info');
+                    const badge = item.querySelector('.badge-custom');
+
+                    if (this.checked) {
+                        info.classList.add('exercise-completed');
+                        badge.className = 'badge-custom badge-success';
+                        badge.textContent = 'Completed';
+                    } else {
+                        info.classList.remove('exercise-completed');
+                        badge.className = 'badge-custom badge-info';
+                        badge.textContent = 'Pending';
+                    }
+                });
+            });
+        </script>
+

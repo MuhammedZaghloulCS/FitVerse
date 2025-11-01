@@ -15,14 +15,14 @@ using System.Reflection;
 
 namespace FitVerse.Data.Context
 {
-    public class FitVerseDbContext :IdentityDbContext<ApplicationUser>
+    public class FitVerseDbContext : IdentityDbContext<ApplicationUser>
     {
         public FitVerseDbContext(DbContextOptions<FitVerseDbContext> options)
             : base(options)
         {
 
         }
-  
+
         public DbSet<Coach> Coaches { get; set; }
         public DbSet<Client> Clients { get; set; }
         public DbSet<Anatomy> Anatomies { get; set; }
@@ -35,12 +35,11 @@ namespace FitVerse.Data.Context
         public DbSet<Chat> Chats { get; set; }
         public DbSet<ExercisePlan> ExercisePlans { get; set; }
         public DbSet<ExercisePlanDetail> ExercisePlanDetails { get; set; }
-        public DbSet<Muscle>Muscles { get; set; }
+        public DbSet<Muscle> Muscles { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Package> Packages { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Specialty> Specialties { get; set; }
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -51,12 +50,9 @@ namespace FitVerse.Data.Context
             //modelBuilder.ApplyConfiguration(new CoachSpecialtiesConfigurations());
             //modelBuilder.ApplyConfiguration(new ExercisePlanDetailConfiguration());
 
-
-
-
-
         }
-
     }
+
+
     
 }

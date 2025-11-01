@@ -322,80 +322,6 @@ namespace FitVerse.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Coaches");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "C1",
-                            About = "Expert in Strength and Conditioning",
-                            ExperienceYears = 8,
-                            ImagePath = "/images/coaches/john.jpg",
-                            IsActive = true,
-                            Name = "John Smith"
-                        },
-                        new
-                        {
-                            Id = "C2",
-                            About = "Cardio and endurance specialist with personalized HIIT plans.",
-                            ExperienceYears = 6,
-                            ImagePath = "/images/coaches/sarah.jpg",
-                            IsActive = true,
-                            Name = "Sarah Johnson"
-                        },
-                        new
-                        {
-                            Id = "C3",
-                            About = "Yoga and mobility instructor focused on flexibility and wellness.",
-                            ExperienceYears = 7,
-                            ImagePath = "/images/coaches/michael.jpg",
-                            IsActive = true,
-                            Name = "Michael Lee"
-                        },
-                        new
-                        {
-                            Id = "C4",
-                            About = "CrossFit certified coach delivering high-intensity programs.",
-                            ExperienceYears = 5,
-                            ImagePath = "/images/coaches/chris.jpg",
-                            IsActive = true,
-                            Name = "Chris Evans"
-                        },
-                        new
-                        {
-                            Id = "C5",
-                            About = "Boxing and MMA trainer with focus on endurance and strength.",
-                            ExperienceYears = 4,
-                            ImagePath = "/images/coaches/amanda.jpg",
-                            IsActive = true,
-                            Name = "Amanda Davis"
-                        },
-                        new
-                        {
-                            Id = "C6",
-                            About = "Professional bodybuilder and muscle growth expert.",
-                            ExperienceYears = 10,
-                            ImagePath = "/images/coaches/robert.jpg",
-                            IsActive = true,
-                            Name = "Robert Wilson"
-                        },
-                        new
-                        {
-                            Id = "C7",
-                            About = "Running and endurance coach with marathon training expertise.",
-                            ExperienceYears = 5,
-                            ImagePath = "/images/coaches/emily.jpg",
-                            IsActive = true,
-                            Name = "Emily Clark"
-                        },
-                        new
-                        {
-                            Id = "C8",
-                            About = "Nutrition and weight loss expert with balanced diet programs.",
-                            ExperienceYears = 6,
-                            ImagePath = "/images/coaches/david.jpg",
-                            IsActive = true,
-                            Name = "David Harris"
-                        });
                 });
 
             modelBuilder.Entity("FitVerse.Data.Models.CoachFeedback", b =>
@@ -452,6 +378,62 @@ namespace FitVerse.Data.Migrations
                     b.HasIndex("SpecialtyId");
 
                     b.ToTable("CoachSpecialties");
+<<<<<<< HEAD
+=======
+                });
+
+            modelBuilder.Entity("FitVerse.Data.Models.DailyLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClientId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ClientNotes")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("CoachFeedback")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CoachId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("CoachRating")
+                        .HasColumnType("int");
+
+                    b.Property<double>("CurrentWeight")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("float(5)");
+
+                    b.Property<bool>("IsReviewed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime>("LogDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("PhotoPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("CoachId");
+
+                    b.ToTable("DailyLogs", (string)null);
+>>>>>>> eceab64f0ae8674aad19c284ec8ac9dcb6243e52
                 });
 
             modelBuilder.Entity("FitVerse.Data.Models.DietPlan", b =>
@@ -465,21 +447,37 @@ namespace FitVerse.Data.Migrations
                     b.Property<double>("ActivityMultiplier")
                         .HasColumnType("float");
 
+                    b.Property<int>("Age")
+                        .HasColumnType("int");
+
                     b.Property<double>("CarbInGrams")
                         .HasColumnType("float");
 
                     b.Property<string>("ClientId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CoachId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<double>("FatsInGrams")
                         .HasColumnType("float");
 
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Goal")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Height")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Notes")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -487,6 +485,9 @@ namespace FitVerse.Data.Migrations
                         .HasColumnType("float");
 
                     b.Property<double>("TotalCal")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Weight")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
@@ -776,6 +777,10 @@ namespace FitVerse.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagePath")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -1225,19 +1230,35 @@ namespace FitVerse.Data.Migrations
                     b.Navigation("Specialty");
                 });
 
-            modelBuilder.Entity("FitVerse.Data.Models.DietPlan", b =>
+            modelBuilder.Entity("FitVerse.Data.Models.DailyLog", b =>
                 {
                     b.HasOne("FitVerse.Data.Models.Client", "Client")
-                        .WithMany("DietPlans")
+                        .WithMany("DailyLogs")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("FitVerse.Data.Models.Coach", "Coach")
-                        .WithMany("DietPlans")
+                        .WithMany("DailyLogs")
                         .HasForeignKey("CoachId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Coach");
+                });
+
+            modelBuilder.Entity("FitVerse.Data.Models.DietPlan", b =>
+                {
+                    b.HasOne("FitVerse.Data.Models.Client", "Client")
+                        .WithMany("DietPlans")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("FitVerse.Data.Models.Coach", "Coach")
+                        .WithMany("DietPlans")
+                        .HasForeignKey("CoachId");
 
                     b.Navigation("Client");
 
@@ -1438,6 +1459,8 @@ namespace FitVerse.Data.Migrations
 
                     b.Navigation("CoachFeedback");
 
+                    b.Navigation("DailyLogs");
+
                     b.Navigation("DietPlans");
 
                     b.Navigation("ExercisePlans");
@@ -1456,6 +1479,8 @@ namespace FitVerse.Data.Migrations
                     b.Navigation("CoachPackages");
 
                     b.Navigation("CoachSpecialties");
+
+                    b.Navigation("DailyLogs");
 
                     b.Navigation("DietPlans");
 

@@ -1,27 +1,22 @@
-﻿using FitVerse.Core.Interfaces;
-using FitVerse.Core.IService;
-using FitVerse.Data.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+//namespace FitVerse.Service.Service
+//{
+//    public class ExercisePlanDetailService : IExercisePlanDetailService
+//    {
+//        private readonly IUnitOfWork _unitOfWork;
 
-namespace FitVerse.Service.Service
-{
-    public class ExercisePlanDetailService  : IExercisePlanDetailService
-    {
-        private readonly IExercisePlanDetailRepository _detailRepo;
+//        public ExercisePlanDetailService(IUnitOfWork unitOfWork)
+//        {
+//            _unitOfWork = unitOfWork;
+//        }
 
-        public ExercisePlanDetailService(IExercisePlanDetailRepository detailRepo)
-        {
-            _detailRepo = detailRepo;
-        }
-
-        public IEnumerable<ExercisePlanDetail> GetDetailsByPlanId(int planId)
-        {
-            return _detailRepo.GetAll().Where(d => d.ExercisePlanId == planId);
-        }
+//        // جلب كل التمارين الخاصة بالعميل
+//        public List<ExercisePlanDetail> GetClientExercises(string clientId)
+//        {
+//            return _unitOfWork.ExercisePlanDetails
+//                .Find(e => e.ExercisePlan.ClientId == clientId)
+//                .ToList();
+//        }
 
         public bool AddDetail(ExercisePlanDetail detail)
         {
@@ -49,6 +44,12 @@ namespace FitVerse.Service.Service
             }
         }
 
+//        // إضافة تمرين جديد
+//        public void AddExercisePlanDetail(ExercisePlanDetail exercise)
+//        {
+//            _unitOfWork.ExercisePlanDetails.Add(exercise);
+//            _unitOfWork.Complete();
+//        }
         public bool DeleteDetail(int id)
         {
             try
@@ -56,6 +57,12 @@ namespace FitVerse.Service.Service
                 var detail = _detailRepo.GetById(id);
                 if (detail == null) return false;
 
+//        public List<ExercisePlanDetail> GetTodayWorkouts(string clientId)
+//        {
+//            throw new NotImplementedException();
+//        }
+//    }
+//}
                 _detailRepo.Delete(detail);
                 return true;
             }

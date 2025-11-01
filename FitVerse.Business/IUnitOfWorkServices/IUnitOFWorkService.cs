@@ -16,9 +16,18 @@ namespace FitVerse.Core.IUnitOfWorkServices
         IClientService ClientService { get; }
         ICoachService CoachService { get; }
         IImageHandleService ImageHandleService { get; }
+        IAnatomyService AnatomyService { get; }
+        //IUsers UsersService { get; }
+        IEquipmentService EquipmentService { get; }
+        IDietPlan DietPlanService { get; }
+        IAdminService AdminService { get; }
         IUsersService UsersService { get; }
         IAdminService AdminService { get; }
         IAccountService AccountService { get; }
+        IPackageAppService PackageAppService { get; }
+        IDailyLogService DailyLogService { get; }
+        IDietPlanRepository DietPlanRepository { get; }
+        IClientDashboardService ClientDashboardService { get; }
 
         IClientOnCoachesService clientOnCoachesService { get; }
 
@@ -28,8 +37,11 @@ namespace FitVerse.Core.IUnitOfWorkServices
         IMuscleRepository MuscleRepository { get; }
         ICoachRepository CoachRepository { get; }
         IClientRepository ClientRepository { get; }
+        IPackageRepository PackageRepository { get; }
+        ICoachPackageRepository CoachPackageRepository { get; }
 
         ISpecialtiesRepository SpecialtiesRepository { get; }
+        IDailyLogRepository DailyLogRepository {get; }
 
         ICoachSpecialtiesRepository CoachSpecialtiesRepository { get; }
         
@@ -37,8 +49,13 @@ namespace FitVerse.Core.IUnitOfWorkServices
         IExercisePlanRepository ExercisePlanRepository { get; }
         
    
+        IExerciseRepository ExerciseRepository { get; }
+        IExercisePlanDetailRepository ExercisePlanDetailRepository { get; }
+        IExercisePlanRepository ExercisePlanRepository { get; }
+
         //Identity
         UserManager<ApplicationUser> UserManager { get; }
+
 
     }
 }

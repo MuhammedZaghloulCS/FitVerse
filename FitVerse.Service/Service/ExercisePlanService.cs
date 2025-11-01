@@ -140,5 +140,5 @@ namespace FitVerse.Service.Service
             }
         }
     }
-    
+
 }

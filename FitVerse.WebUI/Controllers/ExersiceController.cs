@@ -31,6 +31,12 @@ namespace FitVerse.Web.Controllers
             var data = _exerciseService.GetAllExercises();
             return Json(new { success = true, data });
         }
+        public IActionResult GetAllEquipments()
+        {
+            var Exercises = db.Equipments.GetAll();
+            var data = mapper.Map<EquipmentVM>(Exercises);
+            return Json(new { data });
+        }
 
         [HttpGet]
         public IActionResult GetById(int id)

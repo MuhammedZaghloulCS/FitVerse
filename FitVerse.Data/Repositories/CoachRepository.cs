@@ -69,22 +69,36 @@ namespace FitVerse.Data.Repositories
         // ✅ تعديل لاستخدام ClientSubscription بدل Payments
         public List<ClientDashVM> GetRecentClients(string coachId)
         {
-            var recentSubs = ClientSubscriptions
-                .Include(cs => cs.Client)
+            // نجيب IDs العملاء اللي مشتركين مع الكوتش
+            var clientIds = ClientSubscriptions
                 .Where(cs => cs.CoachId == coachId)
-                .OrderByDescending(cs => cs.StartDate)
+                .Select(cs => cs.ClientId)
+                .Distinct()
+                .ToList();
+
+            // نجيب آخر المدفوعات للعملاء دول
+            var recentPayments = Payments
+                .Include(p => p.Client)
+                .Where(p => clientIds.Contains(p.ClientId))
+                .OrderByDescending(p => p.PaymentDate)
                 .Take(10)
                 .ToList();
 
-            var recentClients = recentSubs.Select(cs => new ClientDashVM
-            {
-                Name = cs.Client.Name,
-                IsActive = cs.Client.IsActive,
-                LastPaymentAgo = GetTimeAgo(cs.StartDate)
-            }).ToList();
+            // نحولها لعرض مناسب في الـ Dashboard
+            var recentClients = recentPayments
+                .GroupBy(p => p.ClientId) // لو العميل دفع أكثر من مرة ناخد آخر دفع
+                .Select(g => g.First())
+                .Select(p => new ClientDashVM
+                {
+                    Name = p.Client.Name,
+                    IsActive = p.Client.IsActive,
+                    LastPaymentAgo = GetTimeAgo(p.PaymentDate)
+                })
+                .ToList();
 
             return recentClients;
         }
+
 
         private static string GetTimeAgo(DateTime date)
         {
@@ -129,6 +143,23 @@ namespace FitVerse.Data.Repositories
             return clientVMs;
         }
 
-      
+        public IQueryable<Coach> GetAllWithPackages()
+        {
+            return Coaches
+                .Include(c => c.CoachPackages)
+                .ThenInclude(cp => cp.Package);
+        }
+
+        public List<Specialty> GetCoachspecialtiesByCoachId(string CoachId)
+        {
+            var specialties = (from cs in context.Set<CoachSpecialties>()
+                               join s in context.Set<Specialty>() on cs.SpecialtyId equals s.Id
+                               where cs.CoachId == CoachId.ToString()
+                               select s).ToList();
+            return specialties;
+
+        }
+
     }
 }
+
