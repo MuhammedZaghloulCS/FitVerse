@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +15,11 @@ namespace FitVerse.Core.Interfaces
         IEnumerable<T> Find(Expression<Func<T, bool>> predicate);
         T Add(T entity);
         void Update(T entity);
+        void Delete(T entity);
+        public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter = null, string includeProperties = "");
+        IQueryable<T> GetQueryable();
+
+
         void Delete(T entity); 
         void RemoveRange(IEnumerable<T> entities);
         void complete();

@@ -1,107 +1,83 @@
 ﻿using AutoMapper;
+using FitVerse.Core.IService;
+using FitVerse.Core.IUnitOfWorkServices;
 using FitVerse.Core.UnitOfWork;
 using FitVerse.Core.viewModels;
 using FitVerse.Core.ViewModels.Anatomy;
 using FitVerse.Core.ViewModels.Equipment;
+using FitVerse.Data.Models;
+using FitVerse.Data.UnitOfWork;
+using FitVerse.Service.Service;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FitVerse.Web.Controllers
 {
     public class EquipmentController : Controller
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IUnitOFWorkService unitOfWorkservice;
+       
 
-        public EquipmentController(IUnitOfWork unitOfWork)
+        public EquipmentController(IUnitOFWorkService unitOfWorkservice)
         {
-            this.unitOfWork = unitOfWork;
+            this.unitOfWorkservice = unitOfWorkservice;
         }
         public IActionResult Index()
         {
             return View();
         }
-        public IActionResult GetAll()
+        [HttpGet]
+        public IActionResult GetAll(string? search)
         {
-            var allObj = unitOfWork.Equipments.GetAll();
-            var data = allObj.Select(e => new EquipmentVM { Id = e.Id, Name = e.Name }).ToList();
-            return Json(new { data = data });
+            var equipments = unitOfWorkservice.EquipmentService.GetAll(search);
+            return Json(new { data = equipments });
+
         }
 
-        public IActionResult Create(AddEquipmentVM model)
+        [HttpPost]
+        public IActionResult AddEquipment([FromForm] AddEquipmentVM model)
         {
-            unitOfWork.Equipments.Add(new Data.Models.Equipment { Name = model.Name });
-            if (unitOfWork.Complete() > 0)
+            var result = unitOfWorkservice.EquipmentService.AddEquipment(model);
+
+            return Json(new
             {
-                return Json(new { success = true, message = "Equipment created successfully" });
-
-            }
-            return Json(new { success = false, message = "Somthing wrong!" });
-
+                success = result.Success,
+                message = result.Message,
+                data = result.Success ? model : null
+            });
         }
         public IActionResult GetById(int id)
         {
-            var equipment = unitOfWork.Equipments.GetById(id);
+            var equipment = unitOfWorkservice.EquipmentService.GetById(id);
             if (equipment == null)
             {
                 return Json(new { success = false, message = "Somthing wrong!" });
             }
-            var model = new EquipmentVM { Id = equipment.Id, Name = equipment.Name };
-            return Json(new { success = true, data = model });
+            
+            return Json(new { success = true, data = equipment });
         }
-        public IActionResult Update(EquipmentVM model)
+        public IActionResult Update(AddEquipmentVM model)
         {
-            var equipment = unitOfWork.Equipments.GetById(model.Id);
-            if (equipment == null)
-            {
-                return Json(new { success = false, message = "Not Found!" });
-            }
-            equipment.Name = model.Name;
-            unitOfWork.Equipments.Update(equipment);
-            if (unitOfWork.Complete() > 0)
-            {
-                return Json(new { success = true, message = "Equipment updated successfully" });
-            }
-            return Json(new { success = false, message = "Somthing wrong!" });
+            var equipment = unitOfWorkservice.EquipmentService.Update(model);
+            return Json(new { success = true, message = "Equipment updated successfully" });
+
 
         }
         public IActionResult Delete(int id)
         {
-            var equipment = unitOfWork.Equipments.GetById(id);
-            if (equipment == null)
-            {
-                return Json(new { success = false, message = "Not Found!" });
-            }
-            unitOfWork.Equipments.Delete(equipment);
-            if (unitOfWork.Complete() > 0)
-            {
-                return Json(new { success = true, message = "Equipment deleted successfully" });
-            }
-            return Json(new { success = false, message = "Somthing wrong!" });
+            var result = unitOfWorkservice.EquipmentService.Delete(id);
+            return Json(new { success = result.Success, message = result.Message });
+
         }
-        public IActionResult GetPaged(int page = 1, int pageSize = 5, string? search = null)
+      
+        public IActionResult GetTotalCountEquipment()
         {
-            var query = unitOfWork.Equipments.GetAll().AsQueryable();
-
-            if (!string.IsNullOrEmpty(search))
-            {
-
-                string lowerSearch = search.ToLower();
-                query = query.Where(a => a.Name.ToLower().Contains(lowerSearch));
-            }
-
-            var totalItems = query.Count();
-            var data = query
-                .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToList();
-            var mappedData = data.Select(e => new EquipmentVM { Id = e.Id, Name = e.Name }).ToList();
-
-
-            return Json(new
-            {
-                data = mappedData,
-                currentPage = page,
-                totalPages = (int)Math.Ceiling((double)totalItems / pageSize)
-            });
+            int totalCount = unitOfWorkservice.EquipmentService.GetTotalEquipmentCount();
+            return Json(new { totalCount });
+        }
+        public IActionResult GetTotalCountExercise()
+        {
+            int totalCount = unitOfWorkservice.EquipmentService.GetTotalExerciseCount();
+            return Json(new { totalCount });
         }
     }
     

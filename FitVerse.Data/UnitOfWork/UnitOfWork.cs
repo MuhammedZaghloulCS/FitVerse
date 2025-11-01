@@ -19,6 +19,7 @@ namespace FitVerse.Data.UnitOfWork
         CoachRepository coaches;
         ClientRepository clients;
         SpecialityRepository specialties;
+        DietPlanRepository dietPlans;
         PaymentRepository payments;
         CoachFeedbackRepository coachFeedbacks;
         CoachSpecialtiesRepository coachSpecialties;
@@ -26,6 +27,8 @@ namespace FitVerse.Data.UnitOfWork
         IDailyLogRepository dailyLogRepository;
         DietPlanRepository dietPlanRepository;
         ExercisePlanDetailRepository ExercisePlanDetail;
+        ChatRepository chats;
+        MessageRepository messages;
 
 
 
@@ -43,6 +46,15 @@ namespace FitVerse.Data.UnitOfWork
                 if (muscles == null)
                     muscles = new MuscleRepository(_context);
                 return muscles;
+            }
+        }
+        public IDietPlanRepository DietPlans
+        {
+            get
+            {
+                if (dietPlans == null)
+                    dietPlans = new DietPlanRepository(_context);
+                return dietPlans;
             }
         }
         public IAnatomyRepository Anatomies
@@ -80,6 +92,8 @@ namespace FitVerse.Data.UnitOfWork
                 if (clients == null)
                     clients = new ClientRepository(_context);
                 return clients; // <--- صحح هنا
+                return clients;
+
             }
         }
         public IExerciseRepository Exercises
@@ -189,7 +203,28 @@ namespace FitVerse.Data.UnitOfWork
         public IExercisePlanRepository ExercisePlans => new ExercisePlanRepository(_context);
 
 
+        public IChatRepository Chats
+        {
+            get
+            {
+                if (chats == null)
+                    chats = new ChatRepository(_context);
+                return chats;
+            }
+        }
+
+        public IMessageRepository Messages
+        {
+            get
+            {
+                if (messages == null)
+                    messages = new MessageRepository(_context);
+                return messages;
+            }
+        }
+
         public int Complete() => _context.SaveChanges();
+        public async Task<int> SaveAsync() => await _context.SaveChangesAsync();
         public void Dispose() => _context.Dispose();
     }
 }

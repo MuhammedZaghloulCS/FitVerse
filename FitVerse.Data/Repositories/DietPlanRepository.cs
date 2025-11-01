@@ -1,4 +1,5 @@
 ﻿using FitVerse.Core.Interfaces;
+using FitVerse.Data.Context;
 using FitVerse.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -8,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace FitVerse.Data.Repositories
 {
-
-    public class DietPlanRepository : GenericRepository<DietPlan>, IDietPlanRepository
+    public class DietPlanRepository: GenericRepository<DietPlan>, IDietPlanRepository
     {
-        public DietPlanRepository(Context.FitVerseDbContext context) : base(context)
+        public DietPlanRepository(FitVerseDbContext context) : base(context)
         {
         }
+    
     }
 }
