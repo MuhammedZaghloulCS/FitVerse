@@ -36,7 +36,7 @@ namespace FitVerse.Service.Service
 
             foreach (var user in users)
             {
-                // جلب الـ role لكل مستخدم بشكل متتابع (مش متوازي)
+                // جلب الـ role لكل مستخدم بشكل متتابع (مش متوازي)MO
                 var roles = await userManager.GetRolesAsync(user);
                 var role = roles.FirstOrDefault();
 
@@ -75,8 +75,8 @@ namespace FitVerse.Service.Service
                 Status = newUser.Status,
                 PhoneNumber = newUser.PhoneNumber,
                 joinedDate = DateTime.Now,
+                Age = newUser.Age,
                 Gender = newUser.Gender
-
             };
             var oldUser = await userManager.FindByEmailAsync(newUser.Email);
             if (oldUser != null)

@@ -42,8 +42,11 @@
                     </form>
                 </div>
             </div>
-            <div class="card-custom mt-5">
-                <div class="card-header-custom">
+
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="card-custom mt-5">
+                    <div class="card-header-custom">
                     <i class="bi bi-person-badge me-2"></i> Admin Functions
                 </div>
                 <div class="card-body-custom">
@@ -77,6 +80,7 @@
                     </form>
                 </div>
             </div>
+            }
         </div>
 
         <div class="col-lg-8">
@@ -112,7 +116,7 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label-custom">Age</label>
-                            <input asp-for="@Model.UserInfo.Age" type="number" min="0" class="form-control-custom"/>
+                            <input asp-for=@Model.UserInfo.Age min="0" class="form-control-custom"/>
 							<span asp-validation-for="@Model.UserInfo.Age" class="text-danger"></span>
                         </div>
                         <div class="col-12">
@@ -243,11 +247,9 @@
                                     <span asp-validation-for="@Model.clientPhysicalInfo.StartWeight" class="text-danger"></span>
                                 </div>
                                 <div class="col-md-4">
-                                    <label asp-for="@Model.clientPhysicalInfo.Goal"  class="form-label-custom">Goal</label>
-                                    <input asp-for="@Model.clientPhysicalInfo.Goal"  class="form-control-custom" placeholder="Enter your Goal">
-
+                                    <label class="form-label-custom">Goal of the Client</label>
+                                    <input asp-for="@Model.clientPhysicalInfo.Goal"  class="form-control-custom" placeholder="Enter your goal">
                                     <span asp-validation-for="@Model.clientPhysicalInfo.Goal" class="text-danger"></span>
-
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-primary-custom">
@@ -294,7 +296,6 @@
 </div>
 
 @section Scripts {
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     const alertContainer = document.getElementById('alertContainer');
     function showAlert(type, message) {

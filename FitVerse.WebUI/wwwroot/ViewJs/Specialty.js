@@ -1,8 +1,11 @@
-﻿
-$(document).ready(function () {
+﻿$(document).ready(function () {
     loadSpecialty();
     loadStats();
 });
+
+/* ================================
+   Load Specialties
+================================ */
 function loadSpecialty() {
     $.ajax({
         url: '/Specialty/GetAll',
@@ -11,8 +14,6 @@ function loadSpecialty() {
             $('#specialtiesContainer').empty();
 
             response.data.forEach(function (item) {
-
-                // ✅ استخدم الصورة فقط بدون ألوان أو تمييز
                 const imageHtml = item.Image
                     ? `<img src="${item.Image}" alt="${item.Name}" 
                             class="img-fluid rounded-circle mb-3" 
@@ -33,7 +34,7 @@ function loadSpecialty() {
                                 </div>
                                 <div class="d-flex gap-2">
                                     <button class="btn btn-outline-primary btn-sm flex-grow-1"
-                                        onclick="editSpecialty(${item.Id}, '${item.Name}', '${item.Description}', '${item.ImagePath || ''}')"
+                                        onclick="editSpecialty(${item.Id}, '${item.Name}', '${item.Description}', '${item.Image || ''}')">
                                         <i class="bi bi-pencil"></i> Edit
                                     </button>
                                     <button class="btn btn-danger btn-sm" onclick="deleteSpecialty(${item.Id})">
@@ -52,14 +53,16 @@ function loadSpecialty() {
     });
 }
 
-
+/* ================================
+   Add Specialty
+================================ */
 function addSpecialty() {
     const name = $('#specialtyName').val().trim();
     const description = $('#specialtyDescription').val().trim();
     const imageFile = $('#specialtyImage')[0].files[0];
 
     if (!name || !description || !imageFile) {
-        swal("Error", "Please fill all fields before submitting.", "error");
+        Swal.fire("Error", "Please fill all fields before submitting.", "error");
         return;
     }
 
@@ -75,7 +78,7 @@ function addSpecialty() {
         contentType: false,
         data: formData,
         success: function (response) {
-            swal("Success!", response.message || "Specialty added successfully.", "success");
+            Swal.fire("Success!", response.message || "Specialty added successfully.", "success");
             $('#addSpecialtyModal').modal('hide');
             $('#specialtyName').val('');
             $('#specialtyDescription').val('');
@@ -84,12 +87,14 @@ function addSpecialty() {
         },
         error: function (xhr) {
             console.error(xhr.responseText);
-            swal("Error", "Something went wrong. Please try again.", "error");
+            Swal.fire("Error", "Something went wrong. Please try again.", "error");
         }
     });
 }
 
-
+/* ================================
+   Edit Specialty (open modal)
+================================ */
 function editSpecialty(id, name, description, imagePath) {
     $('#specialtyId').val(id);
     $('#editSpecialtyName').val(name);
@@ -102,10 +107,12 @@ function editSpecialty(id, name, description, imagePath) {
     }
 
     $('#editSpecialtyImage').val('');
-
     $('#editSpecialtyModal').modal('show');
 }
 
+/* ================================
+   Update Specialty
+================================ */
 function updateSpecialty() {
     const id = $('#specialtyId').val();
     const name = $('#editSpecialtyName').val().trim();
@@ -113,7 +120,7 @@ function updateSpecialty() {
     const imageFile = $('#editSpecialtyImage')[0].files[0];
 
     if (!name) {
-        swal("Error", "Name is required!", "error");
+        Swal.fire("Error", "Name is required!", "error");
         return;
     }
 
@@ -133,45 +140,51 @@ function updateSpecialty() {
         contentType: false,
         data: formData,
         success: function (response) {
-            swal("Updated!", response.message || "Specialty updated successfully.", "success");
+            Swal.fire("Updated!", response.message || "Specialty updated successfully.", "success");
             $('#editSpecialtyModal').modal('hide');
             $('#editSpecialtyImage').val('');
             loadSpecialty();
         },
         error: function (xhr) {
             console.error(xhr.responseText);
-            swal("Error", "Server error occurred while updating specialty.", "error");
+            Swal.fire("Error", "Server error occurred while updating specialty.", "error");
         }
     });
 }
 
-
+/* ================================
+   Delete Specialty
+================================ */
 function deleteSpecialty(id) {
-    swal({
+    Swal.fire({
         title: "Are you sure?",
-        text: "Once deleted, you cannot recover this!",
+        text: "Once deleted, you cannot recover this specialty!",
         icon: "warning",
-        buttons: true,
-        dangerMode: true,
-    }).then((willDelete) => {
-        if (willDelete) {
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#d33"
+    }).then((result) => {
+        if (result.isConfirmed) {
             $.ajax({
                 url: '/Specialty/Delete?id=' + id,
                 method: 'DELETE',
                 success: function (response) {
                     const message = response.message || "Deleted successfully.";
-                    swal("Deleted!", message, "success");
+                    Swal.fire("Deleted!", message, "success");
                     loadSpecialty();
                 },
                 error: function () {
-                    swal("Error", "Failed to delete specialty.", "error");
+                    Swal.fire("Error", "Failed to delete specialty.", "error");
                 }
             });
         }
     });
 }
 
-
+/* ================================
+   Load Stats
+================================ */
 function loadStats() {
     $.ajax({
         url: '/Specialty/GetStats',

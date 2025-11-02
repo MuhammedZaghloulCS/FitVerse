@@ -1,7 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Packages Management";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-
 }
 
 <div class="container-fluid px-4 py-4">
@@ -39,8 +38,8 @@
         </div>
         <div class="card-body-custom p-0">
             <div class="table-responsive">
-                <table class="table table-custom mb-0">
-                    <thead>
+                <table class="table table-custom mb-0 align-middle text-center">
+                    <thead class="table-light">
                         <tr>
                             <th>Package Name</th>
                             <th>Price (EGP)</th>
@@ -58,10 +57,15 @@
     </div>
 
     <!-- Pagination -->
-    <div class="d-flex justify-content-center mt-3">
-        <div class="pagination"></div>
+    <div class="d-flex justify-content-center mt-4">
+        <nav aria-label="Package pagination">
+            <ul class="pagination pagination-fitverse" id="pagination">
+                <!-- سيتم تعبئته من JavaScript -->
+            </ul>
+        </nav>
     </div>
 </div>
+
 <!-- Add/Edit Package Modal -->
 <div class="modal fade" id="addPackageModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
@@ -74,6 +78,7 @@
             <div class="modal-body">
                 <form id="PackageForm" enctype="multipart/form-data">
                     <input type="hidden" id="id" name="Id" value="0">
+
                     <div class="mb-3">
                         <label class="form-label-custom">Package Name</label>
                         <input type="text" id="name" name="Name" class="form-control-custom" placeholder="Enter package name" required>
@@ -117,15 +122,12 @@
     </div>
 </div>
 
-
-
-
 <!-- Delete Confirmation Modal -->
 <div class="modal fade" id="deletePackageModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title"><i class="bi bi-exclamation-triangle-fill me-2"></i>Confirm Deletion</h5>
+                <h5 class="modal-title"><i class="bi bi-exclamation-triangle-fill me-2"></i> Confirm Deletion</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
@@ -141,6 +143,37 @@
 
 @section Scripts {
     <script src="~/ViewJs/Package.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+    <style>
+        /* ✅ Pagination - clean FitVerse style */
+        .pagination-fitverse .page-item .page-link {
+            color: #007bff;
+            font-weight: 500;
+            border: 1px solid #dee2e6;
+            margin: 0 3px;
+            border-radius: 8px;
+            transition: 0.25s;
+        }
+
+            .pagination-fitverse .page-item .page-link:hover {
+                background-color: #007bff;
+                color: #fff;
+                border-color: #007bff;
+            }
+
+        .pagination-fitverse .page-item.active .page-link {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: #fff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.35);
+        }
+
+        .pagination-fitverse {
+            margin-bottom: 0;
+        }
+
+        .table-custom th, .table-custom td {
+            vertical-align: middle;
+        }
+    </style>
 }

@@ -6,7 +6,7 @@ let searchTimeout;
 $(document).ready(function () {
     loadPackagePaged();
 
-    // Search with debounce
+    // 🔍 Search with debounce
     $('#searchPackage').on('input', function () {
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => {
@@ -16,12 +16,12 @@ $(document).ready(function () {
         }, 400);
     });
 
-    // Clear inputs on modal close
+    // 🧹 Clear inputs when modal closes
     $('#addPackageModal').on('hidden.bs.modal', function () {
         clearInputs();
     });
 
-    // Handle Add/Edit form submit
+    // 💾 Handle Add/Edit form submit
     $("#PackageForm").submit(function (e) {
         e.preventDefault();
         let formData = new FormData(this);
@@ -38,7 +38,7 @@ $(document).ready(function () {
         const price = parseFloat(formData.get("Price"));
         const sessions = parseInt(formData.get("Sessions"));
         if (!name || isNaN(price) || price <= 0 || isNaN(sessions) || sessions <= 0) {
-            swal("Error", "Please fill all fields correctly.", "error");
+            Swal.fire("Error", "Please fill all fields correctly.", "error");
             return;
         }
 
@@ -50,20 +50,27 @@ $(document).ready(function () {
             contentType: false,
             success: function (res) {
                 if (res.success) {
-                    swal(submitterId === "editBtn" ? "✅ Updated" : "✅ Success", res.message, "success", { timer: 1500 });
+                    Swal.fire({
+                        icon: "success",
+                        title: submitterId === "editBtn" ? "Updated!" : "Success!",
+                        text: res.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
                     clearInputs();
                     loadPackagePaged();
                     $('#addPackageModal').modal('hide');
                 } else {
-                    swal("❌ Error", res.message, "error");
+                    Swal.fire("Error", res.message, "error");
                 }
             },
             error: function () {
-                swal("⚠️ Warning", "An error occurred.", "error");
+                Swal.fire("Error", "An unexpected error occurred.", "error");
             }
         });
     });
 });
+
 
 // ================== LOAD PACKAGES ==================
 function loadPackagePaged() {
@@ -73,33 +80,40 @@ function loadPackagePaged() {
         data: { page: currentPage, pageSize: pageSize, search: currentSearch },
         success: function (response) {
             $('#Data').empty();
+
+            if (response.data.length === 0) {
+                $('#Data').append(`<tr><td colspan="5" class="text-center text-muted py-3">No packages found.</td></tr>`);
+                renderPagination(1, 1);
+                return;
+            }
+
             response.data.forEach(item => {
                 $('#Data').append(`
                     <tr>
                         <td>${item.Name}</td>
                         <td>${item.Price} EGP</td>
                         <td>${item.Sessions}</td>
-                        <td>${item.Description}</td>
-                        <td class="actions">
-                            <button type="button" onclick="getById(${item.Id})" class="btn-icon" title="Edit">
-                                <i class="fas fa-edit"></i>
+                        <td>${item.Description || ''}</td>
+<td class="actions text-center">
+                            <button type="button" onclick="getById(${item.Id})" class="btn btn-sm btn-outline-primary me-2" title="Edit">
+                                <i class="bi bi-pencil"></i>
                             </button>
-                            <button type="button" onclick="Delete(${item.Id})" class="btn-icon text-danger" title="Delete">
-                                <i class="fas fa-trash-alt"></i>
+                            <button type="button" onclick="Delete(${item.Id})" class="btn btn-sm btn-outline-danger" title="Delete">
+                                <i class="bi bi-trash"></i>
                             </button>
                         </td>
                     </tr>
                 `);
             });
+
             renderPagination(response.currentPage, response.totalPages);
-            $('.modal-backdrop').remove();
-            $('body').removeClass('modal-open');
         },
         error: function () {
-            swal("Error", "Failed to load packages. Please try again.", "error");
+            Swal.fire("Error", "Failed to load packages.", "error");
         }
     });
 }
+
 
 // ================== GET PACKAGE BY ID ==================
 function getById(id) {
@@ -112,37 +126,47 @@ function getById(id) {
             $('#description').val(response.data.Description);
             $('#isActive').prop('checked', response.data.IsActive);
 
-            toggleButtons(true); // إظهار زر التعديل وإخفاء زر الإضافة
+            toggleButtons(true);
 
             var modal = new bootstrap.Modal(document.getElementById('addPackageModal'));
             modal.show();
         } else {
-            swal("Error", response.message, "error");
+            Swal.fire("Error", response.message, "error");
         }
-    }).fail(() => swal("Error", "Failed to fetch package data.", "error"));
+    }).fail(() => Swal.fire("Error", "Failed to fetch package data.", "error"));
 }
+
 
 // ================== DELETE PACKAGE ==================
 function Delete(id) {
-    swal({
+    Swal.fire({
         title: "Are you sure?",
         text: "Once deleted, this package cannot be recovered!",
         icon: "warning",
-        buttons: true,
-        dangerMode: true,
-    }).then(willDelete => {
-        if (willDelete) {
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#6c757d",
+        confirmButtonText: "Yes, delete it!"
+    }).then(result => {
+        if (result.isConfirmed) {
             $.post(`/Package/Delete?id=${id}`, response => {
                 if (response.success) {
-                    swal("Deleted!", response.message, "success", { timer: 1500 });
+                    Swal.fire({
+                        icon: "success",
+                        title: "Deleted!",
+                        text: response.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
                     loadPackagePaged();
                 } else {
-                    swal("Error", response.message, "error");
+                    Swal.fire("Error", response.message, "error");
                 }
-            }).fail(() => swal("Error", "An error occurred while deleting the package.", "error"));
+            }).fail(() => Swal.fire("Error", "Error while deleting package.", "error"));
         }
     });
 }
+
 
 // ================== PAGINATION ==================
 function renderPagination(currentPage, totalPages) {
@@ -150,12 +174,12 @@ function renderPagination(currentPage, totalPages) {
     pagination.empty();
     const prevDisabled = currentPage === 1 ? 'disabled' : '';
     const nextDisabled = currentPage === totalPages ? 'disabled' : '';
-    pagination.append(`<button class="btn-icon" ${prevDisabled} onclick="changePage(${currentPage - 1})"><i class="fas fa-chevron-left"></i></button>`);
+    pagination.append(`<button class="btn btn-sm btn-primary me-2" ${prevDisabled} onclick="changePage(${currentPage - 1})"><i class="fas fa-chevron-left"></i>Prev</button>`);
     for (let i = 1; i <= totalPages; i++) {
         const active = i === currentPage ? 'active' : '';
-        pagination.append(`<button class="btn-icon ${active}" onclick="changePage(${i})">${i}</button>`);
+        pagination.append(`<button class="btn btn-sm btn-outline-primary me-2" ${active}" onclick="changePage(${i})">${i}</button>`);
     }
-    pagination.append(`<button class="btn-icon" ${nextDisabled} onclick="changePage(${currentPage + 1})"><i class="fas fa-chevron-right"></i></button>`);
+    pagination.append(`<button class="btn btn-sm btn-primary me-2" ${nextDisabled} onclick="changePage(${currentPage + 1})"><i class="fas fa-chevron-right"></i>Next</button>`);
 }
 
 function changePage(page) {
@@ -164,29 +188,30 @@ function changePage(page) {
     loadPackagePaged();
 }
 
+
 // ================== CLEAR INPUTS ==================
 function clearInputs() {
-    $('#Id').val('0');
+    $('#id').val('0');
     $('#name').val('');
     $('#price').val('');
     $('#sessions').val('');
     $('#description').val('');
     $('#isActive').prop('checked', true);
-    toggleButtons(false); // إخفاء زر التعديل وإظهار زر الإضافة
-    $('.modal-backdrop').remove();
-    $('body').removeClass('modal-open');
+    toggleButtons(false);
 }
+
 
 // ================== TOGGLE BUTTONS ==================
 function toggleButtons(isEditMode) {
     if (isEditMode) {
-        $('#editBtn').removeClass('d-none'); // إظهار زر التعديل
-        $('#addBtn').addClass('d-none');     // إخفاء زر الإضافة
+        $('#editBtn').removeClass('d-none');
+        $('#addBtn').addClass('d-none');
     } else {
-        $('#editBtn').addClass('d-none');    // إخفاء زر التعديل
-        $('#addBtn').removeClass('d-none');  // إظهار زر الإضافة
+        $('#editBtn').addClass('d-none');
+        $('#addBtn').removeClass('d-none');
     }
 }
+
 
 // ================== REFRESH ==================
 function refreshPackages() {

@@ -62,7 +62,7 @@ namespace FitVerse.Service.Service
 
             var user = new ApplicationUser
             {
-                UserName = auth.Email,
+                UserName = auth.FirstName + auth.LastName + Guid.NewGuid().ToString().Substring(0, 6),
                 FullName = auth.FirstName + " " + auth.LastName,
                 Email = auth.Email,
                 Status = "Active",

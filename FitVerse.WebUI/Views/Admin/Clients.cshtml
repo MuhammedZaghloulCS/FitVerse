@@ -7,7 +7,7 @@
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12">
-            <div class="card">
+            <div class="card text-white" style="color:white;background: linear-gradient(90deg, #4f47e6, #6a5af9);">
                 <div class="card-header pb-0">
                     <div class="d-lg-flex">
                         <div>
@@ -18,7 +18,7 @@
                         </div>
                         <div class="ms-auto my-auto mt-lg-0 mt-4">
                             <div class="ms-auto my-auto">
-                                <button class="btn bg-gradient-primary btn-sm mb-0" type="button" data-bs-toggle="modal" data-bs-target="#addClientModal">
+                                <button class="btn bg-gradient-primary text-white btn-sm mb-0" type="button" data-bs-toggle="modal" data-bs-target="#addClientModal">
                                     <i class="fas fa-plus"></i>&nbsp;&nbsp;Add New Client
                                 </button>
                             </div>
@@ -53,99 +53,185 @@
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Goal</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Progress</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="clientsTableBody">
-                                @foreach (var client in Model)
-                                {
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex px-2">
-                                                <div class="my-auto">
-                                                    <img src="https://ui-avatars.com/api/?name=@client.Name&background=28a745&color=fff" class="avatar avatar-sm rounded-circle me-2" alt="Client Image">
-                                                </div>
-                                                <div class="d-flex flex-column justify-content-center">
-                                                    <h6 class="mb-0 text-sm">@client.Name</h6>
-                                                    <p class="text-xs text-secondary mb-0">ID: @client.Id</p>
-                                                    <p class="text-xs text-secondary mb-0">Age: @client.Age years</p>
-                                                </div>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2">
+                                            <div class="my-auto">
+                                                <img src="https://ui-avatars.com/api/?name=Ahmed+Khaled&background=28a745&color=fff"
+                                                     class="avatar avatar-sm rounded-circle me-2" alt="Client Image">
                                             </div>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex flex-column">
-                                                <p class="text-sm font-weight-bold mb-0">Height: @client.Height cm</p>
-                                                <p class="text-sm mb-0">Weight: @client.StartWeight kg</p>
-                                                <p class="text-xs text-secondary mb-0">Gender: @client.Gender</p>
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">Ahmed Khaled</h6>
+                                                <p class="text-xs text-secondary mb-0">Age: 27 years</p>
                                             </div>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex flex-column">
-                                                <p class="text-sm font-weight-bold mb-0">@client.Goal</p>
-                                                <p class="text-xs text-secondary mb-0">
-                                                    @if (client.Goal.ToLower().Contains("weight loss"))
-                                                    {
-                                                        <span class="badge badge-sm bg-gradient-warning">Weight Loss</span>
-                                                    }
-                                                    else if (client.Goal.ToLower().Contains("muscle") || client.Goal.ToLower().Contains("gain"))
-                                                    {
-                                                        <span class="badge badge-sm bg-gradient-success">Muscle Gain</span>
-                                                    }
-                                                    else if (client.Goal.ToLower().Contains("fitness") || client.Goal.ToLower().Contains("health"))
-                                                    {
-                                                        <span class="badge badge-sm bg-gradient-info">General Fitness</span>
-                                                    }
-                                                    else
-                                                    {
-                                                        <span class="badge badge-sm bg-gradient-secondary">Other</span>
-                                                    }
-                                                </p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <p class="text-sm font-weight-bold mb-0">Height: 178 cm</p>
+                                            <p class="text-sm mb-0">Weight: 76 kg</p>
+                                            <p class="text-xs text-secondary mb-0">Gender: Male</p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <p class="text-sm font-weight-bold mb-0">Muscle Gain</p>
+                                            <p class="text-xs text-secondary mb-0">
+                                                <span class="badge badge-sm bg-gradient-success">Muscle Gain</span>
+                                            </p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <p class="text-sm font-weight-bold mb-0">65%</p>
+                                            <div class="progress progress-sm">
+                                                <div class="progress-bar bg-gradient-success" role="progressbar" style="width: 65%"
+                                                     aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
                                             </div>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex flex-column">
-                                                <p class="text-sm font-weight-bold mb-0">@client.ProgressPercentage%</p>
-                                                <div class="progress progress-sm">
-                                                    <div class="progress-bar bg-gradient-success" role="progressbar" style="width: @client.ProgressPercentage%" aria-valuenow="@client.ProgressPercentage" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                                <p class="text-xs text-secondary mb-0">@client.TotalWorkouts workouts</p>
+                                            <p class="text-xs text-secondary mb-0">24 workouts</p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-sm bg-gradient-success">Active</span>
+                                        <p class="text-xs text-secondary mb-0">Joined: May 12, 2024</p>
+                                    </td>
+                                    <td class="align-middle">
+                                        <div class="dropdown">
+                                            <button class="btn btn-link text-secondary mb-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fa fa-ellipsis-v text-xs"></i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#">View Details</a></li>
+                                                <li><a class="dropdown-item" href="#">Edit</a></li>
+                                                <li><a class="dropdown-item" href="#">View Workouts</a></li>
+                                                <li><a class="dropdown-item" href="#">Assign Coach</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item text-warning" href="#">Deactivate</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2">
+                                            <div class="my-auto">
+                                                <img src="https://ui-avatars.com/api/?name=Sara+Hassan&background=28a745&color=fff"
+                                                     class="avatar avatar-sm rounded-circle me-2" alt="Client Image">
                                             </div>
-                                        </td>
-                                        <td>
-                                            @if (client.IsActive)
-                                            {
-                                                <span class="badge badge-sm bg-gradient-success">Active</span>
-                                            }
-                                            else
-                                            {
-                                                <span class="badge badge-sm bg-gradient-secondary">Inactive</span>
-                                            }
-                                            <p class="text-xs text-secondary mb-0">Joined: @client.JoinDate.ToString("MMM dd, yyyy")</p>
-                                        </td>
-                                        <td class="align-middle">
-                                            <div class="dropdown">
-                                                <button class="btn btn-link text-secondary mb-0" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <i class="fa fa-ellipsis-v text-xs"></i>
-                                                </button>
-                                                <ul class="dropdown-menu">
-                                                    <li><a class="dropdown-item" href="#" onclick="viewClient('@client.Id')">View Details</a></li>
-                                                    <li><a class="dropdown-item" href="#" onclick="editClient('@client.Id')">Edit</a></li>
-                                                    <li><a class="dropdown-item" href="#" onclick="viewWorkouts('@client.Id')">View Workouts</a></li>
-                                                    <li><a class="dropdown-item" href="#" onclick="assignCoach('@client.Id')">Assign Coach</a></li>
-                                                    <li><hr class="dropdown-divider"></li>
-                                                    @if (client.IsActive)
-                                                    {
-                                                        <li><a class="dropdown-item text-warning" href="#" onclick="deactivateClient('@client.Id')">Deactivate</a></li>
-                                                    }
-                                                    else
-                                                    {
-                                                        <li><a class="dropdown-item text-success" href="#" onclick="activateClient('@client.Id')">Activate</a></li>
-                                                    }
-                                                </ul>
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">Sara Hassan</h6>
+                                                <p class="text-xs text-secondary mb-0">Age: 25 years</p>
                                             </div>
-                                        </td>
-                                    </tr>
-                                }
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <p class="text-sm font-weight-bold mb-0">Height: 165 cm</p>
+                                            <p class="text-sm mb-0">Weight: 60 kg</p>
+                                            <p class="text-xs text-secondary mb-0">Gender: Female</p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <p class="text-sm font-weight-bold mb-0">Weight Loss</p>
+                                            <p class="text-xs text-secondary mb-0">
+                                                <span class="badge badge-sm bg-gradient-warning">Weight Loss</span>
+                                            </p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <p class="text-sm font-weight-bold mb-0">40%</p>
+                                            <div class="progress progress-sm">
+                                                <div class="progress-bar bg-gradient-warning" role="progressbar" style="width: 40%"
+                                                     aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                            <p class="text-xs text-secondary mb-0">12 workouts</p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-sm bg-gradient-secondary">Inactive</span>
+                                        <p class="text-xs text-secondary mb-0">Joined: Jul 03, 2024</p>
+                                    </td>
+                                    <td class="align-middle">
+                                        <div class="dropdown">
+                                            <button class="btn btn-link text-secondary mb-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fa fa-ellipsis-v text-xs"></i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#">View Details</a></li>
+                                                <li><a class="dropdown-item" href="#">Edit</a></li>
+                                                <li><a class="dropdown-item" href="#">View Workouts</a></li>
+                                                <li><a class="dropdown-item" href="#">Assign Coach</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item text-success" href="#">Activate</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2">
+                                            <div class="my-auto">
+                                                <img src="https://ui-avatars.com/api/?name=Omar+Elgendy&background=28a745&color=fff"
+                                                     class="avatar avatar-sm rounded-circle me-2" alt="Client Image">
+                                            </div>
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">Omar Elgendy</h6>
+                                                <p class="text-xs text-secondary mb-0">Age: 30 years</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <p class="text-sm font-weight-bold mb-0">Height: 182 cm</p>
+                                            <p class="text-sm mb-0">Weight: 85 kg</p>
+                                            <p class="text-xs text-secondary mb-0">Gender: Male</p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <p class="text-sm font-weight-bold mb-0">General Fitness</p>
+                                            <p class="text-xs text-secondary mb-0">
+                                                <span class="badge badge-sm bg-gradient-info">General Fitness</span>
+                                            </p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <p class="text-sm font-weight-bold mb-0">80%</p>
+                                            <div class="progress progress-sm">
+                                                <div class="progress-bar bg-gradient-info" role="progressbar" style="width: 80%"
+                                                     aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                            <p class="text-xs text-secondary mb-0">30 workouts</p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-sm bg-gradient-success">Active</span>
+                                        <p class="text-xs text-secondary mb-0">Joined: Jan 21, 2024</p>
+                                    </td>
+                                    <td class="align-middle">
+                                        <div class="dropdown">
+                                            <button class="btn btn-link text-secondary mb-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fa fa-ellipsis-v text-xs"></i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#">View Details</a></li>
+                                                <li><a class="dropdown-item" href="#">Edit</a></li>
+                                                <li><a class="dropdown-item" href="#">View Workouts</a></li>
+                                                <li><a class="dropdown-item" href="#">Assign Coach</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item text-warning" href="#">Deactivate</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

@@ -1,6 +1,8 @@
+using FitVerse.Core.Helpers;
 using FitVerse.Core.IUnitOfWorkServices;
 using FitVerse.Core.ViewModels.Admin;
 using FitVerse.Data.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace FitVerse.Web.Controllers
 {
+
     public class AdminController : Controller
     {
         private readonly IUnitOFWorkService _unitOfWorkService;
