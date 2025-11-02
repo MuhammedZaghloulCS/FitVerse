@@ -27,8 +27,8 @@ namespace FitVerse.Data.Repositories
             var res= (Success: false, Message: "User Not Found");
             Find(c => c.UserId==userId).ToList().ForEach(client =>
             {
-                client.Height = clientPhysicalInfo.Height;
-                client.StartWeight = clientPhysicalInfo.StartWeight;
+                client.Height = clientPhysicalInfo.Height ?? client.Height;
+                client.StartWeight = clientPhysicalInfo.StartWeight ?? client.StartWeight;
                 client.Goal = clientPhysicalInfo.Goal;
 
                 res= (Success : true, Message : "Goals Addes Successfully");

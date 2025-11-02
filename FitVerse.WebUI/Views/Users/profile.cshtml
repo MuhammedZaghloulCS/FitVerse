@@ -1,4 +1,5 @@
-﻿@{
+﻿@using FitVerse.Core.ViewModels.Profile
+@{
     Layout = "_AdminLayout";
 }
 @model ProfileViewModel
@@ -88,7 +89,7 @@
                         <div class="row g-3 mb-3">
                             <div class="col-md-6">
                                 <label class="form-label-custom">First Name</label>
-                                <input asp-for="@(Model.UserInfo.FirstName)" type="text" class="form-control-custom"" required>
+                                <input asp-for="@(Model.UserInfo.FirstName)" type="text" class="form-control-custom"required>
 								<span asp-validation-for="@Model.UserInfo.FirstName" class="text-danger"></span>
                             </div>
                             <div class="col-md-6">

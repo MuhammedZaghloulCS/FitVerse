@@ -36,9 +36,11 @@ namespace FitVerse.Web.Controllers
             return View(); 
         }
         public IActionResult Dashboard() {
-            string coachId =User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var coachName = User.FindFirstValue(ClaimTypes.Name);
+            var coachId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+           var coachName= User.FindFirstValue(ClaimTypes.Name);
             ViewBag.CoachName = coachName;
+
+
             var model = unitOFWorkService.CoachService.GetDashboardData(coachId);
             return View("Dashboard",model);
         }
