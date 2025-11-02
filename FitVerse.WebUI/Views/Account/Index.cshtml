@@ -1,4 +1,4 @@
-﻿@{
+@{
     Layout = "~/Views/Shared/_LandingLayout.cshtml";
 }
 <!-- Hero Section -->
@@ -9,7 +9,7 @@
                 <h1 class="display-3 fw-bold mb-4">Transform Your Body, Transform Your Life</h1>
                 <p class="lead mb-4">Join FitVerse and get personalized workout plans, expert coaching, and a supportive community to achieve your fitness goals.</p>
                 <div class="d-flex gap-3">
-                    <a href="register.html" class="btn btn-light btn-lg px-4">Start Free Trial</a>
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-light btn-lg px-4">Start Free Trial</a>
                     <a href="#features" class="btn btn-outline-light btn-lg px-4">Learn More</a>
                 </div>
                 <div class="mt-4">
@@ -238,7 +238,7 @@
                         <ul class="list-unstyled" id="exercises">
                             <!-- Exercises will be populated by JavaScript -->
                         </ul>
-                        <a href="register.html" class="btn btn-primary-custom mt-3">
+                        <a asp-controller="Account" asp-action="Register" class="btn btn-primary-custom mt-3">
                             <i class="bi bi-lightning-fill me-2"></i> Start Training
                         </a>
                     </div>
@@ -268,7 +268,7 @@
                         <li><i class="bi bi-check-circle-fill"></i> Progress tracking</li>
                         <li><i class="bi bi-check-circle-fill"></i> Email support</li>
                     </ul>
-                    <a href="register.html" class="btn btn-outline-custom w-100">Get Started</a>
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-outline-custom w-100">Get Started</a>
                 </div>
             </div>
 
@@ -285,7 +285,7 @@
                         <li><i class="bi bi-check-circle-fill"></i> Nutrition guidance</li>
                         <li><i class="bi bi-check-circle-fill"></i> Weekly check-ins</li>
                     </ul>
-                    <a href="register.html" class="btn btn-primary-custom w-100">Get Started</a>
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-primary-custom w-100">Get Started</a>
                 </div>
             </div>
 
@@ -302,7 +302,7 @@
                         <li><i class="bi bi-check-circle-fill"></i> Daily check-ins</li>
                         <li><i class="bi bi-check-circle-fill"></i> Video consultations</li>
                     </ul>
-                    <a href="register.html" class="btn btn-outline-custom w-100">Get Started</a>
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-outline-custom w-100">Get Started</a>
                 </div>
             </div>
         </div>
@@ -314,7 +314,7 @@
     <div class="container py-5 text-center">
         <h2 class="display-4 fw-bold mb-4">Ready to Start Your Fitness Journey?</h2>
         <p class="lead mb-4">Join thousands of users who have transformed their lives with FitVerse</p>
-        <a href="register.html" class="btn btn-light btn-lg px-5">Sign Up Now</a>
+        <a asp-controller="Account" asp-action="Register" class="btn btn-light btn-lg px-5">Sign Up Now</a>
     </div>
 </section>
 

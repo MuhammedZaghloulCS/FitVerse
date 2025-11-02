@@ -173,7 +173,7 @@ namespace FitVerse.Web.Controllers
                 {
                     Id = chat.Id,
                     OtherUserId = otherUser?.Id,
-                    OtherUserName = otherUser?.UserName ?? "Unknown",
+                    OtherUserName = otherUser?.FullName ?? "Unknown",
                     OtherUserAvatar = $"https://ui-avatars.com/api/?name={otherUser?.UserName}&background=10b981&color=fff",
                     LatestMessage = latestMessage?.Content ?? "No messages yet",
                     LatestMessageTime = latestMessage?.SentAt.ToString("HH:mm") ?? "",

@@ -25,59 +25,463 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f9fafb;
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 0;
         }
 
-        .navbar-custom {
-            background-color: #111827;
-            padding: 0.75rem 1rem;
+        /* ========================================
+           Modern Sidebar Layout
+           ======================================== */
+        .layout-wrapper {
+            display: flex;
+            min-height: 100vh;
         }
 
-        .navbar-custom .nav-link,
-        .navbar-custom .navbar-brand {
-            color: #fff !important;
-            font-weight: 500;
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            overflow-y: auto;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
         }
 
-        .navbar-custom .nav-link.active {
-            color: #10b981 !important;
+        .sidebar.collapsed {
+            width: 80px;
         }
 
-        .navbar-custom .nav-link:hover {
-            color: #10b981 !important;
+        .sidebar-brand {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
         }
 
-        .logo-icon {
+        .sidebar-brand:hover {
+            color: #10b981;
+        }
+
+        .brand-logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 1.5rem;
-            margin-right: 0.5rem;
+            flex-shrink: 0;
         }
 
-        .user-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
+        .brand-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar.collapsed .brand-text {
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
+        }
+
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-section-title {
+            color: #94a3b8;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0 1.5rem;
+            margin-bottom: 0.75rem;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar.collapsed .nav-section-title {
+            opacity: 0;
+        }
+
+        .nav-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.875rem 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            border-radius: 0;
+        }
+
+        .nav-link:hover {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            transform: translateX(4px);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.2) 0%, transparent 100%);
+            color: #10b981;
+            border-right: 3px solid #10b981;
+        }
+
+        .nav-link.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: #10b981;
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1.1rem;
+        }
+
+        .nav-text {
+            font-weight: 500;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar.collapsed .nav-text {
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
+        }
+
+        .sidebar.collapsed .nav-link {
+            justify-content: center;
+            padding: 0.875rem;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar.collapsed + .main-content {
+            margin-left: 80px;
+        }
+
+        /* Top Header */
+        .top-header {
+            background: white;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .sidebar-toggle {
+            background: none;
+            border: none;
+            color: #64748b;
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-toggle:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Enhanced Dropdown Functionality */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-toggle::after {
+            display: none !important;
+        }
+
+        /* Notifications */
+        .notification-bell {
+            position: relative;
+            background: none;
+            border: none;
+            color: #64748b;
+            font-size: 1.25rem;
+            cursor: pointer;
+            padding: 0.75rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notification-bell:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .notification-bell:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
         }
 
         .notification-badge {
             position: absolute;
             top: 0;
-            right: 2px;
-            background-color: #ef4444;
+            right: 0;
+            background: #ef4444;
             color: white;
             border-radius: 50%;
+            width: 18px;
+            height: 18px;
             font-size: 0.7rem;
-            padding: 3px 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            border: 2px solid white;
         }
 
-        footer {
-            border-top: 1px solid #e5e7eb;
-            margin-top: 2rem;
-            padding-top: 1rem;
-            text-align: center;
+        /* Enhanced Dropdown Menus */
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            padding: 0.5rem 0;
+            margin-top: 0.5rem;
+            min-width: 200px;
+            z-index: 1050;
+        }
+
+        .dropdown-item {
+            padding: 0.75rem 1.25rem;
             font-size: 0.9rem;
-            color: #6b7280;
+            color: #374151;
+            transition: all 0.2s ease;
+            border: none;
+            background: none;
         }
 
+        .dropdown-item:hover {
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .dropdown-item i {
+            width: 16px;
+            text-align: center;
+        }
+
+        .dropdown-divider {
+            margin: 0.5rem 0;
+            border-color: #e5e7eb;
+        }
+
+        /* User Profile */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            border: 1px solid transparent;
+        }
+
+        .user-profile:hover {
+            background: #f1f5f9;
+            color: inherit;
+            border-color: #e2e8f0;
+        }
+
+        .user-profile:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #e2e8f0;
+            object-fit: cover;
+        }
+
+        .user-info h6 {
+            margin: 0;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .user-info p {
+            margin: 0;
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            padding: 1.5rem;
+            background: #f8fafc;
+            min-height: calc(100vh - 80px);
+            overflow-x: hidden;
+        }
+
+        /* Enhanced Container Styling */
+        .page-container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        .content-wrapper {
+            background: transparent;
+            border-radius: 0;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* Improved Card Spacing */
+        .dashboard-container .container-fluid {
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        /* Better Content Alignment */
+        .main-content-section .container-fluid {
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .stats-section .container-fluid {
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .welcome-section .container-fluid {
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+
+        /* Responsive Design */
+        @@media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .sidebar.collapsed + .main-content {
+                margin-left: 0;
+            }
+
+            .content-area {
+                padding: 1rem;
+            }
+
+            .welcome-section .container-fluid {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+
+            .top-header {
+                padding: 0.75rem 1rem;
+            }
+
+            .header-right {
+                gap: 0.5rem;
+            }
+
+            .user-info {
+                display: none !important;
+            }
+
+            .dropdown-menu {
+                min-width: 180px;
+                margin-top: 0.25rem;
+            }
+
+            .notification-bell,
+            .user-profile {
+                padding: 0.5rem;
+            }
+        }
+
+        @@media (max-width: 480px) {
+            .content-area {
+                padding: 0.75rem;
+            }
+
+            .dropdown-menu {
+                position: fixed !important;
+                top: auto !important;
+                left: 1rem !important;
+                right: 1rem !important;
+                transform: none !important;
+                width: auto !important;
+                min-width: auto !important;
+            }
+        }
+
+        /* Notification Dropdown Styles */
         .notification-item {
             padding: 0.75rem 1rem;
             border-bottom: 1px solid #f1f5f9;
@@ -104,92 +508,118 @@
             color: #64748b;
             margin-top: 0.25rem;
         }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid #e5e7eb;
+            margin-top: 2rem;
+            padding: 1.5rem 2rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #6b7280;
+            background: white;
+        }
     </style>
 
     @RenderSection("Styles", required: false)
 </head>
 
 <body>
-    <!-- ✅ Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
-        <div class="container-fluid px-4">
-            <a class="navbar-brand d-flex align-items-center" asp-controller="Home" asp-action="Index">
-                <div class="logo-icon">💪</div>
-                FitVerse
+    <div class="layout-wrapper">
+        <!-- ✅ Modern Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <!-- Brand -->
+            <a class="sidebar-brand" asp-controller="Home" asp-action="Index">
+                <div class="brand-logo">💪</div>
+                <span class="brand-text">FitVerse</span>
             </a>
 
-            <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center gap-2">
-                    <li class="nav-item">
-                        <a class="nav-link @(ViewBag.Active == "Dashboard" ? "active" : "")"
+            <!-- Navigation -->
+            <div class="sidebar-nav">
+                <!-- Main Navigation -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <div class="nav-item">
+                        <a class="nav-link @(ViewBag.Active == "Dashboard" ? "active" : "")" 
                            asp-controller="Coach" asp-action="Dashboard">
-                            <i class="bi bi-speedometer2"></i> Dashboard
+                            <div class="nav-icon"><i class="bi bi-speedometer2"></i></div>
+                            <span class="nav-text">Dashboard</span>
                         </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link @(ViewBag.Active == "Exercise" ? "active" : "")"
+                    </div>
+                    <div class="nav-item">
+                        <a class="nav-link @(ViewBag.Active == "Exercise" ? "active" : "")" 
                            asp-controller="Exercise" asp-action="index">
-                            <i class="bi bi-lightning"></i> Exercise
+                            <div class="nav-icon"><i class="bi bi-lightning"></i></div>
+                            <span class="nav-text">Exercises</span>
                         </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link @(ViewBag.Active == "Plans" ? "active" : "")"
+                    </div>
+                    <div class="nav-item">
+                        <a class="nav-link @(ViewBag.Active == "Plans" ? "active" : "")" 
                            asp-controller="ExercisePlan" asp-action="index">
-                            <i class="bi bi-calendar-check"></i> Plans
+                            <div class="nav-icon"><i class="bi bi-calendar-check"></i></div>
+                            <span class="nav-text">Workout Plans</span>
                         </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link @(ViewBag.Active == "DietPlans" ? "active" : "")"
+                    </div>
+                    <div class="nav-item">
+                        <a class="nav-link @(ViewBag.Active == "DietPlans" ? "active" : "")" 
                            asp-controller="Dietplan" asp-action="Index">
-                            <i class="bi bi-egg-fried"></i> Diet Plans
+                            <div class="nav-icon"><i class="bi bi-egg-fried"></i></div>
+                            <span class="nav-text">Diet Plans</span>
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link @(ViewBag.Active == "MyClients" ? "active" : "")"
+                    </div>
+                </div>
+
+                <!-- Client Management -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Client Management</div>
+                    <div class="nav-item">
+                        <a class="nav-link @(ViewBag.Active == "MyClients" ? "active" : "")" 
                            asp-controller="Coach" asp-action="MyClients">
-                            <i class="bi bi-calendar-check"></i> MyClients
+                            <div class="nav-icon"><i class="bi bi-people-fill"></i></div>
+                            <span class="nav-text">My Clients</span>
                         </a>
-           
-
-                    <li class="nav-item">
-                        <a class="nav-link @(ViewBag.Active == "Clients" ? "active" : "")"
+                    </div>
+                    <div class="nav-item">
+                        <a class="nav-link @(ViewBag.Active == "DailyLogs" ? "active" : "")" 
                            asp-controller="DailyLog" asp-action="CoachLogs">
-                            <i class="bi bi-people"></i> Daily Logs
+                            <div class="nav-icon"><i class="bi bi-journal-text"></i></div>
+                            <span class="nav-text">Daily Logs</span>
                         </a>
-                    </li>
-                    @* <li class="nav-item">
-                        <a asp-controller="Coach" asp-action="MyClients"><i class="bi bi-people"></i> Clients</a>
-                    </li> *@
+                    </div>
+                </div>
 
-
-                    <li class="nav-item">
-                        <a class="nav-link @(ViewBag.Active == "Clients" ? "active" : "")"
-                           asp-controller="Coach" asp-action="Clients">
-                            <i class="bi bi-people"></i> Clients
-                        </a>
-                        <li class="nav-item">
-                        <a class="nav-link" href="coach-daily-logs.html"><i class="bi bi-journal-text"></i> Daily Logs</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link @(ViewBag.Active == "Chat" ? "active" : "")"
+                <!-- Communication -->
+                <div class="nav-section">
+                    <div class="nav-section-title">Communication</div>
+                    <div class="nav-item">
+                        <a class="nav-link @(ViewBag.Active == "Chat" ? "active" : "")" 
                            asp-controller="Chat" asp-action="CoachChat">
-                            <i class="bi bi-chat-dots"></i> Chat
+                            <div class="nav-icon"><i class="bi bi-chat-dots"></i></div>
+                            <span class="nav-text">Messages</span>
                         </a>
-                    </li>
-                    <!-- ✅ Notifications -->
-                    <li class="nav-item dropdown position-relative">
-                        <a class="nav-link dropdown-toggle notification-bell" href="#" role="button" data-bs-toggle="dropdown" id="notificationDropdown">
-                            <i class="bi bi-bell fs-5"></i>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- ✅ Main Content Area -->
+        <div class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="sidebar-toggle" id="sidebarToggle">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <h5 class="mb-0 text-muted">@(ViewBag.PageTitle ?? "Dashboard")</h5>
+                </div>
+                
+                <div class="header-right">
+                    <!-- Notifications -->
+                    <div class="dropdown">
+                        <button class="notification-bell dropdown-toggle" data-bs-toggle="dropdown" id="notificationDropdown">
+                            <i class="bi bi-bell"></i>
                             <span class="notification-badge" id="notificationCount" style="display: none;">0</span>
-                        </a>
+                        </button>
                         <div class="dropdown-menu dropdown-menu-end shadow-lg" style="width: 350px; max-height: 400px; overflow-y: auto;">
                             <div class="dropdown-header d-flex justify-content-between align-items-center">
                                 <h6 class="mb-0">Notifications</h6>
@@ -203,13 +633,16 @@
                                 </div>
                             </div>
                         </div>
-                    </li>
+                    </div>
 
-                    <!-- ✅ User Profile -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
+                    <!-- User Profile -->
+                    <div class="dropdown">
+                        <a class="user-profile dropdown-toggle" href="#" data-bs-toggle="dropdown">
                             <img src="https://ui-avatars.com/api/?name=Alex+Turner&background=10b981&color=fff" alt="Coach" class="user-avatar" />
-                            <span>Alex Turner</span>
+                            <div class="user-info d-none d-md-block">
+                                <h6>Alex Turner</h6>
+                                <p>Coach</p>
+                            </div>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow">
                             <li><a class="dropdown-item" asp-controller="Coach" asp-action="Profile"><i class="bi bi-person me-2"></i> Profile</a></li>
@@ -217,23 +650,21 @@
                             <li><hr class="dropdown-divider" /></li>
                             <li><a class="dropdown-item text-danger" asp-controller="Account" asp-action="Logout"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
                         </ul>
-                    </li>
-                </ul>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                @RenderBody()
             </div>
+
+            <!-- Footer -->
+            <footer>
+                © @DateTime.Now.Year FitVerse. All Rights Reserved.
+            </footer>
         </div>
-    </nav>
-
-    <!-- ✅ Main Content -->
-    <div class="container-fluid">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
     </div>
-    <!-- ✅ Footer -->
-    <footer>
-        © @DateTime.Now.Year FitVerse. All Rights Reserved.
-    </footer>
-
 
     <!-- Chart.js -->
     <!-- default scripts -->
@@ -244,9 +675,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- SignalR -->
-    <script src="https://unpkg.com/@@microsoft/signalr@@8.0.0/dist/browser/signalr.min.js" 
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js" 
             onload="console.log('SignalR loaded successfully')" 
-            onerror="console.error('Failed to load SignalR from CDN')"></script>
+            onerror="console.error('Failed to load SignalR')"></script>
     
     <!-- Notification System -->
     <script>
@@ -391,6 +822,160 @@
                 });
             }
         }
+    </script>
+
+    <!-- Enhanced Layout Functionality -->
+    <script>
+        $(document).ready(function () {
+            // Initialize Bootstrap dropdowns
+            if (typeof bootstrap !== 'undefined') {
+                // Initialize all dropdowns
+                var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
+                var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
+                    return new bootstrap.Dropdown(dropdownToggleEl, {
+                        boundary: 'viewport',
+                        display: 'dynamic'
+                    });
+                });
+            }
+
+            // Sidebar toggle functionality
+            $('#sidebarToggle').on('click', function (e) {
+                e.preventDefault();
+                $('#sidebar').toggleClass('collapsed');
+                
+                // Save sidebar state to localStorage
+                const isCollapsed = $('#sidebar').hasClass('collapsed');
+                localStorage.setItem('sidebarCollapsed', isCollapsed);
+            });
+
+            // Restore sidebar state from localStorage
+            const savedState = localStorage.getItem('sidebarCollapsed');
+            if (savedState === 'true') {
+                $('#sidebar').addClass('collapsed');
+            }
+
+            // Enhanced mobile sidebar toggle
+            function handleSidebarToggle() {
+                if ($(window).width() <= 768) {
+                    $('#sidebarToggle').off('click.sidebar').on('click.sidebar', function (e) {
+                        e.preventDefault();
+                        $('#sidebar').toggleClass('show');
+                    });
+                } else {
+                    // Reset to desktop behavior
+                    $('#sidebar').removeClass('show');
+                    $('#sidebarToggle').off('click.sidebar').on('click.sidebar', function (e) {
+                        e.preventDefault();
+                        $('#sidebar').toggleClass('collapsed');
+                        
+                        const isCollapsed = $('#sidebar').hasClass('collapsed');
+                        localStorage.setItem('sidebarCollapsed', isCollapsed);
+                    });
+                }
+            }
+
+            // Initialize sidebar behavior
+            handleSidebarToggle();
+
+            // Handle window resize
+            $(window).on('resize', function () {
+                handleSidebarToggle();
+            });
+
+            // Close mobile sidebar when clicking outside
+            $(document).on('click', function (e) {
+                if ($(window).width() <= 768) {
+                    if (!$(e.target).closest('#sidebar, #sidebarToggle').length) {
+                        $('#sidebar').removeClass('show');
+                    }
+                }
+            });
+
+            // Prevent sidebar links from closing mobile sidebar immediately
+            $('#sidebar .nav-link').on('click', function () {
+                if ($(window).width() <= 768) {
+                    setTimeout(function () {
+                        $('#sidebar').removeClass('show');
+                    }, 100);
+                }
+            });
+
+            // Enhanced dropdown functionality
+            $('.dropdown-toggle').on('click', function (e) {
+                // Ensure dropdown works properly
+                const $dropdown = $(this).closest('.dropdown');
+                const $menu = $dropdown.find('.dropdown-menu');
+                
+                // Close other dropdowns
+                $('.dropdown-menu').not($menu).removeClass('show');
+                
+                // Toggle current dropdown
+                $menu.toggleClass('show');
+                
+                e.stopPropagation();
+            });
+
+            // Close dropdowns when clicking outside
+            $(document).on('click', function (e) {
+                if (!$(e.target).closest('.dropdown').length) {
+                    $('.dropdown-menu').removeClass('show');
+                }
+            });
+
+            // Prevent dropdown from closing when clicking inside
+            $('.dropdown-menu').on('click', function (e) {
+                e.stopPropagation();
+            });
+
+            // Close dropdown when clicking dropdown items (except for notification actions)
+            $('.dropdown-item').on('click', function (e) {
+                if (!$(this).hasClass('no-close')) {
+                    $(this).closest('.dropdown-menu').removeClass('show');
+                }
+            });
+
+            // Enhanced modal cleanup functionality
+            function cleanupModal(modalId) {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    // Remove any lingering backdrop
+                    const backdrops = document.querySelectorAll('.modal-backdrop');
+                    backdrops.forEach(backdrop => backdrop.remove());
+                    
+                    // Reset body classes and styles
+                    document.body.classList.remove('modal-open');
+                    document.body.style.overflow = '';
+                    document.body.style.paddingRight = '';
+                    
+                    // Reset modal classes
+                    modal.classList.remove('show');
+                    modal.style.display = 'none';
+                    modal.setAttribute('aria-hidden', 'true');
+                    modal.removeAttribute('aria-modal');
+                    
+                    // Reset form if it exists
+                    const form = modal.querySelector('form');
+                    if (form) {
+                        form.reset();
+                        // Remove validation classes
+                        const inputs = form.querySelectorAll('input, select, textarea');
+                        inputs.forEach(input => {
+                            input.classList.remove('is-valid', 'is-invalid');
+                        });
+                    }
+                }
+            }
+
+            // Make cleanup function globally available for external scripts
+            window.cleanupModal = cleanupModal;
+
+            // Auto-cleanup on modal hidden events
+            $('.modal').on('hidden.bs.modal', function () {
+                const modalId = this.id;
+                setTimeout(() => cleanupModal(modalId), 100);
+            });
+        });
     </script>
 
     <!-- optional page-specific scripts -->

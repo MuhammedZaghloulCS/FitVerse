@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using FitVerse.Core.IService;
 using FitVerse.Core.UnitOfWork;
 using FitVerse.Core.ViewModels.Plan;
@@ -96,37 +96,54 @@ namespace FitVerse.Service.Service
 
         public bool CreatePlan(ExercisePlanVM vm)
         {
-
             if (vm == null)
                 throw new ArgumentNullException(nameof(vm));
 
+            // Validate required fields
+            if (string.IsNullOrEmpty(vm.Name))
+                throw new ArgumentException("Plan name is required.");
+
+            if (string.IsNullOrEmpty(vm.CoachId))
+                throw new ArgumentException("Coach ID is required.");
+
+            if (string.IsNullOrEmpty(vm.ClientId))
+                throw new ArgumentException("Client ID is required.");
+
+            if (vm.DurationWeeks <= 0)
+                throw new ArgumentException("Duration must be greater than 0 weeks.");
+
             try
             {
+                // Validate that CoachId exists (if you have a coaches table)
+                // You might want to add this validation based on your database structure
+
                 var plan = new ExercisePlan
                 {
                     Name = vm.Name,
                     Notes = vm.Notes,
                     DurationWeeks = vm.DurationWeeks,
-                    CoachId = vm.CoachId?.ToString() ?? "default_coach_id",
-                    ClientId = vm.ClientId?.ToString() ?? "default_client_id",
+                    CoachId = vm.CoachId,
+                    ClientId = vm.ClientId,
                     Date = DateTime.Now
                 };
 
+                // Add exercise details if provided
                 if (vm.SelectedExerciseIds != null && vm.SelectedExerciseIds.Any())
                 {
                     plan.ExercisePlanDetails = vm.SelectedExerciseIds.Select(exId => new ExercisePlanDetail
                     {
                         ExerciseId = exId,
-                        NumOfSets = vm.DefaultSets,
-                        NumOfRepeats = vm.DefaultRepeats,
-                        Date = DateTime.Now
+                        NumOfSets = vm.DefaultSets > 0 ? vm.DefaultSets : 3,
+                        NumOfRepeats = vm.DefaultRepeats > 0 ? vm.DefaultRepeats : 10,
+                        Date = DateTime.Now,
+                        IsCompleted = false
                     }).ToList();
                 }
 
                 _db.ExercisePlans.Add(plan);
-                _db.Complete();
+                var result = _db.Complete();
 
-                return true;
+                return result > 0;
             }
             catch (Exception ex)
             {

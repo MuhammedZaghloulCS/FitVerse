@@ -1,4 +1,4 @@
-﻿$(document).ready(function () {
+$(document).ready(function () {
 
     // 🟢 تحميل جميع خطط الدايت عند تحميل الصفحة
     loadDietPlans();

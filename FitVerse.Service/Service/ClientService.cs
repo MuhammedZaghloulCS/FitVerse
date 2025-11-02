@@ -112,9 +112,15 @@ namespace FitVerse.Service.Service
         {
             var clients = unitOfWork.Clients
                 .Find(c => c.ClientSubscriptions.Any(cs => cs.CoachId == coachId))
+                .Select(x=> new ClientDashVM
+                {
+                    Id= x.Id,
+                    IsActive=x.User.Status=="Active",
+                    Name=x.User.FullName
+                })
                 .ToList();
 
-            return mapper.Map<List<ClientDashVM>>(clients);
+            return clients;
         }
 
         public (bool Success, string Message) UpdateClient(AddClientVM model)

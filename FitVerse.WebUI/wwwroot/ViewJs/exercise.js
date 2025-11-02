@@ -162,13 +162,13 @@ function loadExercisesPaged() {
             } else {
                 console.error('Invalid response format for exercises:', response);
                 container.html('<p class="text-center text-muted mt-3">Error loading exercises.</p>');
-                $('.pagination').empty();
+                $('#exercisePagination').empty();
                 return;
             }
 
             if (exercises.length === 0) {
                 container.html('<p class="text-center text-muted mt-3">No exercises found.</p>');
-                $('.pagination').empty();
+                $('#exercisePagination').empty();
                 return;
             }
 
@@ -179,45 +179,65 @@ function loadExercisesPaged() {
                 let description = item.Description || "No description available.";
                 let videoLink = item.VideoLink && item.VideoLink.trim() !== "" ? item.VideoLink : null;
 
+                // Truncate description for better display
+                let truncatedDescription = description.length > 120 ? description.substring(0, 120) + '...' : description;
+
                 container.append(`
-                    <div class="col-lg-4 col-md-6 mb-4">
-                        <div class="workout-card">
-                            <img src="${imageUrl}" alt="${item.Name}" class="workout-card-image">
-                            <div class="workout-card-body">
-                                <h5 class="workout-card-title mb-2">${item.Name}</h5>
-
-                                <div class="workout-card-meta mb-3">
-                                    <span class="badge-custom badge-primary">${muscleName}</span>
-                                    <span class="badge-custom badge-secondary">${equipmentName}</span>
-                                </div>
-
-                                <p class="text-muted small mb-3">${description}</p>
-
-                                <div class="mt-3 d-flex gap-2">
-                                    <button class="btn btn-sm btn-outline-primary flex-fill" onclick="getExerciseById(${item.Id})">
-                                        <i class="bi bi-pencil me-1"></i> Edit
-                            </button>
-                                    <button class="btn btn-sm btn-outline-danger flex-fill" onclick="deleteExercise(${item.Id})">
-                                        <i class="bi bi-trash me-1"></i> Delete
-                            </button>
-                                </div>
-
-                                <div class="mt-3">
-                                    ${videoLink
-                        ? `<a href="${videoLink}" target="_blank" class="btn btn-outline-custom btn-sm w-100">
-                                <i class="bi bi-play-circle me-2"></i> View Video
-                            </a>`
-                        : `<button class="btn btn-outline-custom btn-sm w-100" disabled>
-                                <i class="bi bi-play-circle me-2"></i> No Video
-                            </button>`}
+                    <div class="exercise-card" data-exercise-id="${item.Id}">
+                        <div class="exercise-card-header">
+                            <div class="exercise-card-image">
+                                <img src="${imageUrl}" alt="${item.Name}" onerror="this.src='/images/default-exercise.jpg'">
+                                <div class="exercise-card-overlay">
+                                    <div class="exercise-actions-quick">
+                                        ${videoLink ? `<a href="${videoLink}" target="_blank" class="quick-action-btn video-btn" title="Watch Video">
+                                            <i class="bi bi-play-circle-fill"></i>
+                                        </a>` : ''}
+                                    </div>
                                 </div>
                             </div>
+                            <div class="exercise-card-title-section">
+                                <h5 class="exercise-card-title">${item.Name}</h5>
+                                <div class="exercise-card-meta">
+                                    <div class="exercise-meta-item">
+                                        <i class="bi bi-person-arms-up"></i>
+                                        <span>${muscleName}</span>
+                                    </div>
+                                    <div class="exercise-meta-item">
+                                        <i class="bi bi-tools"></i>
+                                        <span>${equipmentName}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="exercise-card-body">
+                            <div class="exercise-description">
+                                ${truncatedDescription}
+                            </div>
+                        </div>
+
+                        <div class="exercise-card-actions">
+                            <button class="exercise-action-btn edit" onclick="getExerciseById(${item.Id})" title="Edit Exercise">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="exercise-action-btn view" onclick="viewExerciseDetails(${item.Id})" title="View Details">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            ${videoLink ? `<a href="${videoLink}" target="_blank" class="exercise-action-btn video" title="Watch Video">
+                                <i class="bi bi-play-circle"></i>
+                            </a>` : ''}
+                            <button class="exercise-action-btn delete" onclick="deleteExercise(${item.Id})" title="Delete Exercise">
+                                <i class="bi bi-trash"></i>
+                            </button>
                         </div>
                     </div>
                 `);
             });
 
             renderPagination(response.currentPage, response.totalPages);
+            
+            // Update exercise count
+            $('#exerciseCount').text(response.totalCount || exercises.length);
         },
         error: function (xhr) {
             console.error("Failed to load exercises.", xhr.responseText);
@@ -232,7 +252,7 @@ function loadExercisesPaged() {
 // Pagination
 // ==========================
 function renderPagination(currentPage, totalPages) {
-    const pagination = $('.pagination');
+    const pagination = $('#exercisePagination');
     pagination.empty();
 
     const prevDisabled = currentPage === 1 ? 'disabled' : '';
@@ -364,31 +384,8 @@ function deleteExercise(Id) {
                 }
             });
         }
-        else {
-            html = '<div class="text-center text-muted">No clients found.</div>';
-        }
     });
 }
-        
-
-
-    });
-        }  
-//else{
-//    html = '<div class="text-center text-muted">No clients found.</div>';
-//}
-
-//$('#allClientsContainer').html(html);
-//        },
-//error: function () {
-//    $('#allClientsContainer').html('<div class="text-center text-danger">Failed to load clients.</div>');
-//}
-//    });
-
-//$('#viewAllClientsModal').modal('show');
-//});
-
-
 
 
 function clearForm() {
@@ -398,6 +395,12 @@ function clearForm() {
     $('#equipmentId').val('');
     $('#videoLink').val('');
     $('#description').val('');
+}
+
+function viewExerciseDetails(id) {
+    // This function can be used to show exercise details in a modal or expand the card
+    // For now, it will trigger the edit function to maintain existing functionality
+    getExerciseById(id);
 }
 
 $('#viewAllClientsBtn').on('click', function () {

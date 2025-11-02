@@ -8,6 +8,7 @@ namespace FitVerse.Core.ViewModels.Client
 {
     public class ClientDashVM
     {
+        public string Id { get; set; }
         public string Name { get; set; }
       
         public bool IsActive { get; set; }
