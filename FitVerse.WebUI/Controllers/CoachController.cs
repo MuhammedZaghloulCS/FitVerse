@@ -127,10 +127,9 @@ namespace FitVerse.Web.Controllers
         [HttpGet]
         public IActionResult GetAllClients()
         {
-            //var coachId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            string coachId = "C1";// Coach logged in ID
+            var coachId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            var clients = unitOFWorkService.CoachRepository.GetAllClientsByCoach(coachId);
+            var clients = unitOFWorkService.CoachRepository.GetAllClientsByCoach(coachId.ToString());
 
             return Json(new { data = clients });
         }
