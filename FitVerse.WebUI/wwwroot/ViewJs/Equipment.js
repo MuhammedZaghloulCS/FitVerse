@@ -1,30 +1,47 @@
 ﻿$(document).ready(function () {
 
     // ==============================
-    // 🌟 1. تحميل الإحصائيات
+    // 🌟 1. Load Statistics
     // ==============================
     function loadStats() {
         $.get('/Equipment/GetTotalCountEquipment', function (res) {
-            if (res.totalCount !== undefined)
+            if (res.totalCount !== undefined) {
                 $('#totalEquipmentCount').text(res.totalCount);
+            }
+        }).fail(function () {
+            $('#totalEquipmentCount').text('0');
         });
 
         $.get('/Equipment/GetTotalCountExercise', function (res) {
-            if (res.totalCount !== undefined)
+            if (res.totalCount !== undefined) {
                 $('#totalExerciseCount').text(res.totalCount);
+            }
+        }).fail(function () {
+            $('#totalExerciseCount').text('0');
         });
     }
 
     // ==============================
-    // 🌟 2. تحميل المعدات (بدون pagination)
+    // 🌟 2. Load Equipment
     // ==============================
     let currentSearch = "";
 
     function loadEquipment(searchTerm = "") {
+        // Show loading spinner
+        $('#equipmentContainer').html(`
+            <div class="col-12">
+                <div class="loading-spinner text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        `);
+
         $.ajax({
             url: '/Equipment/GetAll',
             method: 'GET',
-            data: { search: searchTerm  },
+            data: { search: searchTerm },
             success: function (res) {
                 $('#equipmentContainer').empty();
 
@@ -34,45 +51,93 @@
                             ? (item.ImagePath.startsWith('/Images/') ? item.ImagePath : '/Images/' + item.ImagePath) + '?t=' + new Date().getTime()
                             : '/Images/default.jpg';
 
-                        //let imgSrc = item.imagePath ? item.imagePath : '/Images/default.jpg';
                         $('#equipmentContainer').append(`
-                        <div class="col-lg-3 col-md-4 col-sm-6">
-                            <div class="card-custom text-center p-3 shadow-sm">
-                                <img src="${imgSrc}" 
-                                     class="rounded mb-3" 
-                                     style="height:100px;object-fit:cover;">
-                                <h5 class="fw-bold mb-2">${item.Name}</h5>
-                                
-                                <div class="d-flex gap-2">
-                                    <button class="btn btn-outline-custom btn-sm flex-grow-1 editEquipmentBtn" data-id="${item.Id}">
-                                        <i class="bi bi-pencil"></i> Edit
-                                    </button>
-                                    <button class="btn btn-danger-custom btn-sm deleteEquipmentBtn" data-id="${item.Id}">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
+                            <div class="col-lg-3 col-md-4 col-sm-6">
+                                <div class="equipment-card">
+                                    <div class="equipment-image-wrapper">
+                                        <img src="${imgSrc}" 
+                                             alt="${item.Name}"
+                                             class="equipment-image">
+                                    </div>
+                                    <h5 class="equipment-name">${item.Name}</h5>
+                                    <div class="equipment-actions">
+                                        <button class="btn-action btn-action-edit editEquipmentBtn" 
+                                                data-id="${item.Id}">
+                                            <i class="bi bi-pencil me-1"></i> Edit
+                                        </button>
+                                        <button class="btn-action btn-action-delete deleteEquipmentBtn" 
+                                                data-id="${item.Id}"
+                                                title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
                                 </div>
+                            </div>
+                        `);
+                    });
+                } else {
+                    $('#equipmentContainer').html(`
+                        <div class="col-12">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">
+                                    <i class="bi bi-inbox"></i>
+                                </div>
+                                <h3 class="empty-state-title">No Equipment Found</h3>
+                                <p class="empty-state-text">
+                                    ${searchTerm ? 'Try adjusting your search criteria' : 'Start by adding your first equipment'}
+                                </p>
                             </div>
                         </div>
                     `);
-                    });
-                } else {
-                    $('#equipmentContainer').html('<div class="text-center text-muted py-5">No equipment found.</div>');
                 }
             },
             error: function () {
-                Swal.fire('Error', 'Failed to load equipment data.', 'error');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to load equipment data.',
+                    confirmButtonColor: '#6366f1'
+                });
+                $('#equipmentContainer').html(`
+                    <div class="col-12">
+                        <div class="empty-state">
+                            <div class="empty-state-icon text-danger">
+                                <i class="bi bi-exclamation-triangle"></i>
+                            </div>
+                            <h3 class="empty-state-title">Error Loading Data</h3>
+                            <p class="empty-state-text">Please try refreshing the page</p>
+                        </div>
+                    </div>
+                `);
             }
         });
     }
 
+    // ==============================
+    // 🌟 3. Add New Equipment
+    // ==============================
+    $('#openAddModal').click(function () {
+        $('#equipmentForm')[0].reset();
+        $('#addImagePreviewWrapper').hide();
+        $('#addEquipmentModal').modal('show');
+    });
 
-    // ==============================
-    // 🌟 3. إضافة معدة جديدة
-    // ==============================
     $('#saveEquipmentBtn').click(function () {
-        console.log("✅ Add button clicked");
+        const name = $('#equipmentName').val().trim();
+
+        if (!name) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Missing Information',
+                text: 'Please enter equipment name',
+                confirmButtonColor: '#6366f1'
+            });
+            return;
+        }
+
         let formData = new FormData();
-        formData.append("Name", $('#equipmentName').val());
+        formData.append("Name", name);
+
         if ($('#equipmentImage')[0].files[0]) {
             formData.append("EquipmentImageFile", $('#equipmentImage')[0].files[0]);
         }
@@ -83,51 +148,119 @@
             data: formData,
             contentType: false,
             processData: false,
-            beforeSend: () => Swal.showLoading(),
+            beforeSend: function () {
+                Swal.fire({
+                    title: 'Saving...',
+                    text: 'Please wait',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+            },
             success: function (res) {
                 Swal.close();
                 if (res.success) {
-                    Swal.fire('Success', res.message, 'success');
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: res.message,
+                        confirmButtonColor: '#6366f1',
+                        timer: 2000
+                    });
                     $('#addEquipmentModal').modal('hide');
                     $('#equipmentForm')[0].reset();
-                    $('#addImagePreview').hide();
-                    loadEquipment();
+                    $('#addImagePreviewWrapper').hide();
+                    loadEquipment(currentSearch);
                     loadStats();
                 } else {
-                    Swal.fire('Error', res.message, 'error');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: res.message,
+                        confirmButtonColor: '#6366f1'
+                    });
                 }
             },
-            error: () => Swal.fire('Error', 'Server error while adding equipment.', 'error')
-        });
-    });
-
-    // ==============================
-    // 🌟 4. فتح مودال التعديل
-    // ==============================
-    $(document).on('click', '.editEquipmentBtn', function () {
-        let id = $(this).data('id');
-        $.get(`/Equipment/GetById/${id}`, function (res) {
-            if (res.success) {
-                $('#editEquipmentName').val(res.data.Name);
-                let newSrc = res.data.ImagePath + '?t=' + new Date().getTime();
-                $('#currentEquipmentImage').attr('src', newSrc);
-
-                $('#editSaveBtn').data('id', res.data.Id);
-                $('#editEquipmentModal').modal('show');
-            } else {
-                Swal.fire('Error', res.message, 'error');
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Server Error',
+                    text: 'Failed to add equipment. Please try again.',
+                    confirmButtonColor: '#6366f1'
+                });
             }
         });
     });
 
     // ==============================
-    // 🌟 5. حفظ التعديل
+    // 🌟 4. Open Edit Modal
+    // ==============================
+    $(document).on('click', '.editEquipmentBtn', function () {
+        let id = $(this).data('id');
+
+        Swal.fire({
+            title: 'Loading...',
+            text: 'Please wait',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        $.get(`/Equipment/GetById/${id}`, function (res) {
+            Swal.close();
+            if (res.success) {
+                $('#editEquipmentName').val(res.data.Name);
+
+                let imgSrc = res.data.ImagePath
+                    ? (res.data.ImagePath.startsWith('/Images/') ? res.data.ImagePath : '/Images/' + res.data.ImagePath) + '?t=' + new Date().getTime()
+                    : '/Images/default.jpg';
+
+                $('#currentEquipmentImage').attr('src', imgSrc);
+                $('#editImagePreviewWrapper').hide();
+                $('#editEquipmentImage').val('');
+                $('#editSaveBtn').data('id', res.data.Id);
+                $('#editEquipmentModal').modal('show');
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: res.message,
+                    confirmButtonColor: '#6366f1'
+                });
+            }
+        }).fail(function () {
+            Swal.close();
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to load equipment data',
+                confirmButtonColor: '#6366f1'
+            });
+        });
+    });
+
+    // ==============================
+    // 🌟 5. Save Edit
     // ==============================
     $('#editSaveBtn').click(function () {
-        let id = $(this).data('id');
+        const id = $(this).data('id');
+        const name = $('#editEquipmentName').val().trim();
+
+        if (!name) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Missing Information',
+                text: 'Please enter equipment name',
+                confirmButtonColor: '#6366f1'
+            });
+            return;
+        }
+
         let formData = new FormData();
         formData.append("Id", id);
-        formData.append("Name", $('#editEquipmentName').val());
+        formData.append("Name", name);
 
         if ($('#editEquipmentImage')[0].files[0]) {
             formData.append("EquipmentImageFile", $('#editEquipmentImage')[0].files[0]);
@@ -139,93 +272,142 @@
             data: formData,
             contentType: false,
             processData: false,
-            beforeSend: () => Swal.showLoading(),
+            beforeSend: function () {
+                Swal.fire({
+                    title: 'Updating...',
+                    text: 'Please wait',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+            },
             success: function (res) {
                 Swal.close();
                 if (res.success) {
-                    Swal.fire('Updated', res.message, 'success');
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Updated!',
+                        text: res.message,
+                        confirmButtonColor: '#6366f1',
+                        timer: 2000
+                    });
                     $('#editEquipmentModal').modal('hide');
-
-                    // ✅ إعادة تحميل الكاردات مع منع الكاش
-                    loadEquipment();
-
-                    // ✅ تحديث الصورة الحالية في المودال لو محتاج
-                    let imgSrc = res.data.ImagePath
-                        ? (res.data.ImagePath.startsWith('/Images/') ? res.data.ImagePath : '/Images/' + res.data.ImagePath) + '?t=' + new Date().getTime()
-                        : '/Images/default.jpg';
-                    $('#currentEquipmentImage').attr('src', imgSrc);
-
+                    loadEquipment(currentSearch);
                 } else {
-                    Swal.fire('Error', res.message, 'error');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: res.message,
+                        confirmButtonColor: '#6366f1'
+                    });
                 }
             },
-            error: () => Swal.fire('Error', 'Server error while updating.', 'error')
-        });
-    });
-
-
-    // ==============================
-    // 🌟 6. حذف معدة
-    // ==============================
-    $(document).on('click', '.deleteEquipmentBtn', function () {
-        let id = $(this).data('id');
-
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You are about to delete this equipment!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, delete it!'
-        }).then(result => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: `/Equipment/Delete/${id}`,
-                    type: 'DELETE',
-                    success: function (res) {
-                        if (res.success) {
-                            Swal.fire('Deleted!', res.message, 'success');
-                            loadEquipment();
-                            loadStats();
-                        } else {
-                            Swal.fire('Error', res.message, 'error');
-                        }
-                    },
-                    error: () => Swal.fire('Error', 'Server error while deleting.', 'error')
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Server Error',
+                    text: 'Failed to update equipment. Please try again.',
+                    confirmButtonColor: '#6366f1'
                 });
             }
         });
     });
 
     // ==============================
-    // 🌟 7. البحث
+    // 🌟 6. Delete Equipment
     // ==============================
-    $('.btn-outline-custom').click(function () {
-        currentSearch = $('.form-control-custom').val();
-        loadEquipment();
-    });
+    $(document).on('click', '.deleteEquipmentBtn', function () {
+        let id = $(this).data('id');
 
-    $('.form-control-custom').on('keyup', function (e) {
-        if (e.key === 'Enter') {
-            currentSearch = $(this).val();
-            loadEquipment();
-        }
-    });
-    $(document).ready(function () {
-        // ✅ زرار فتح مودال الإضافة
-        $('#openAddModal').click(function () {
-            console.log("✅ فتح مودال الإضافة");
-            $('#addEquipmentModal').modal('show');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        }).then(result => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `/Equipment/Delete/${id}`,
+                    type: 'DELETE',
+                    beforeSend: function () {
+                        Swal.fire({
+                            title: 'Deleting...',
+                            text: 'Please wait',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+                    },
+                    success: function (res) {
+                        Swal.close();
+                        if (res.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Deleted!',
+                                text: res.message,
+                                confirmButtonColor: '#6366f1',
+                                timer: 2000
+                            });
+                            loadEquipment(currentSearch);
+                            loadStats();
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: res.message,
+                                confirmButtonColor: '#6366f1'
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Server Error',
+                            text: 'Failed to delete equipment. Please try again.',
+                            confirmButtonColor: '#6366f1'
+                        });
+                    }
+                });
+            }
         });
     });
+
+    // ==============================
+    // 🌟 7. Search Functionality
+    // ==============================
     $('#searchEquipment').on('input', function () {
         let term = $(this).val().trim();
-        loadEquipment(term);
+        currentSearch = term;
+
+        // Debounce search
+        clearTimeout(window.searchTimeout);
+        window.searchTimeout = setTimeout(function () {
+            loadEquipment(term);
+        }, 300);
     });
 
     // ==============================
-    // 🌟 8. عند فتح الصفحة
+    // 🌟 8. Modal Cleanup
+    // ==============================
+    $('#addEquipmentModal').on('hidden.bs.modal', function () {
+        $('#equipmentForm')[0].reset();
+        $('#addImagePreviewWrapper').hide();
+    });
+
+    $('#editEquipmentModal').on('hidden.bs.modal', function () {
+        $('#editEquipmentForm')[0].reset();
+        $('#editImagePreviewWrapper').hide();
+    });
+
+    // ==============================
+    // 🌟 9. Initialize Page
     // ==============================
     loadEquipment();
     loadStats();
-
 });

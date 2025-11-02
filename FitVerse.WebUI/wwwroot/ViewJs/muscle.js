@@ -10,15 +10,22 @@ let currentSearch = '';
 // ==========================
 $(document).ready(function () {
     loadMusclePaged();
-    loadAnatomyGroups(); // للـ Add Modal
-    loadStats(); 
-    // Search handler
+    loadAnatomyGroups(); // For Add Modal
+    loadAnatomyFilter(); // For Filter Dropdown
+    loadStats();
+
+    // Search handler with debounce
+    let searchTimeout;
     $('#searchMuscle').on('input', function () {
-        currentSearch = $(this).val().trim();
-        currentPage = 1;
-        loadMusclePaged();
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(function () {
+            currentSearch = $('#searchMuscle').val().trim();
+            currentPage = 1;
+            loadMusclePaged();
+        }, 300);
     });
-    //filter handler
+
+    // Filter handler
     $('#anatomyFilter').on('change', function () {
         currentPage = 1;
         loadMusclePaged();
@@ -31,6 +38,17 @@ $(document).ready(function () {
 function loadMusclePaged() {
     let anatomyFilter = $('#anatomyFilter').val();
 
+    const tbody = $('#Data');
+    tbody.html(`
+        <tr>
+            <td colspan="4" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </td>
+        </tr>
+    `);
+
     $.ajax({
         url: '/Muscle/GetPaged',
         method: 'GET',
@@ -41,74 +59,144 @@ function loadMusclePaged() {
             anatomyId: anatomyFilter
         },
         success: function (response) {
-            const tbody = $('#Data');
             tbody.empty();
-
             const data = response.Data || [];
 
             if (!Array.isArray(data)) {
-                swal("Error", "Invalid data format returned from server.", "error");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Invalid data format returned from server.',
+                    confirmButtonColor: '#6366f1'
+                });
                 console.error("Response:", response);
                 return;
             }
 
-            data.forEach(item => {
-                tbody.append(`
+            if (data.length === 0) {
+                tbody.html(`
                     <tr>
-                        <td>${item.Name}</td>
-                        <td>${item.AnatomyName || 'Unknown'}</td>
-                        <td>${item.ExerciseCount || 0} exercises</td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary me-2"
-                                    data-id="${item.Id}"
-                                    data-name="${encodeURIComponent(item.Name)}"
-                                    data-description="${encodeURIComponent(item.Description || '')}"
-                                    data-anatomy="${item.AnatomyId}"
-                                    onclick="openEditFromBtn(this)">
-                                <i class="bi bi-pencil"></i> Edit
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger"
-                                    onclick="deleteMuscle(${item.Id})">
-                                <i class="bi bi-trash"></i> Delete
-                            </button>
+                        <td colspan="4" class="empty-row">
+                            <i class="bi bi-inbox" style="font-size: 3rem; color: #cbd5e1;"></i>
+                            <div class="mt-2">
+                                <strong>No muscles found</strong><br>
+                                <small class="text-muted">
+                                    ${currentSearch ? 'Try adjusting your search criteria' : 'Start by adding your first muscle'}
+                                </small>
+                            </div>
                         </td>
                     </tr>
                 `);
-            });
+            } else {
+                data.forEach(item => {
+                    tbody.append(`
+                        <tr>
+                            <td><strong>${item.Name}</strong></td>
+                            <td>
+                                <span class="badge-count">
+                                    <i class="bi bi-person-arms-up me-1"></i>
+                                    ${item.AnatomyName || 'Unknown'}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge-count">
+                                    <i class="bi bi-lightning me-1"></i>
+                                    ${item.ExerciseCount || 0} exercises
+                                </span>
+                            </td>
+                            <td class="text-end">
+                                <button class="btn-table-edit me-2"
+                                        data-id="${item.Id}"
+                                        data-name="${encodeURIComponent(item.Name)}"
+                                        data-description="${encodeURIComponent(item.Description || '')}"
+                                        data-anatomy="${item.AnatomyId}"
+                                        onclick="openEditFromBtn(this)">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </button>
+                                <button class="btn-table-delete"
+                                        onclick="deleteMuscle(${item.Id})">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
+                            </td>
+                        </tr>
+                    `);
+                });
+            }
 
             renderPagination(response.CurrentPage || 1, response.TotalPages || 1);
         },
         error: function () {
-            swal("Error", "Failed to load muscles!", "error");
+            tbody.html(`
+                <tr>
+                    <td colspan="4" class="empty-row text-danger">
+                        <i class="bi bi-exclamation-triangle" style="font-size: 3rem;"></i>
+                        <div class="mt-2">
+                            <strong>Failed to load muscles</strong><br>
+                            <small>Please try refreshing the page</small>
+                        </div>
+                    </td>
+                </tr>
+            `);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to load muscles!',
+                confirmButtonColor: '#6366f1'
+            });
         }
     });
 }
-
 
 // ==========================
 // Pagination
 // ==========================
 function renderPagination(currentPage, totalPages) {
-    const pagination = $('.pagination');
+    const pagination = $('.pagination-modern');
     pagination.empty();
+
+    if (totalPages <= 1) return;
 
     const prevDisabled = currentPage === 1 ? 'disabled' : '';
     const nextDisabled = currentPage === totalPages ? 'disabled' : '';
 
-    pagination.append(`<li class="page-item ${prevDisabled}"><a class="page-link" href="#" onclick="changePage(${currentPage - 1})">Previous</a></li>`);
+    // Previous button
+    pagination.append(`
+        <li class="page-item ${prevDisabled}">
+            <a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;">
+                <i class="bi bi-chevron-left"></i>
+            </a>
+        </li>
+    `);
 
+    // Page numbers
     for (let i = 1; i <= totalPages; i++) {
         const active = i === currentPage ? 'active' : '';
-        pagination.append(`<li class="page-item ${active}"><a class="page-link" href="#" onclick="changePage(${i})">${i}</a></li>`);
+        pagination.append(`
+            <li class="page-item ${active}">
+                <a class="page-link" href="#" onclick="changePage(${i}); return false;">${i}</a>
+            </li>
+        `);
     }
 
-    pagination.append(`<li class="page-item ${nextDisabled}"><a class="page-link" href="#" onclick="changePage(${currentPage + 1})">Next</a></li>`);
+    // Next button
+    pagination.append(`
+        <li class="page-item ${nextDisabled}">
+            <a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;">
+                <i class="bi bi-chevron-right"></i>
+            </a>
+        </li>
+    `);
 }
 
 function changePage(page) {
     if (page < 1) return;
     currentPage = page;
     loadMusclePaged();
+
+    // Scroll to top of table
+    $('html, body').animate({
+        scrollTop: $('.card-modern').offset().top - 100
+    }, 300);
 }
 
 // ==========================
@@ -119,9 +207,9 @@ function loadAnatomyGroups(selectId = '#AnatomyGroup', selectedId = null) {
         url: '/Muscle/GetAnatomyGroups',
         method: 'GET',
         success: function (response) {
-            // تحقق أن Data موجودة ومصفوفة
             if (!response || !response.Data || !Array.isArray(response.Data)) {
                 console.error("Invalid data format returned from server.", response);
+                $(selectId).html('<option value="">Failed to load</option>');
                 return;
             }
 
@@ -136,6 +224,27 @@ function loadAnatomyGroups(selectId = '#AnatomyGroup', selectedId = null) {
         },
         error: function () {
             $(selectId).html('<option value="">Failed to load</option>');
+        }
+    });
+}
+
+// Load Anatomy for Filter Dropdown
+function loadAnatomyFilter() {
+    $.ajax({
+        url: '/Muscle/GetAnatomyGroups',
+        method: 'GET',
+        success: function (response) {
+            if (!response || !response.Data || !Array.isArray(response.Data)) {
+                return;
+            }
+
+            const select = $('#anatomyFilter');
+            select.empty();
+            select.append('<option value="">All Body Parts</option>');
+
+            response.Data.forEach(item => {
+                select.append(`<option value="${item.Id}">${item.Name}</option>`);
+            });
         }
     });
 }
@@ -166,90 +275,206 @@ function addMuscle() {
     const anatomyId = $('#AnatomyGroup').val();
 
     if (!name || !anatomyId) {
-        swal("Error", "Please enter a name and select a body part.", "error");
+        Swal.fire({
+            icon: 'warning',
+            title: 'Missing Information',
+            text: 'Please enter a name and select a body part.',
+            confirmButtonColor: '#6366f1'
+        });
         return;
     }
 
-    $.post('/Muscle/Create', { Name: name, Description: description, AnatomyId: anatomyId }, function (response) {
-        console.log("Response:", response);
-
-        const success = response.success ?? response.Success;
-        const message = response.message ?? response.Message;
-
-        if (success) {
-            swal("Added!", message || "Muscle added successfully!", "success");
-            $('#addMuscleModal').modal('hide');
-            $('#addMuscleForm')[0].reset();
-            loadMusclePaged();
-            loadStats();
-        } else {
-            swal("Error", message || "Something went wrong!", "error");
+    Swal.fire({
+        title: 'Saving...',
+        text: 'Please wait',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
         }
     });
 
-}
+    $.post('/Muscle/Create',
+        { Name: name, Description: description, AnatomyId: anatomyId },
+        function (response) {
+            Swal.close();
+            const success = response.success ?? response.Success;
+            const message = response.message ?? response.Message;
 
+            if (success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: message || 'Muscle added successfully!',
+                    confirmButtonColor: '#6366f1',
+                    timer: 2000
+                });
+                $('#addMuscleModal').modal('hide');
+                $('#addMuscleForm')[0].reset();
+                loadMusclePaged();
+                loadStats();
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: message || 'Something went wrong!',
+                    confirmButtonColor: '#6366f1'
+                });
+            }
+        }
+    ).fail(function () {
+        Swal.fire({
+            icon: 'error',
+            title: 'Server Error',
+            text: 'Failed to add muscle. Please try again.',
+            confirmButtonColor: '#6366f1'
+        });
+    });
+}
 
 function updateMuscle() {
     const id = $('#editMuscleId').val();
-    const name = $('#editName').val();
-    const description = $('#editDescription').val();
+    const name = $('#editName').val().trim();
+    const description = $('#editDescription').val().trim();
     const anatomyId = $('#editAnatomyGroup').val();
 
     if (!name || !anatomyId) {
-        swal("Error", "Name and Anatomy Group are required!", "error");
+        Swal.fire({
+            icon: 'warning',
+            title: 'Missing Information',
+            text: 'Name and Body Part are required!',
+            confirmButtonColor: '#6366f1'
+        });
         return;
     }
+
+    Swal.fire({
+        title: 'Updating...',
+        text: 'Please wait',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
 
     $.post('/Muscle/Update',
         { Id: id, Name: name, Description: description, AnatomyId: anatomyId },
         function (response) {
-            if (response.Success) {
-                swal("Updated!", response.Message || "Updated successfully!", "success");
+            Swal.close();
+            const success = response.Success ?? response.success;
+            const message = response.Message ?? response.message;
+
+            if (success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Updated!',
+                    text: message || 'Updated successfully!',
+                    confirmButtonColor: '#6366f1',
+                    timer: 2000
+                });
                 $('#editMuscleModal').modal('hide');
                 loadMusclePaged();
                 loadStats();
             } else {
-                swal("Error", response.Message || "Something went wrong!", "error");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: message || 'Something went wrong!',
+                    confirmButtonColor: '#6366f1'
+                });
             }
         }
-    );
-
+    ).fail(function () {
+        Swal.fire({
+            icon: 'error',
+            title: 'Server Error',
+            text: 'Failed to update muscle. Please try again.',
+            confirmButtonColor: '#6366f1'
+        });
+    });
 }
 
 function deleteMuscle(id) {
-    swal({
-        title: "Are you sure?",
-        text: "Once deleted, you will not be able to recover this muscle!",
-        icon: "warning",
-        buttons: true,
-        dangerMode: true
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
     }).then(willDelete => {
-        if (willDelete) {
+        if (willDelete.isConfirmed) {
+            Swal.fire({
+                title: 'Deleting...',
+                text: 'Please wait',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
             $.post('/Muscle/Delete', { id }, function (response) {
+                Swal.close();
                 if (response.success) {
-                    swal("Deleted!", response.message, "success");
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: response.message,
+                        confirmButtonColor: '#6366f1',
+                        timer: 2000
+                    });
                     loadMusclePaged();
                     loadStats();
                 } else {
-                    swal("Error", response.message, "error");
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: response.message,
+                        confirmButtonColor: '#6366f1'
+                    });
                 }
+            }).fail(function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Server Error',
+                    text: 'Failed to delete muscle. Please try again.',
+                    confirmButtonColor: '#6366f1'
+                });
             });
         }
     });
 }
+
+// ==========================
+// Load Statistics
+// ==========================
 function loadStats() {
     $.ajax({
         url: '/Muscle/GetStats',
         method: 'GET',
         success: function (response) {
-            $('.stat-card .stat-value').eq(0).text(response.TotalMuscles);
-            $('.stat-card .stat-value').eq(1).text(response.TotalAnatomyGroups);
-            $('.stat-card .stat-value').eq(2).text(response.TotalExercises);
+            $('#totalMuscles').text(response.TotalMuscles || 0);
+            $('#totalBodyParts').text(response.TotalAnatomyGroups || 0);
+            $('#totalExercises').text(response.TotalExercises || 0);
         },
         error: function () {
             console.error("Failed to load stats");
+            // Set to 0 if fails
+            $('#totalMuscles').text('0');
+            $('#totalBodyParts').text('0');
+            $('#totalExercises').text('0');
         }
     });
 }
 
+// ==========================
+// Modal Cleanup
+// ==========================
+$('#addMuscleModal').on('hidden.bs.modal', function () {
+    $('#addMuscleForm')[0].reset();
+});
+
+$('#editMuscleModal').on('hidden.bs.modal', function () {
+    $('#editMuscleForm')[0].reset();
+});

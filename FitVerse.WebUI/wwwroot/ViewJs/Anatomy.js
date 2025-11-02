@@ -1,10 +1,22 @@
-﻿
+﻿$(document).ready(function () {
 
-$(document).ready(function () {
-
- 
+    // ==============================
+    // 🌟 1. Load Anatomy Data
+    // ==============================
+    let currentSearch = "";
 
     function loadAnatomy(searchTerm = "") {
+        // Show loading spinner
+        $('#anatomyContainer').html(`
+            <div class="col-12">
+                <div class="loading-spinner text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        `);
+
         $.ajax({
             url: '/Anatomy/GetAll',
             method: 'GET',
@@ -18,45 +30,87 @@ $(document).ready(function () {
                             ? (item.ImagePath.startsWith('/Images/') ? item.ImagePath : '/Images/' + item.ImagePath) + '?t=' + new Date().getTime()
                             : '/Images/default.jpg';
 
-                        //let imgSrc = item.imagePath ? item.imagePath : '/Images/default.jpg';
                         $('#anatomyContainer').append(`
-                        <div class="col-lg-3 col-md-4 col-sm-6">
-                            <div class="card-custom text-center p-3 shadow-sm">
-                                <img src="${imgSrc}" 
-                                     class="rounded mb-3" 
-                                     style="height:100px;object-fit:cover;">
-                                <h5 class="fw-bold mb-2">${item.Name}</h5>
-                                
-                                <div class="d-flex gap-2">
-                                    <button class="btn btn-outline-custom btn-sm flex-grow-1 editAnatomyBtn" data-id="${item.Id}">
-                                        <i class="bi bi-pencil"></i> Edit
-                                    </button>
-                                    <button class="btn btn-danger-custom btn-sm deleteAnatomyBtn" data-id="${item.Id}">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
+                            <div class="col-lg-3 col-md-4 col-sm-6">
+                                <div class="anatomy-card">
+                                    <div class="anatomy-image-wrapper">
+                                        <img src="${imgSrc}" 
+                                             alt="${item.Name}"
+                                             class="anatomy-image">
+                                    </div>
+                                    <h5 class="anatomy-name">${item.Name}</h5>
+                                    <div class="anatomy-actions">
+                                        <button class="btn-action btn-action-edit editAnatomyBtn" 
+                                                data-id="${item.Id}">
+                                            <i class="bi bi-pencil me-1"></i> Edit
+                                        </button>
+                                        <button class="btn-action btn-action-delete deleteAnatomyBtn" 
+                                                data-id="${item.Id}"
+                                                title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
                                 </div>
+                            </div>
+                        `);
+                    });
+                } else {
+                    $('#anatomyContainer').html(`
+                        <div class="col-12">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">
+                                    <i class="bi bi-inbox"></i>
+                                </div>
+                                <h3 class="empty-state-title">No Body Parts Found</h3>
+                                <p class="empty-state-text">
+                                    ${searchTerm ? 'Try adjusting your search criteria' : 'Start by adding your first body part'}
+                                </p>
                             </div>
                         </div>
                     `);
-                    });
-                } else {
-                    $('#anatomyContainer').html('<div class="text-center text-muted py-5">No anatomy found.</div>');
                 }
             },
             error: function () {
-                Swal.fire('Error', 'Failed to load anatomy data.', 'error');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to load anatomy data.',
+                    confirmButtonColor: '#6366f1'
+                });
+                $('#anatomyContainer').html(`
+                    <div class="col-12">
+                        <div class="empty-state">
+                            <div class="empty-state-icon text-danger">
+                                <i class="bi bi-exclamation-triangle"></i>
+                            </div>
+                            <h3 class="empty-state-title">Error Loading Data</h3>
+                            <p class="empty-state-text">Please try refreshing the page</p>
+                        </div>
+                    </div>
+                `);
             }
         });
     }
 
-
     // ==============================
-    // 🌟 3. إضافة معدة جديدة
+    // 🌟 2. Add New Anatomy
     // ==============================
     $('#saveAnatomyBtn').click(function () {
-        console.log("✅ Add button clicked");
+        const name = $('#Name').val().trim();
+
+        if (!name) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Missing Information',
+                text: 'Please enter body part name',
+                confirmButtonColor: '#6366f1'
+            });
+            return;
+        }
+
         let formData = new FormData();
-        formData.append("Name", $('#Name').val());
+        formData.append("Name", name);
+
         if ($('#Image')[0].files[0]) {
             formData.append("ImageFile", $('#Image')[0].files[0]);
         }
@@ -67,51 +121,123 @@ $(document).ready(function () {
             data: formData,
             contentType: false,
             processData: false,
-            beforeSend: () => Swal.showLoading(),
+            beforeSend: function () {
+                Swal.fire({
+                    title: 'Saving...',
+                    text: 'Please wait',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+            },
             success: function (res) {
                 Swal.close();
                 if (res.success) {
-                    Swal.fire('Success', res.message, 'success');
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: res.message,
+                        confirmButtonColor: '#6366f1',
+                        timer: 2000
+                    });
                     $('#addAnatomyModal').modal('hide');
                     $('#anatomyForm')[0].reset();
-                    $('#addImagePreview').hide();
-                    loadEquipment();
-                    loadStats();
+                    $('#addImagePreviewWrapper').hide();
+                    loadAnatomy(currentSearch);
+
+                    // Reload page to update stats
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
                 } else {
-                    Swal.fire('Error', res.message, 'error');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: res.message,
+                        confirmButtonColor: '#6366f1'
+                    });
                 }
             },
-            error: () => Swal.fire('Error', 'Server error while adding anatomy.', 'error')
-        });
-    });
-
-    // ==============================
-    // 🌟 4. فتح مودال التعديل
-    // ==============================
-    $(document).on('click', '.editAnatomyBtn', function () {
-        let id = $(this).data('id');
-        $.get(`/Anatomy/GetById/${id}`, function (res) {
-            if (res.success) {
-                $('#editAnatomyName').val(res.data.Name);
-                let newSrc = res.data.ImagePath + '?t=' + new Date().getTime();
-                $('#currentAnatomyImage').attr('src', newSrc);
-
-                $('#editSaveBtn').data('id', res.data.Id);
-                $('#editAnatomyModal').modal('show');
-            } else {
-                Swal.fire('Error', res.message, 'error');
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Server Error',
+                    text: 'Failed to add body part. Please try again.',
+                    confirmButtonColor: '#6366f1'
+                });
             }
         });
     });
 
     // ==============================
-    // 🌟 5. حفظ التعديل
+    // 🌟 3. Open Edit Modal
+    // ==============================
+    $(document).on('click', '.editAnatomyBtn', function () {
+        let id = $(this).data('id');
+
+        Swal.fire({
+            title: 'Loading...',
+            text: 'Please wait',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        $.get(`/Anatomy/GetById/${id}`, function (res) {
+            Swal.close();
+            if (res.success) {
+                $('#editAnatomyName').val(res.data.Name);
+
+                let imgSrc = res.data.ImagePath
+                    ? (res.data.ImagePath.startsWith('/Images/') ? res.data.ImagePath : '/Images/' + res.data.ImagePath) + '?t=' + new Date().getTime()
+                    : '/Images/default.jpg';
+
+                $('#currentAnatomyImage').attr('src', imgSrc);
+                $('#editImagePreviewWrapper').hide();
+                $('#editAnatomyImage').val('');
+                $('#editSaveBtn').data('id', res.data.Id);
+                $('#editAnatomyModal').modal('show');
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: res.message,
+                    confirmButtonColor: '#6366f1'
+                });
+            }
+        }).fail(function () {
+            Swal.close();
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to load anatomy data',
+                confirmButtonColor: '#6366f1'
+            });
+        });
+    });
+
+    // ==============================
+    // 🌟 4. Save Edit
     // ==============================
     $('#editSaveBtn').click(function () {
-        let id = $(this).data('id');
+        const id = $(this).data('id');
+        const name = $('#editAnatomyName').val().trim();
+
+        if (!name) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Missing Information',
+                text: 'Please enter body part name',
+                confirmButtonColor: '#6366f1'
+            });
+            return;
+        }
+
         let formData = new FormData();
         formData.append("Id", id);
-        formData.append("Name", $('#editAnatomyName').val());
+        formData.append("Name", name);
 
         if ($('#editAnatomyImage')[0].files[0]) {
             formData.append("ImageFile", $('#editAnatomyImage')[0].files[0]);
@@ -123,97 +249,145 @@ $(document).ready(function () {
             data: formData,
             contentType: false,
             processData: false,
-            beforeSend: () => Swal.showLoading(),
+            beforeSend: function () {
+                Swal.fire({
+                    title: 'Updating...',
+                    text: 'Please wait',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+            },
             success: function (res) {
                 Swal.close();
                 if (res.success) {
-                    Swal.fire('Updated', res.message, 'success');
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Updated!',
+                        text: res.message,
+                        confirmButtonColor: '#6366f1',
+                        timer: 2000
+                    });
                     $('#editAnatomyModal').modal('hide');
-
-                    // ✅ إعادة تحميل الكاردات مع منع الكاش
-                    loadAnatomy();
-
-                    // ✅ تحديث الصورة الحالية في المودال لو محتاج
-                    let imgSrc = res.data.ImagePath
-                        ? (res.data.ImagePath.startsWith('/Images/') ? res.data.ImagePath : '/Images/' + res.data.imagePath) + '?t=' + new Date().getTime()
-                        : '/Images/default.jpg';
-                    $('#currentAnatomyImage').attr('src', imgSrc);
-
+                    loadAnatomy(currentSearch);
                 } else {
-                    Swal.fire('Error', res.message, 'error');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: res.message,
+                        confirmButtonColor: '#6366f1'
+                    });
                 }
             },
-            error: () => Swal.fire('Error', 'Server error while updating.', 'error')
-        });
-    });
-
-
-    // ==============================
-    // 🌟 6. حذف معدة
-    // ==============================
-    $(document).on('click', '.deleteAnatomyBtn', function () {
-        let id = $(this).data('id');
-
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You are about to delete this anatomy!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, delete it!'
-        }).then(result => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: `/Anatomy/Delete/${id}`,
-                    type: 'DELETE',
-                    success: function (res) {
-                        if (res.success) {
-                            Swal.fire('Deleted!', res.message, 'success');
-                            loadAnatomy();
-                          
-                        } else {
-                            Swal.fire('Error', res.message, 'error');
-                        }
-                    },
-                    error: () => Swal.fire('Error', 'Server error while deleting.', 'error')
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Server Error',
+                    text: 'Failed to update body part. Please try again.',
+                    confirmButtonColor: '#6366f1'
                 });
             }
         });
     });
 
     // ==============================
-    // 🌟 7. البحث
+    // 🌟 5. Delete Anatomy
     // ==============================
-    $('.btn-outline-custom').click(function () {
-        currentSearch = $('.form-control-custom').val();
-        loadAnatomy();
-    });
+    $(document).on('click', '.deleteAnatomyBtn', function () {
+        let id = $(this).data('id');
 
-    $('.form-control-custom').on('keyup', function (e) {
-        if (e.key === 'Enter') {
-            currentSearch = $(this).val();
-            loadAnatomy();
-        }
-    });
-    $(document).ready(function () {
-        // ✅ زرار فتح مودال الإضافة
-        $('#openAddModal').click(function () {
-            
-            $('#addAnatomyModal').modal('show');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        }).then(result => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `/Anatomy/Delete/${id}`,
+                    type: 'DELETE',
+                    beforeSend: function () {
+                        Swal.fire({
+                            title: 'Deleting...',
+                            text: 'Please wait',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+                    },
+                    success: function (res) {
+                        Swal.close();
+                        if (res.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Deleted!',
+                                text: res.message,
+                                confirmButtonColor: '#6366f1',
+                                timer: 2000
+                            });
+                            loadAnatomy(currentSearch);
+
+                            // Reload page to update stats
+                            setTimeout(() => {
+                                location.reload();
+                            }, 2000);
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: res.message,
+                                confirmButtonColor: '#6366f1'
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Server Error',
+                            text: 'Failed to delete body part. Please try again.',
+                            confirmButtonColor: '#6366f1'
+                        });
+                    }
+                });
+            }
         });
     });
+
+    // ==============================
+    // 🌟 6. Search Functionality
+    // ==============================
     $('#searchAnatomy').on('input', function () {
         let term = $(this).val().trim();
-        loadAnatomy(term);
+        currentSearch = term;
+
+        // Debounce search
+        clearTimeout(window.searchTimeout);
+        window.searchTimeout = setTimeout(function () {
+            loadAnatomy(term);
+        }, 300);
     });
+
+    // ==============================
+    // 🌟 7. Modal Cleanup
+    // ==============================
+    $('#addAnatomyModal').on('hidden.bs.modal', function () {
+        $('#anatomyForm')[0].reset();
+        $('#addImagePreviewWrapper').hide();
+    });
+
+    $('#editAnatomyModal').on('hidden.bs.modal', function () {
+        $('#editAnatomyForm')[0].reset();
+        $('#editImagePreviewWrapper').hide();
+    });
+
+    // ==============================
+    // 🌟 8. Initialize Page
+    // ==============================
     loadAnatomy();
-
-
 });
-
-
-
-
-
-
-
-
