@@ -22,7 +22,6 @@ namespace FitVerse.Core.IUnitOfWorkServices
         IDietPlan DietPlanService { get; }
         IAdminService AdminService { get; }
         IUsersService UsersService { get; }
-        IAdminService AdminService { get; }
         IAccountService AccountService { get; }
         IPackageAppService PackageAppService { get; }
         IDailyLogService DailyLogService { get; }
@@ -50,8 +49,6 @@ namespace FitVerse.Core.IUnitOfWorkServices
         
    
         IExerciseRepository ExerciseRepository { get; }
-        IExercisePlanDetailRepository ExercisePlanDetailRepository { get; }
-        IExercisePlanRepository ExercisePlanRepository { get; }
 
         //Identity
         UserManager<ApplicationUser> UserManager { get; }

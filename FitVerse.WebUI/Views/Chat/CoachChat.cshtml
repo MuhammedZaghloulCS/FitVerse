@@ -29,17 +29,17 @@
                 {
                     @foreach (var client in (IEnumerable<FitVerse.Data.Models.Client>)ViewBag.AvailableClients)
                     {
-                        <div class="p-3 border-bottom client-item" style="cursor: pointer;" data-client-id="@client.UserId" data-client-name="@client.Name">
+                        <div class="p-3 border-bottom client-item" style="cursor: pointer;" data-client-id="@client.UserId" data-client-name="@client.User.FullName">
                             <div class="d-flex align-items-center gap-3">
                                 <div class="position-relative">
-                                    <img src="@(string.IsNullOrEmpty(client.Image) ? $"https://ui-avatars.com/api/?name={client.Name}&background=6366f1&color=fff" : client.Image)" 
-                                         alt="@client.Name" style="width: 50px; height: 50px; border-radius: 50%;">
-                                    <span class="position-absolute bottom-0 end-0" style="width: 12px; height: 12px; background: @(client.IsActive ? "#10b981" : "#94a3b8"); border: 2px solid white; border-radius: 50%;"></span>
+                                    <img src="@(string.IsNullOrEmpty(client.User.ImagePath) ? $"https://ui-avatars.com/api/?name={client.User.FullName}&background=6366f1&color=fff" : client.User.ImagePath)" 
+                                         alt="@client.User" style="width: 50px; height: 50px; border-radius: 50%;">
+                                    <span class="position-absolute bottom-0 end-0" style="width: 12px; height: 12px; background: @(client.User.Status=="Acive" ? "#10b981" : "#94a3b8"); border: 2px solid white; border-radius: 50%;"></span>
                                 </div>
                                 <div class="flex-grow-1">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <div class="fw-semibold">@client.Name</div>
-                                        <small class="text-muted">@client.Age years old</small>
+                                        <div class="fw-semibold">@client.User.FullName</div>
+                                        <small class="text-muted">@client.User.Age years old</small>
                                     </div>
                                     <div class="small text-muted text-truncate">Goal: @client.Goal</div>
                                 </div>

@@ -8,11 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FitVerse.Data.Migrations
 {
     /// <inheritdoc />
-<<<<<<<< HEAD:FitVerse.Data/Migrations/20251026171954_init.cs
-    public partial class init : Migration
-========
-    public partial class intialC : Migration
->>>>>>>> a8322c205f4414005279601e993ea357a36c2c50:FitVerse.Data/Migrations/20251028183319_initial-create.cs
+    public partial class firstInit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -52,7 +48,9 @@ namespace FitVerse.Data.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     joinedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Gender = table.Column<int>(type: "int", nullable: false),
+                    Age = table.Column<int>(type: "int", nullable: true),
+                    Gender = table.Column<int>(type: "int", nullable: true),
+                    ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -113,8 +111,7 @@ namespace FitVerse.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Icon = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Color = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -130,7 +127,7 @@ namespace FitVerse.Data.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AnatomyId = table.Column<int>(type: "int", nullable: false),
-                    ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -254,16 +251,10 @@ namespace FitVerse.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Age = table.Column<int>(type: "int", nullable: false),
-                    Height = table.Column<double>(type: "float", nullable: false),
-                    StartWeight = table.Column<double>(type: "float", nullable: false),
-                    Goal = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Gender = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    Image = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    JoinDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    Height = table.Column<double>(type: "float", nullable: true),
+                    StartWeight = table.Column<double>(type: "float", nullable: true),
+                    Goal = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -272,8 +263,7 @@ namespace FitVerse.Data.Migrations
                         name: "FK_Clients_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -281,11 +271,10 @@ namespace FitVerse.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ExperienceYears = table.Column<int>(type: "int", nullable: false),
-                    About = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
-                    ImagePath = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    ExperienceYears = table.Column<int>(type: "int", nullable: true),
+                    About = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    Salary = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Certificates = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -600,7 +589,7 @@ namespace FitVerse.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DurationInDays = table.Column<int>(type: "int", nullable: false),
+                    DurationWeeks = table.Column<int>(type: "int", nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ClientId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CoachId = table.Column<string>(type: "nvarchar(450)", nullable: false)
@@ -664,6 +653,7 @@ namespace FitVerse.Data.Migrations
                 {
                     ExercisePlanId = table.Column<int>(type: "int", nullable: false),
                     ExerciseId = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     NumOfSets = table.Column<int>(type: "int", nullable: false),
                     NumOfRepeats = table.Column<int>(type: "int", nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -688,33 +678,67 @@ namespace FitVerse.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Coaches",
-                columns: new[] { "Id", "About", "ExperienceYears", "ImagePath", "IsActive", "Name", "UserId" },
+                table: "Anatomies",
+                columns: new[] { "Id", "Image", "Name" },
                 values: new object[,]
                 {
-                    { "C1", "Expert in Strength and Conditioning", 8, "/images/coaches/john.jpg", true, "John Smith", null },
-                    { "C2", "Cardio and endurance specialist with personalized HIIT plans.", 6, "/images/coaches/sarah.jpg", true, "Sarah Johnson", null },
-                    { "C3", "Yoga and mobility instructor focused on flexibility and wellness.", 7, "/images/coaches/michael.jpg", true, "Michael Lee", null },
-                    { "C4", "CrossFit certified coach delivering high-intensity programs.", 5, "/images/coaches/chris.jpg", true, "Chris Evans", null },
-                    { "C5", "Boxing and MMA trainer with focus on endurance and strength.", 4, "/images/coaches/amanda.jpg", true, "Amanda Davis", null },
-                    { "C6", "Professional bodybuilder and muscle growth expert.", 10, "/images/coaches/robert.jpg", true, "Robert Wilson", null },
-                    { "C7", "Running and endurance coach with marathon training expertise.", 5, "/images/coaches/emily.jpg", true, "Emily Clark", null },
-                    { "C8", "Nutrition and weight loss expert with balanced diet programs.", 6, "/images/coaches/david.jpg", true, "David Harris", null }
+                    { 1, "/images/anatomy/chest.png", "Chest" },
+                    { 2, "/images/anatomy/back.png", "Back" },
+                    { 3, "/images/anatomy/legs.png", "Legs" },
+                    { 4, "/images/anatomy/arms.png", "Arms" },
+                    { 5, "/images/anatomy/shoulders.png", "Shoulders" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "1", null, "Admin", "ADMIN" },
+                    { "2", null, "Coach", "COACH" },
+                    { "3", null, "Client", "CLIENT" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Coaches",
+                columns: new[] { "Id", "About", "Certificates", "ExperienceYears", "Salary", "UserId" },
+                values: new object[,]
+                {
+                    { "C1", "Expert in Strength and Conditioning", null, 8, null, null },
+                    { "C2", "Cardio and endurance specialist with personalized HIIT plans.", null, 6, null, null },
+                    { "C3", "Yoga and mobility instructor focused on flexibility and wellness.", null, 7, null, null },
+                    { "C4", "CrossFit certified coach delivering high-intensity programs.", null, 5, null, null },
+                    { "C5", "Boxing and MMA trainer with focus on endurance and strength.", null, 4, null, null },
+                    { "C6", "Professional bodybuilder and muscle growth expert.", null, 10, null, null },
+                    { "C7", "Running and endurance coach with marathon training expertise.", null, 5, null, null },
+                    { "C8", "Nutrition and weight loss expert with balanced diet programs.", null, 6, null, null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Equipments",
+                columns: new[] { "Id", "Image", "Name" },
+                values: new object[,]
+                {
+                    { 1, "/images/equipment/barbell.png", "Barbell" },
+                    { 2, "/images/equipment/bodyweight.png", "Bodyweight" },
+                    { 3, "/images/equipment/dumbbell.png", "Dumbbell" },
+                    { 4, "/images/equipment/machine.png", "Machine" },
+                    { 5, "/images/equipment/cable.png", "Cable" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Specialties",
-                columns: new[] { "Id", "Color", "Description", "Icon", "Name" },
+                columns: new[] { "Id", "Description", "Image", "Name" },
                 values: new object[,]
                 {
-                    { 1, "#007bff", "Building muscle and power", "fa-solid fa-dumbbell", "Strength Training" },
-                    { 2, "#dc3545", "Cardiovascular fitness", "fa-solid fa-heartbeat", "Cardio & HIIT" },
-                    { 3, "#20c997", "Mobility and stretching", "fa-solid fa-person-praying", "Flexibility & Yoga" },
-                    { 4, "#fd7e14", "High-intensity functional training", "fa-solid fa-bolt", "CrossFit" },
-                    { 5, "#6610f2", "Combat sports training", "fa-solid fa-hand-fist", "Boxing & MMA" },
-                    { 6, "#ffc107", "Muscle hypertrophy focus", "fa-solid fa-trophy", "Bodybuilding" },
-                    { 7, "#198754", "Distance and stamina", "fa-solid fa-person-running", "Running & Endurance" },
-                    { 8, "#0dcaf0", "Fat loss and nutrition", "fa-solid fa-scale-balanced", "Weight Loss" }
+                    { 1, "Building muscle and power", null, "Strength Training" },
+                    { 2, "Cardiovascular fitness", null, "Cardio & HIIT" },
+                    { 3, "Mobility and stretching", null, "Flexibility & Yoga" },
+                    { 4, "High-intensity functional training", null, "CrossFit" },
+                    { 5, "Combat sports training", null, "Boxing & MMA" },
+                    { 6, "Muscle hypertrophy focus", null, "Bodybuilding" },
+                    { 7, "Distance and stamina", null, "Running & Endurance" },
+                    { 8, "Fat loss and nutrition", null, "Weight Loss" }
                 });
 
             migrationBuilder.InsertData(
@@ -730,6 +754,34 @@ namespace FitVerse.Data.Migrations
                     { "C6", 6, "" },
                     { "C7", 7, "" },
                     { "C8", 8, "" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Muscles",
+                columns: new[] { "Id", "AnatomyId", "Description", "ImagePath", "Name" },
+                values: new object[,]
+                {
+                    { 1, 1, "Main chest muscle responsible for pushing movements.", null, "Pectoralis Major" },
+                    { 2, 1, "Smaller chest muscle beneath pectoralis major.", null, "Pectoralis Minor" },
+                    { 3, 2, "Large back muscle used in pulling actions.", null, "Latissimus Dorsi" },
+                    { 4, 2, "Upper back and neck muscle responsible for posture.", null, "Trapezius" },
+                    { 5, 3, "Front thigh muscle responsible for leg extension.", null, "Quadriceps" },
+                    { 6, 4, "Front upper arm muscle responsible for arm flexion.", null, "Biceps" },
+                    { 7, 5, "Main shoulder muscle responsible for arm rotation.", null, "Deltoid" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Exercises",
+                columns: new[] { "Id", "Description", "EquipmentId", "MuscleId", "Name", "VideoLink" },
+                values: new object[,]
+                {
+                    { 1, "Classic chest exercise using a barbell.", 1, 1, "Bench Press", "https://www.youtube.com/watch?v=rT7DgCr-3pg" },
+                    { 2, "Bodyweight exercise targeting the chest and triceps.", 2, 1, "Push Ups", "https://www.youtube.com/watch?v=_l3ySVKYVJ8" },
+                    { 3, "Upper back exercise using body weight.", 2, 3, "Pull Ups", "https://www.youtube.com/watch?v=eGo4IYlbE5g" },
+                    { 4, "Compound movement targeting the back.", 1, 3, "Barbell Rows", "https://www.youtube.com/watch?v=vT2GjY_Umpw" },
+                    { 5, "Leg exercise working quads and glutes.", 1, 5, "Squats", "https://www.youtube.com/watch?v=aclHkVaku9U" },
+                    { 6, "Isolated arm exercise for biceps.", 1, 6, "Bicep Curls", "https://www.youtube.com/watch?v=ykJmrZ5v0Oo" },
+                    { 7, "Overhead press targeting the deltoid.", 1, 7, "Shoulder Press", "https://www.youtube.com/watch?v=B-aVuyhvLHU" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -763,11 +815,6 @@ namespace FitVerse.Data.Migrations
                 name: "EmailIndex",
                 table: "AspNetUsers",
                 column: "NormalizedEmail");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_UserName",
-                table: "AspNetUsers",
-                column: "UserName");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",

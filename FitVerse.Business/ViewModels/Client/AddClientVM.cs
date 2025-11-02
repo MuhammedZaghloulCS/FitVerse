@@ -16,5 +16,6 @@ namespace FitVerse.Core.ViewModels.Client
         public IFormFile? ClientImageFile { get; set; }
         public string? ImagePath { get; set; }
         public Guid CoachId { get; set; }
+        public string UserId { get; set; }
     }
 }

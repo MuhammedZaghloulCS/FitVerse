@@ -77,7 +77,9 @@ namespace FitVerse.Data.Seed
                     EmailConfirmed = true,
                     PhoneNumber = "1234567890",
                     PhoneNumberConfirmed = true,
-                    Status = "Active"
+                    Status = "Active",
+                    FullName= "FitVerse Admin",
+                    Age= 30
 
                 };
 
@@ -125,7 +127,9 @@ namespace FitVerse.Data.Seed
                     EmailConfirmed = true,
                     PhoneNumber = "1234567890",
                     PhoneNumberConfirmed = true,
-                    Status = "Active"
+                    Status = "Active",
+                    FullName= "FitVerse Coach",
+                    Age= 28
 
                 };
 
@@ -173,7 +177,9 @@ namespace FitVerse.Data.Seed
                     EmailConfirmed = true,
                     PhoneNumber = "1234567890",
                     PhoneNumberConfirmed = true,
-                    Status= "Active"
+                    Status= "Active",
+                    FullName= "FitVerse Client",
+                    Age= 25
 
                 };
 

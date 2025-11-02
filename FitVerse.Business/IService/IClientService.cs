@@ -13,7 +13,6 @@ namespace FitVerse.Core.IService
         //(bool Success, string Message) UpdateClient(AddClientVM model);
         //(bool Success, string Message) DeleteClient(Guid id);
         //AddClientVM GetClientById(Guid id);
-        List<ClientDashVM> GetAllClients();
         Task<(bool Success, string Message)> UpdateClientGoals(string userName, ClientViewModel clientPhysicalInfo);
        
         (bool Success, string Message) UpdateClient(AddClientVM model); // تحديث بيانات العميل

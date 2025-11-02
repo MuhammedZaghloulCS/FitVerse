@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using FitVerse.Core.Interfaces;
 using FitVerse.Core.Models;
 using FitVerse.Core.ViewModels.Client;
@@ -91,8 +91,8 @@ namespace FitVerse.Data.Repositories
                 .Select(g => g.First())
                 .Select(p => new ClientDashVM
                 {
-                    Name = p.Client.Name,
-                    IsActive = p.Client.IsActive,
+                    Name = p.Client.User.UserName ?? "Unknown",
+                    IsActive = true, // Default to true since Client model doesn't have IsActive
                     LastPaymentAgo = GetTimeAgo(p.PaymentDate)
                 })
                 .ToList();

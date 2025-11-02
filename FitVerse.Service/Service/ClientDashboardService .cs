@@ -5,7 +5,9 @@ using FitVerse.Core.ViewModels.ClientDashboard;
 using FitVerse.Data.Models;
 using FitVerse.Data.Service.FitVerse.Data.Service;
 using FitVerse.Service.Service;
+using Microsoft.AspNetCore.Http;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace FitVerse.Core.UnitOfWorkServices
@@ -16,23 +18,27 @@ namespace FitVerse.Core.UnitOfWorkServices
         private readonly IClientService clientService;
         private readonly ICoachService coachService;
         private readonly IImageHandleService imageService;
+        private readonly IHttpContextAccessor httpContext;
 
-
-        public ClientDashboardService(IUnitOfWork unitOfWork , IClientService clientService, ICoachService coachService, IImageHandleService imageService)
+        public ClientDashboardService(IUnitOfWork unitOfWork , IClientService clientService, ICoachService coachService, IImageHandleService imageService,IHttpContextAccessor httpContext)
         {
             this.unitOfWork = unitOfWork;
             this.clientService = clientService;
             this.coachService = coachService;
             this.imageService = imageService;
+            this.httpContext = httpContext;
         }
 
-        public ClientDashboardViewModel GetClientDashboard(string clientId)
+        public ClientDashboardViewModel GetClientDashboard()
         {
+
+            var clientId = httpContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             var client = clientService.GetById(clientId);
+            
             if (client == null) return null;
 
             var coach = coachService.GetCoachByClientId(clientId);
-            if (coach == null) return null;
+            //if (coach == null) return null;
 
             var exercisePlan = unitOfWork.ExercisePlans
                 .GetAll()
@@ -47,16 +53,16 @@ namespace FitVerse.Core.UnitOfWorkServices
             // تحضير الـ ViewModel
             var model = new ClientDashboardViewModel
             {
-                ClientName = client.Name,
-                ClientId = client.Id,
-                CoachName = coach.Name,
-                CoachId = coach.Id,
-                CoachExperience = coach.ExperienceYears,
-                ExercisePlanSummary = exercisePlan?.Notes,
-                DietPlanSummary = dietPlan?.Notes,
-                Specialists = unitOfWork.Coaches.GetCoachspecialtiesByCoachId(coach.Id),
-                CoachImagePath = coach.ImagePath,
-                ClientImagePath = client.Image
+                ClientName = client.UserId == null ? "UnKnown" : client?.User?.FullName,
+                ClientId = client?.Id,
+                CoachName = coach == null ? null : coach?.User?.FullName,
+                //CoachId = coach?.Id,
+                CoachExperience =coach==null?0: (int)coach?.ExperienceYears,
+                ExercisePlanSummary =exercisePlan==null?"--": exercisePlan?.Notes,
+                DietPlanSummary =dietPlan==null?"--": dietPlan?.Notes,
+                //Specialists = unitOfWork.Coaches.GetCoachspecialtiesByCoachId(coach?.Id),
+                CoachImagePath = coach == null ? "--" : coach?.User?.ImagePath,
+                ClientImagePath = client.UserId == null ? "--" : client?.User?.ImagePath
             };
 
             return model;

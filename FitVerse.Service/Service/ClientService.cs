@@ -21,8 +21,8 @@ namespace FitVerse.Service.Service
         private readonly IImageHandleService imageService;
         private readonly UserManager<ApplicationUser> userManager;
 
-       
-        public ClientService(IUnitOfWork unitOfWork, IMapper mapper, IImageHandleService imageService,UserManager<ApplicationUser> userManager)
+
+        public ClientService(IUnitOfWork unitOfWork, IMapper mapper, IImageHandleService imageService, UserManager<ApplicationUser> userManager)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
@@ -39,7 +39,6 @@ namespace FitVerse.Service.Service
                     imagePath = imageService.SaveImage(model.ClientImageFile);
 
                 var client = mapper.Map<Client>(model);
-                client.UserId = "6A29B02B-7643-48C3-9B47-6ECF12F4B9F9";
                 //client.Image = imagePath ?? "/Images/default.jpg";
 
                 unitOfWork.Clients.Add(client);
@@ -76,7 +75,7 @@ namespace FitVerse.Service.Service
             throw new NotImplementedException();
         }
 
-    
+
         public List<ClientDashVM> GetAllClients()
         {
             var clients = unitOfWork.Clients.GetAll();
@@ -86,13 +85,13 @@ namespace FitVerse.Service.Service
         public async Task<(bool Success, string Message)> UpdateClientGoals(string userName, ClientViewModel clientPhysicalInfo)
         {
             var user = await userManager.FindByNameAsync(userName);
-           if(user==null)
-           {
+            if (user == null)
+            {
                 return (false, "User Not Found");
-           }
-            return  unitOfWork.Clients.UpdateClientGoalsRepo(user.Id, clientPhysicalInfo);
+            }
+            return unitOfWork.Clients.UpdateClientGoalsRepo(user.Id, clientPhysicalInfo);
         }
-    }
+
 
         public Client? GetById(string clientId)
         {

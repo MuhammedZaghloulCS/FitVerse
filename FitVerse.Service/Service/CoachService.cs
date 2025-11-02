@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using FitVerse.Core.IService;
 using FitVerse.Core.viewModels;
@@ -35,7 +35,6 @@ namespace FitVerse.Data.Service
                     string? imagePath = imageService.SaveImage(model.CoachImageFile);
 
                     var coach = mapper.Map<Coach>(model);
-                    coach.UserId ="6A29B02B-7643-48C3-9B47-6ECF12F4B9F9";
                     //coach.ImagePath = imagePath ?? "/Images/default.jpg";
 
                     unitOfWork.Coaches.Add(coach);
@@ -139,7 +138,7 @@ namespace FitVerse.Data.Service
                         var query = unitOfWork.Coaches.GetAll().AsQueryable();
 
                         if (!string.IsNullOrEmpty(search))
-                            query = query.Where(e => e.Name.ToLower().Contains(search.ToLower()));
+                            query = query.Where(e => e.User.UserName.ToLower().Contains(search.ToLower()));
 
                         var totalItems = query.Count();
 
@@ -177,8 +176,8 @@ namespace FitVerse.Data.Service
                 var coachVMs = coaches.Select(c => new CoachWithPackagesVM
                 {
                     Id = c.Id,
-                    Name = c.Name,
-                    ExperienceYears = c.ExperienceYears,
+                    Name = c.User?.UserName ?? "Unknown",
+                    ExperienceYears = c.ExperienceYears ?? 0,
                     Packages = c.CoachPackages.Select(cp => new PackagesVM
                     {
                         Id = cp.Package.Id,

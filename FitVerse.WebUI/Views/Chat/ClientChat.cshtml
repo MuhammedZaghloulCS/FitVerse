@@ -29,16 +29,16 @@
                 {
                     @foreach (var coach in (IEnumerable<FitVerse.Data.Models.Coach>)ViewBag.AvailableCoaches)
                     {
-                        <div class="p-3 border-bottom coach-item" style="cursor: pointer;" data-coach-id="@coach.UserId" data-coach-name="@coach.Name">
+                        <div class="p-3 border-bottom coach-item" style="cursor: pointer;" data-coach-id="@coach.UserId" data-coach-name="@coach.User.FullName">
                             <div class="d-flex align-items-center gap-3">
                                 <div class="position-relative">
-                                    <img src="@(string.IsNullOrEmpty(coach.ImagePath) ? $"https://ui-avatars.com/api/?name={coach.Name}&background=10b981&color=fff" : coach.ImagePath)" 
-                                         alt="@coach.Name" style="width: 50px; height: 50px; border-radius: 50%;">
-                                    <span class="position-absolute bottom-0 end-0" style="width: 12px; height: 12px; background: @(coach.IsActive ? "#10b981" : "#94a3b8"); border: 2px solid white; border-radius: 50%;"></span>
+                                    <img src="@(string.IsNullOrEmpty(coach.User.ImagePath) ? $"https://ui-avatars.com/api/?name={coach.User.FullName}&background=10b981&color=fff" : coach.User.ImagePath)" 
+                                         alt="@coach.User.FullName" style="width: 50px; height: 50px; border-radius: 50%;">
+                                    <span class="position-absolute bottom-0 end-0" style="width: 12px; height: 12px; background: @(coach.User.Status=="Active" ? "#10b981" : "#94a3b8"); border: 2px solid white; border-radius: 50%;"></span>
                                 </div>
                                 <div class="flex-grow-1">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <div class="fw-semibold">@coach.Name</div>
+                                        <div class="fw-semibold">@coach.User.FullName</div>
                                         <small class="text-muted">@coach.ExperienceYears years exp</small>
                                     </div>
                                     <div class="small text-muted text-truncate">@coach.About</div>

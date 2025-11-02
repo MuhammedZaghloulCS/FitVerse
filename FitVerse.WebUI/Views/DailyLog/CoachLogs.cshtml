@@ -11,11 +11,11 @@
 {
     <div class="card mt-3 p-3 shadow-sm">
         <div class="d-flex align-items-center mb-2">
-            @if (!string.IsNullOrEmpty(log.Client?.Image))
+            @if (!string.IsNullOrEmpty(log.Client?.User.ImagePath))
             {
-                <img src="@log.Client.Image" alt="@log.Client.Name" class="rounded-circle me-2" width="50" height="50" />
+                <img src="@log.Client.User.ImagePath" alt="@log.Client.User.FullName" class="rounded-circle me-2" width="50" height="50" />
             }
-            <h5 class="mb-0">@log.Client?.Name</h5>
+            <h5 class="mb-0">@log.Client?.User.FullName</h5>
         </div>
 
         <p class="text-muted mb-1"><b>📅</b> @log.LogDate.ToShortDateString()</p>

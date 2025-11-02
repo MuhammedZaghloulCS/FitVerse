@@ -1,4 +1,5 @@
-﻿using FitVerse.Core.IUnitOfWorkServices;
+﻿using FitVerse.Core.Helpers;
+using FitVerse.Core.IUnitOfWorkServices;
 using FitVerse.Core.Models;
 using FitVerse.Core.ViewModels.Admin.Account;
 using FitVerse.Data.UnitOfWork;
@@ -40,7 +41,19 @@ namespace FitVerse.Web.Controllers
                 return View();
 
             }
-            var role = unitOfWorkService.AccountService.GetRole(res.User);
+            var role =await unitOfWorkService.AccountService.GetRole(res.User);
+            if(role== Statics.ADMIN)
+            {
+                return RedirectToAction("Index", "Admin");
+            }
+            else if(role== Statics.COACH)
+            {
+                return RedirectToAction("Dashboard", "Coach");
+            }
+            else if(role== Statics.CLIENT)
+            {
+                return RedirectToAction("Dashboard", "ClientDashboard");
+            }
             return Json(new { res.Success,res.Message,role});
         }
         public IActionResult Register()
@@ -62,7 +75,7 @@ namespace FitVerse.Web.Controllers
             else if(res.Message!= "Register Succeeded")
                 ModelState.AddModelError("", "Please, Try Again later");
 
-            return Json(new { Success = res.Success, Message = res.Message });
+           return RedirectToAction("Dashboard", "ClientDashboard");
         }
     }
 }

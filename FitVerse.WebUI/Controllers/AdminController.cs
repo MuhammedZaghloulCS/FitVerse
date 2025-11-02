@@ -1,8 +1,10 @@
-﻿using FitVerse.Core.IUnitOfWorkServices;
+using FitVerse.Core.IUnitOfWorkServices;
 using FitVerse.Core.ViewModels.Admin;
 using FitVerse.Data.Models;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FitVerse.Web.Controllers
@@ -48,6 +50,55 @@ namespace FitVerse.Web.Controllers
             return RedirectToAction(nameof(CoachPackages));
         }
 
+        public IActionResult Coaches()
+        {
+            var coaches = _unitOfWorkService.CoachService.GetAllCoachesWithPackages();
+            return View(coaches);
+        }
+
+        [HttpGet]
+        public IActionResult GetCoachesData(int page = 1, int pageSize = 10, string search = "")
+        {
+            var (coaches, totalItems) = _unitOfWorkService.CoachService.GetPagedEquipments(page, pageSize, search);
+            return Json(new
+            {
+                success = true,
+                data = coaches,
+                currentPage = page,
+                totalPages = (int)Math.Ceiling((double)totalItems / pageSize),
+                totalItems = totalItems
+            });
+        }
+
+        public IActionResult Clients()
+        {
+            var clients = _unitOfWorkService.clientOnCoachesService.GetAllClients();
+            return View(clients);
+        }
+
+        [HttpGet]
+        public IActionResult GetClientsData(int page = 1, int pageSize = 10, string search = "")
+        {
+            var allClients = _unitOfWorkService.clientOnCoachesService.GetAllClients();
+            
+            // Apply search filter
+            if (!string.IsNullOrEmpty(search))
+            {
+                allClients = allClients.Where(c => c.Name.ToLower().Contains(search.ToLower())).ToList();
+            }
+
+            var totalItems = allClients.Count;
+            var clients = allClients.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            return Json(new
+            {
+                success = true,
+                data = clients,
+                currentPage = page,
+                totalPages = (int)Math.Ceiling((double)totalItems / pageSize),
+                totalItems = totalItems
+            });
+        }
 
     }
 }

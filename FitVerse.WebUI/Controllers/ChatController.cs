@@ -188,7 +188,7 @@ namespace FitVerse.Web.Controllers
         private async Task<IEnumerable<Coach>> GetAllCoachEntitiesAsync()
         {
             return await _unitOfWork.Coaches.GetQueryable()
-                .Where(c => c.IsActive && c.UserId != null)
+                .Where(c => c.User.Status=="Active" && c.UserId != null)
                 .Include(c => c.User)
                 .ToListAsync();
         }
@@ -196,7 +196,7 @@ namespace FitVerse.Web.Controllers
         private async Task<IEnumerable<Client>> GetAllClientEntitiesAsync()
         {
             return await _unitOfWork.Clients.GetQueryable()
-                .Where(c => c.IsActive && c.UserId != null)
+                .Where(c => c.User.Status == "Active" && c.UserId != null)
                 .Include(c => c.User)
                 .ToListAsync();
         }

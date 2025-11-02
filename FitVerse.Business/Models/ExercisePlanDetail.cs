@@ -14,6 +14,7 @@ namespace FitVerse.Data.Models
         public string? Notes { get; set; }
         public bool IsCompleted { get; set; }
         public int ExercisePlanId { get; set; }
+        public DateTime Date { get; set; }
         public virtual  ExercisePlan? ExercisePlan { get; set; }
 
         public int ExerciseId { get; set; }

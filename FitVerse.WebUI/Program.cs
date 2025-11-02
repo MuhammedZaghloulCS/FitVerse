@@ -79,6 +79,7 @@ namespace FitVerse.WebUI
             builder.Services.AddScoped<IMuscleRepository, MuscleRepository>();
             builder.Services.AddScoped<ICoachRepository, CoachRepository>();
             builder.Services.AddScoped<IClientRepository, ClientRepository>();
+            builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<IUnitOFWorkService, UnitOfWorkService>();
             builder.Services.AddScoped<IMuscleService, MuscleService>();
             builder.Services.AddScoped<ISpecialtiesRepository, SpecialityRepository>();
@@ -96,7 +97,7 @@ namespace FitVerse.WebUI
             builder.Services.AddScoped<IExerciseService, ExerciseService>();
             
             builder.Services.AddScoped<IExercisePlanRepository, ExercisePlanRepository>();
-            builder.Services.AddScoped<IExercisePlanService, ExercisePlanService>();
+            builder.Services.AddScoped<IExercisePlanService, FitVerse.Service.Service.ExercisePlanService>();
 
             // Add SignalR
             builder.Services.AddSignalR()

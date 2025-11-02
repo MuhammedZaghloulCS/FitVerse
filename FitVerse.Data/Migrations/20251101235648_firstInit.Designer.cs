@@ -12,13 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitVerse.Data.Migrations
 {
     [DbContext(typeof(FitVerseDbContext))]
-<<<<<<<< HEAD:FitVerse.Data/Migrations/20251028115439_appUser.Designer.cs
-    [Migration("20251028115439_appUser")]
-    partial class appUser
-========
-    [Migration("20251101195532_update-ExercisePlan")]
-    partial class updateExercisePlan
->>>>>>>> a8322c205f4414005279601e993ea357a36c2c50:FitVerse.Data/Migrations/20251101195532_update-ExercisePlan.Designer.cs
+    [Migration("20251101235648_firstInit")]
+    partial class firstInit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -120,9 +115,8 @@ namespace FitVerse.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Gender")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("Gender")
+                        .HasColumnType("int");
 
                     b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
@@ -176,8 +170,6 @@ namespace FitVerse.Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("UserName");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -266,20 +258,15 @@ namespace FitVerse.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Goal")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Height")
+                    b.Property<double?>("Height")
                         .HasColumnType("float");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<double>("StartWeight")
+                    b.Property<double?>("StartWeight")
                         .HasColumnType("float");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -295,12 +282,17 @@ namespace FitVerse.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("About")
-                        .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<int>("ExperienceYears")
+                    b.Property<string>("Certificates")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ExperienceYears")
                         .HasColumnType("int");
+
+                    b.Property<decimal?>("Salary")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -316,105 +308,49 @@ namespace FitVerse.Data.Migrations
                         {
                             Id = "C1",
                             About = "Expert in Strength and Conditioning",
-<<<<<<<< HEAD:FitVerse.Data/Migrations/20251028115439_appUser.Designer.cs
                             ExperienceYears = 8
-========
-                            ExperienceYears = 8,
-                            ImagePath = "/images/coaches/john.jpg",
-                            IsActive = true,
-                            Name = "John Smith"
->>>>>>>> a8322c205f4414005279601e993ea357a36c2c50:FitVerse.Data/Migrations/20251101195532_update-ExercisePlan.Designer.cs
                         },
                         new
                         {
                             Id = "C2",
                             About = "Cardio and endurance specialist with personalized HIIT plans.",
-<<<<<<<< HEAD:FitVerse.Data/Migrations/20251028115439_appUser.Designer.cs
                             ExperienceYears = 6
-========
-                            ExperienceYears = 6,
-                            ImagePath = "/images/coaches/sarah.jpg",
-                            IsActive = true,
-                            Name = "Sarah Johnson"
->>>>>>>> a8322c205f4414005279601e993ea357a36c2c50:FitVerse.Data/Migrations/20251101195532_update-ExercisePlan.Designer.cs
                         },
                         new
                         {
                             Id = "C3",
                             About = "Yoga and mobility instructor focused on flexibility and wellness.",
-<<<<<<<< HEAD:FitVerse.Data/Migrations/20251028115439_appUser.Designer.cs
                             ExperienceYears = 7
-========
-                            ExperienceYears = 7,
-                            ImagePath = "/images/coaches/michael.jpg",
-                            IsActive = true,
-                            Name = "Michael Lee"
->>>>>>>> a8322c205f4414005279601e993ea357a36c2c50:FitVerse.Data/Migrations/20251101195532_update-ExercisePlan.Designer.cs
                         },
                         new
                         {
                             Id = "C4",
                             About = "CrossFit certified coach delivering high-intensity programs.",
-<<<<<<<< HEAD:FitVerse.Data/Migrations/20251028115439_appUser.Designer.cs
                             ExperienceYears = 5
-========
-                            ExperienceYears = 5,
-                            ImagePath = "/images/coaches/chris.jpg",
-                            IsActive = true,
-                            Name = "Chris Evans"
->>>>>>>> a8322c205f4414005279601e993ea357a36c2c50:FitVerse.Data/Migrations/20251101195532_update-ExercisePlan.Designer.cs
                         },
                         new
                         {
                             Id = "C5",
                             About = "Boxing and MMA trainer with focus on endurance and strength.",
-<<<<<<<< HEAD:FitVerse.Data/Migrations/20251028115439_appUser.Designer.cs
                             ExperienceYears = 4
-========
-                            ExperienceYears = 4,
-                            ImagePath = "/images/coaches/amanda.jpg",
-                            IsActive = true,
-                            Name = "Amanda Davis"
->>>>>>>> a8322c205f4414005279601e993ea357a36c2c50:FitVerse.Data/Migrations/20251101195532_update-ExercisePlan.Designer.cs
                         },
                         new
                         {
                             Id = "C6",
                             About = "Professional bodybuilder and muscle growth expert.",
-<<<<<<<< HEAD:FitVerse.Data/Migrations/20251028115439_appUser.Designer.cs
                             ExperienceYears = 10
-========
-                            ExperienceYears = 10,
-                            ImagePath = "/images/coaches/robert.jpg",
-                            IsActive = true,
-                            Name = "Robert Wilson"
->>>>>>>> a8322c205f4414005279601e993ea357a36c2c50:FitVerse.Data/Migrations/20251101195532_update-ExercisePlan.Designer.cs
                         },
                         new
                         {
                             Id = "C7",
                             About = "Running and endurance coach with marathon training expertise.",
-<<<<<<<< HEAD:FitVerse.Data/Migrations/20251028115439_appUser.Designer.cs
                             ExperienceYears = 5
-========
-                            ExperienceYears = 5,
-                            ImagePath = "/images/coaches/emily.jpg",
-                            IsActive = true,
-                            Name = "Emily Clark"
->>>>>>>> a8322c205f4414005279601e993ea357a36c2c50:FitVerse.Data/Migrations/20251101195532_update-ExercisePlan.Designer.cs
                         },
                         new
                         {
                             Id = "C8",
                             About = "Nutrition and weight loss expert with balanced diet programs.",
-<<<<<<<< HEAD:FitVerse.Data/Migrations/20251028115439_appUser.Designer.cs
                             ExperienceYears = 6
-========
-                            ExperienceYears = 6,
-                            ImagePath = "/images/coaches/david.jpg",
-                            IsActive = true,
-                            Name = "David Harris"
->>>>>>>> a8322c205f4414005279601e993ea357a36c2c50:FitVerse.Data/Migrations/20251101195532_update-ExercisePlan.Designer.cs
                         });
                 });
 
@@ -524,6 +460,59 @@ namespace FitVerse.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("FitVerse.Data.Models.DailyLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClientId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ClientNotes")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("CoachFeedback")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CoachId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("CoachRating")
+                        .HasColumnType("int");
+
+                    b.Property<double>("CurrentWeight")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("float(5)");
+
+                    b.Property<bool>("IsReviewed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime>("LogDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("PhotoPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("CoachId");
+
+                    b.ToTable("DailyLogs", (string)null);
+                });
+
             modelBuilder.Entity("FitVerse.Data.Models.DietPlan", b =>
                 {
                     b.Property<int>("Id")
@@ -535,21 +524,37 @@ namespace FitVerse.Data.Migrations
                     b.Property<double>("ActivityMultiplier")
                         .HasColumnType("float");
 
+                    b.Property<int>("Age")
+                        .HasColumnType("int");
+
                     b.Property<double>("CarbInGrams")
                         .HasColumnType("float");
 
                     b.Property<string>("ClientId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CoachId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<double>("FatsInGrams")
                         .HasColumnType("float");
 
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Goal")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Height")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Notes")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -557,6 +562,9 @@ namespace FitVerse.Data.Migrations
                         .HasColumnType("float");
 
                     b.Property<double>("TotalCal")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Weight")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
@@ -848,6 +856,9 @@ namespace FitVerse.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -1037,6 +1048,56 @@ namespace FitVerse.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Specialties");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Building muscle and power",
+                            Name = "Strength Training"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Cardiovascular fitness",
+                            Name = "Cardio & HIIT"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Mobility and stretching",
+                            Name = "Flexibility & Yoga"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "High-intensity functional training",
+                            Name = "CrossFit"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "Combat sports training",
+                            Name = "Boxing & MMA"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Description = "Muscle hypertrophy focus",
+                            Name = "Bodybuilding"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Description = "Distance and stamina",
+                            Name = "Running & Endurance"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Description = "Fat loss and nutrition",
+                            Name = "Weight Loss"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -1261,9 +1322,7 @@ namespace FitVerse.Data.Migrations
                 {
                     b.HasOne("FitVerse.Core.Models.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
@@ -1315,19 +1374,35 @@ namespace FitVerse.Data.Migrations
                     b.Navigation("Specialty");
                 });
 
-            modelBuilder.Entity("FitVerse.Data.Models.DietPlan", b =>
+            modelBuilder.Entity("FitVerse.Data.Models.DailyLog", b =>
                 {
                     b.HasOne("FitVerse.Data.Models.Client", "Client")
-                        .WithMany("DietPlans")
+                        .WithMany("DailyLogs")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("FitVerse.Data.Models.Coach", "Coach")
-                        .WithMany("DietPlans")
+                        .WithMany("DailyLogs")
                         .HasForeignKey("CoachId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Coach");
+                });
+
+            modelBuilder.Entity("FitVerse.Data.Models.DietPlan", b =>
+                {
+                    b.HasOne("FitVerse.Data.Models.Client", "Client")
+                        .WithMany("DietPlans")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("FitVerse.Data.Models.Coach", "Coach")
+                        .WithMany("DietPlans")
+                        .HasForeignKey("CoachId");
 
                     b.Navigation("Client");
 
@@ -1528,6 +1603,8 @@ namespace FitVerse.Data.Migrations
 
                     b.Navigation("CoachFeedback");
 
+                    b.Navigation("DailyLogs");
+
                     b.Navigation("DietPlans");
 
                     b.Navigation("ExercisePlans");
@@ -1546,6 +1623,8 @@ namespace FitVerse.Data.Migrations
                     b.Navigation("CoachPackages");
 
                     b.Navigation("CoachSpecialties");
+
+                    b.Navigation("DailyLogs");
 
                     b.Navigation("DietPlans");
 

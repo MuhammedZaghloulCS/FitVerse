@@ -1,4 +1,4 @@
-﻿using FitVerse.Core.IService;
+using FitVerse.Core.IService;
 using FitVerse.Core.UnitOfWork;
 using FitVerse.Core.ViewModels.Coach;
 using FitVerse.Core.ViewModels.Meuscle;
@@ -30,15 +30,15 @@ namespace FitVerse.Service.Service
           return clients.Select(m => new ClientsVM
         {
         Id = m.Id,
-        Name = m.Name,
-        Age = m.Age,
-        Height = m.Height,
-        StartWeight = m.StartWeight,
-        Goal = m.Goal,
-        Gender = m.Gender,
-        Image = m.Image,
-        JoinDate = m.JoinDate,
-        IsActive = m.IsActive,
+        Name = m.User?.UserName ?? "Unknown",
+        Age = 0, // Client model doesn't have Age
+        Height = m.Height ?? 0,
+        StartWeight = m.StartWeight ?? 0,
+        Goal = m.Goal ?? "Not specified",
+        Gender = "Not specified", // Client model doesn't have Gender
+        Image = "/images/default-user.jpg", // Client model doesn't have Image
+        JoinDate = DateTime.Now, // Client model doesn't have JoinDate
+        IsActive = true, // Client model doesn't have IsActive
         TotalWorkouts = m.ExercisePlans.Count,
         ProgressPercentage = 75,
         //SubscriptionName = m.ClientSubscriptions.FirstOrDefault()?.Subscription?.Name ?? "No Plan"

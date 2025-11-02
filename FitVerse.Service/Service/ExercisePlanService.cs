@@ -1,13 +1,8 @@
 ﻿using AutoMapper;
-using FitVerse.Core.Interfaces;
 using FitVerse.Core.IService;
-using FitVerse.Core.IUnitOfWorkServices;
 using FitVerse.Core.UnitOfWork;
-using FitVerse.Core.ViewModels.ExerciseVM;
 using FitVerse.Core.ViewModels.Plan;
 using FitVerse.Data.Models;
-using FitVerse.Data.UnitOfWork;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +28,7 @@ namespace FitVerse.Service.Service
             return _db.ExercisePlans.GetAll().ToList();
         }
 
-      
+
         public ExercisePlan GetPlanById(int id)
         {
             return _db.ExercisePlans.GetById(id);
@@ -112,7 +107,7 @@ namespace FitVerse.Service.Service
                     Name = vm.Name,
                     Notes = vm.Notes,
                     DurationWeeks = vm.DurationWeeks,
-                    CoachId = vm.CoachId?.ToString() ?? "default_coach_id", 
+                    CoachId = vm.CoachId?.ToString() ?? "default_coach_id",
                     ClientId = vm.ClientId?.ToString() ?? "default_client_id",
                     Date = DateTime.Now
                 };

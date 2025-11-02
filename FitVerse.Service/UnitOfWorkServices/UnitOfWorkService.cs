@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using FitVerse.Core.Interfaces;
 using FitVerse.Core.IService;
 using FitVerse.Core.IUnitOfWorkServices;
@@ -12,6 +12,7 @@ using FitVerse.Data.Repositories;
 using FitVerse.Data.Service;
 using FitVerse.Data.Service.FitVerse.Data.Service;
 using FitVerse.Service.Service;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -26,6 +27,7 @@ namespace FitVerse.Data.UnitOfWork
         private readonly FitVerseDbContext context;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
         // Lazy-loaded services
         private ICoachService coachService;
@@ -39,7 +41,7 @@ namespace FitVerse.Data.UnitOfWork
         private IAccountService account;
         //private IUsers users;
         private IAdminService adminService;
-        private IClientOnCoachesService clientOnCoachesService;
+        private IClientOnCoachesService _clientOnCoachesService;
         private IExercisePlanService exercisePlanService;
         private IExercisePlanDetailService exercisePlanDetailService;
         private IPackageAppService packageAppService;
@@ -57,150 +59,44 @@ namespace FitVerse.Data.UnitOfWork
         private IExercisePlanDetailRepository exercisePlanDetailRepository;
         private IDietPlanRepository dietPlanRepository;
         private IExercisePlanRepository exercisePlanRepository;
-        private IExercisePlanDetailRepository exercisePlanDetailRepository;
-       
+        private IExerciseRepository exerciseRepository;
+        private ICoachPackageRepository coachPackageRepository;
+        private ISpecialtiesRepository specialtiesRepository;
+        private ICoachSpecialtiesRepository coachSpecialtiesRepository;
 
-        public UnitOfWorkService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public UnitOfWorkService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IHttpContextAccessor httpContextAccessor)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
             this.context = ((UnitOfWork)unitOfWork)._context;
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         // Identity
         public UserManager<ApplicationUser> UserManager => userManager;
 
         // Services
-        public IImageHandleService ImageHandleService
-        {
-            get
-            {
-                if (imageHandleService == null)
-                    imageHandleService = new ImageHandleService();
-                return imageHandleService;
-            }
-        }
-
-        public ICoachService CoachService
-        {
-            get
-            {
-                if (coachService == null)
-                    coachService = new CoachService(unitOfWork, mapper, ImageHandleService);
-                return coachService;
-            }
-        }
-
-        public IClientService ClientService
-        {
-            get
-            {
-                if (clientService == null)
-                    clientService = new ClientService(unitOfWork, mapper, ImageHandleService,userManager);
-                return clientService;
-            }
-        }
-
-        public IUsersService UsersService
-        {
-            get
-            {
-                if (users == null)
-                    users = new UsersService(userManager, mapper, unitOfWork);
-                return users;
-            }
-        }
-
-        public IAccountService AccountService
-        {
-            get
-            {
-                if (account == null)
-                    account = new AccountService(userManager, mapper, signInManager);
-                return account;
-            }
-        }
-
         public IImageHandleService ImageHandleService => imageHandleService ??= new ImageHandleService();
         public ICoachService CoachService => coachService ??= new CoachService(unitOfWork, mapper, ImageHandleService);
         public IAnatomyService AnatomyService => anatomyService ??= new AnatomyService(unitOfWork, mapper, ImageHandleService);
-        public IClientService ClientService => clientService ??= new ClientService(unitOfWork, mapper, ImageHandleService);
+        public IClientService ClientService => clientService ??= new ClientService(unitOfWork, mapper, ImageHandleService, userManager);
         public IEquipmentService EquipmentService => equipmentService ??= new EquipmentService(unitOfWork, mapper, ImageHandleService);
-        //public IUsers UsersService => users ??= new UsersService(userManager, mapper);
         public IDietPlan DietPlanService => dietPlanService ??= new DietPlanService(unitOfWork, mapper);
         public IPackageAppService PackageAppService => packageAppService ??= new PackageAppService(unitOfWork, mapper);
-        public IUsersService UsersService => users ??= new UsersService(userManager, mapper);
-        public IAccountService AccountService => account ??= new AccountService(userManager, mapper,signInManager);
-        //public IUsersService UsersService => users ??= new UsersService(userManager, mapper);
-        public IAccountService AccountService => account ??= new AccountService(userManager, mapper, signInManager);
+        public IUsersService UsersService => users ??= new UsersService(userManager, mapper, unitOfWork);
+        public IAccountService AccountService => account ??= new AccountService(userManager, mapper, signInManager, ClientService);
         public IAdminService AdminService => adminService ??= new AdminService(unitOfWork, userManager);
         public IDailyLogService DailyLogService => dailyLogService ??= new DailyLogService(unitOfWork);
-        public IClientDashboardService ClientDashboardService => clientDashboardService
-            ??= new ClientDashboardService(unitOfWork, ClientService, CoachService,imageHandleService);
+        public IClientDashboardService ClientDashboardService => clientDashboardService ??= new ClientDashboardService(unitOfWork, ClientService, CoachService, ImageHandleService, httpContextAccessor);
+        public IClientOnCoachesService clientOnCoachesService => _clientOnCoachesService ??= new ClientOnCoachesService(unitOfWork);
+        public IExercisePlanService ExercisePlanService => exercisePlanService ??= new ExercisePlanService(unitOfWork,mapper);
+        public IExercisePlanDetailService ExercisePlanDetailService => exercisePlanDetailService ??= new ExercisePlanDetailService(unitOfWork);
 
 
-        public IAdminService AdminService
-        {
-            get
-            {
-                if (adminService == null)
-                    adminService = new AdminService(unitOfWork, userManager);
-                return adminService;
-            }
-        }
 
         // Repositories
-        public IEquipmentRepository EquipmentRepository
-        {
-            get
-            {
-                if (equipmentRepository == null)
-                    equipmentRepository = new EquipmentRepository(context);
-                return equipmentRepository;
-            }
-        }
-
-        public IAnatomyRepository AnatomyRepository
-        {
-            get
-            {
-                if (anatomyRepository == null)
-                    anatomyRepository = new AnatomyRepository(context);
-                return anatomyRepository;
-            }
-        }
-
-        public IMuscleRepository MuscleRepository
-        {
-            get
-            {
-                if (muscleRepository == null)
-                    muscleRepository = new MuscleRepository(context);
-                return muscleRepository;
-            }
-        }
-
-        public ICoachRepository CoachRepository
-        {
-            get
-            {
-                if (coachRepository == null)
-                    coachRepository = new CoachRepository(context);
-                return coachRepository;
-            }
-        }
-
-        public IClientRepository ClientRepository
-        {
-            get
-            {
-                if (clientRepository == null)
-                    clientRepository = new ClientRepository(context);
-                return clientRepository;
-            }
-        }
         public IEquipmentRepository EquipmentRepository => equipmentRepository ??= new EquipmentRepository(context);
         public IAnatomyRepository AnatomyRepository => anatomyRepository ??= new AnatomyRepository(context);
         public IMuscleRepository MuscleRepository => muscleRepository ??= new MuscleRepository(context);
@@ -210,25 +106,10 @@ namespace FitVerse.Data.UnitOfWork
         public IDailyLogRepository DailyLogRepository => dailyLogRepository ??= new DailyLogRepository(context);
         public IExercisePlanDetailRepository ExercisePlanDetailRepository => exercisePlanDetailRepository ??= new ExercisePlanDetailRepository(context);
         public IDietPlanRepository DietPlanRepository => dietPlanRepository ??= new DietPlanRepository(context);
-
         public IExerciseRepository ExerciseRepository => new ExersiceRepository(context);
-        public IExercisePlanRepository ExercisePlanRepository => new ExercisePlanRepository(context);
+        public IExercisePlanRepository ExercisePlanRepository => exercisePlanRepository ??= new ExercisePlanRepository(context);
         public ICoachPackageRepository CoachPackageRepository => new CoachPackageRepository(context);
-
         public ISpecialtiesRepository SpecialtiesRepository => new SpecialityRepository(context);
-
-        public ICoachSpecialtiesRepository CoachSpecialtiesRepository =>  new CoachSpecialtiesRepository(context);
-
-         //public IClientOnCoachesService clientOnCoachesService =>  new ClientOnCoachesService(unitOfWork);
-
-        public IExercisePlanDetailRepository ExercisePlanDetailRepository => new ExercisePlanDetailRepository(context);
-
-        public IExercisePlanRepository ExercisePlanRepository => new ExercisePlanRepository(context);
-        //public IDietPlan DietPlanService => throw new NotImplementedException();
-
-        public ISpecialtiesRepository SpecialtiesRepository => throw new NotImplementedException();
-
-        IClientOnCoachesService IUnitOFWorkService.clientOnCoachesService => new ClientOnCoachesService(unitOfWork);
-        public ICoachSpecialtiesRepository CoachSpecialtiesRepository => throw new NotImplementedException();
+        public ICoachSpecialtiesRepository CoachSpecialtiesRepository => new CoachSpecialtiesRepository(context);
     }
 }

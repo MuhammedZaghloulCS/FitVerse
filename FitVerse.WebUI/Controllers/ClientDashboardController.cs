@@ -1,9 +1,11 @@
 ﻿using FitVerse.Core.IUnitOfWorkServices;
 using FitVerse.Core.ViewModels.ClientDashboard;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FitVerse.Web.Controllers
 {
+    [Authorize(Roles = "Client")]
     public class ClientDashboardController : Controller
     {
         private readonly IUnitOFWorkService _unitOfWorkService;
@@ -13,11 +15,13 @@ namespace FitVerse.Web.Controllers
             _unitOfWorkService = unitOfWorkService;
         }
 
-        public IActionResult Dashboard(string clientId = "1")
+        public IActionResult Dashboard()
         {
-            var model = _unitOfWorkService.ClientDashboardService.GetClientDashboard(clientId);
+            var model = _unitOfWorkService.ClientDashboardService.GetClientDashboard();
             if (model == null)
                 return NotFound("Client or Coach not found");
+            if (model.CoachName == null)
+                return RedirectToAction("ClientCoaches", "Coach");
 
             return View(model);
         }

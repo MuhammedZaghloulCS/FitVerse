@@ -14,7 +14,7 @@ namespace FitVerse.Data.Models
         public string? Description { get; set; }
 
         public int AnatomyId { get; set; }
-        public string ImagePath{get;set;}
+        public string? ImagePath{get;set;}
         public virtual Anatomy? Anatomy { get; set; }
 
         public virtual ICollection<Exercise>? Exercises { get; set; } = new HashSet<Exercise>();

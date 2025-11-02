@@ -299,7 +299,6 @@ namespace FitVerse.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Coaches");
-<<<<<<< HEAD
 
                     b.HasData(
                         new
@@ -350,8 +349,6 @@ namespace FitVerse.Data.Migrations
                             About = "Nutrition and weight loss expert with balanced diet programs.",
                             ExperienceYears = 6
                         });
-=======
->>>>>>> a8322c205f4414005279601e993ea357a36c2c50
                 });
 
             modelBuilder.Entity("FitVerse.Data.Models.CoachFeedback", b =>
@@ -408,8 +405,56 @@ namespace FitVerse.Data.Migrations
                     b.HasIndex("SpecialtyId");
 
                     b.ToTable("CoachSpecialties");
-<<<<<<< HEAD
-=======
+
+                    b.HasData(
+                        new
+                        {
+                            CoachId = "C1",
+                            SpecialtyId = 1,
+                            Certification = ""
+                        },
+                        new
+                        {
+                            CoachId = "C2",
+                            SpecialtyId = 2,
+                            Certification = ""
+                        },
+                        new
+                        {
+                            CoachId = "C3",
+                            SpecialtyId = 3,
+                            Certification = ""
+                        },
+                        new
+                        {
+                            CoachId = "C4",
+                            SpecialtyId = 4,
+                            Certification = ""
+                        },
+                        new
+                        {
+                            CoachId = "C5",
+                            SpecialtyId = 5,
+                            Certification = ""
+                        },
+                        new
+                        {
+                            CoachId = "C6",
+                            SpecialtyId = 6,
+                            Certification = ""
+                        },
+                        new
+                        {
+                            CoachId = "C7",
+                            SpecialtyId = 7,
+                            Certification = ""
+                        },
+                        new
+                        {
+                            CoachId = "C8",
+                            SpecialtyId = 8,
+                            Certification = ""
+                        });
                 });
 
             modelBuilder.Entity("FitVerse.Data.Models.DailyLog", b =>
@@ -463,7 +508,6 @@ namespace FitVerse.Data.Migrations
                     b.HasIndex("CoachId");
 
                     b.ToTable("DailyLogs", (string)null);
->>>>>>> eceab64f0ae8674aad19c284ec8ac9dcb6243e52
                 });
 
             modelBuilder.Entity("FitVerse.Data.Models.DietPlan", b =>
@@ -810,7 +854,6 @@ namespace FitVerse.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImagePath")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -1002,6 +1045,56 @@ namespace FitVerse.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Specialties");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Building muscle and power",
+                            Name = "Strength Training"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Cardiovascular fitness",
+                            Name = "Cardio & HIIT"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Mobility and stretching",
+                            Name = "Flexibility & Yoga"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "High-intensity functional training",
+                            Name = "CrossFit"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "Combat sports training",
+                            Name = "Boxing & MMA"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Description = "Muscle hypertrophy focus",
+                            Name = "Bodybuilding"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Description = "Distance and stamina",
+                            Name = "Running & Endurance"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Description = "Fat loss and nutrition",
+                            Name = "Weight Loss"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
