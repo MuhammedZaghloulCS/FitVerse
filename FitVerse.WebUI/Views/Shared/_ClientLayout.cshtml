@@ -488,6 +488,406 @@
             }
         }
 
+        /* Chat Interface Styles */
+        .modern-btn {
+            border-radius: 8px;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .conversations-panel {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .conversations-search {
+            padding: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .search-wrapper {
+            position: relative;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            z-index: 10;
+        }
+
+        .modern-search-input {
+            padding-left: 2.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .conversations-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .section-header {
+            padding: 0.75rem 1rem;
+            background: #f8fafc;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .section-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #64748b;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .chat-item, .coach-item {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .chat-item:hover, .coach-item:hover {
+            background: #f8fafc;
+        }
+
+        .chat-item.active {
+            background: #f0f9ff;
+            border-left: 3px solid #6366f1;
+        }
+
+        .chat-content, .coach-content {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .chat-avatar-wrapper, .coach-avatar-wrapper {
+            position: relative;
+        }
+
+        .chat-avatar, .coach-avatar {
+            position: relative;
+        }
+
+        .avatar-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .status-indicator {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 12px;
+            height: 12px;
+            border: 2px solid white;
+            border-radius: 50%;
+        }
+
+        .status-indicator.online {
+            background: #10b981;
+        }
+
+        .status-indicator.offline {
+            background: #94a3b8;
+        }
+
+        .chat-info, .coach-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .chat-name, .coach-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin: 0 0 0.25rem 0;
+            color: #1f2937;
+        }
+
+        .chat-message, .coach-about {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-time {
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+
+        .unread-badge {
+            background: #6366f1;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 10px;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        .modern-chat-container {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .modern-chat-header {
+            padding: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            background: #f8fafc;
+        }
+
+        .chat-header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header-user {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .chat-header-avatar {
+            position: relative;
+        }
+
+        .chat-header-info h6 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .chat-header-info p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .chat-header-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .modern-btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .modern-chat-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            background: #fafbfc;
+        }
+
+        .chat-welcome-state {
+            text-align: center;
+            padding: 2rem;
+            color: #6b7280;
+        }
+
+        .welcome-icon {
+            font-size: 3rem;
+            color: #d1d5db;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-subtitle {
+            margin-bottom: 2rem;
+        }
+
+        .welcome-features {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .feature-item i {
+            color: #6366f1;
+        }
+
+        .modern-chat-input {
+            padding: 1rem;
+            border-top: 1px solid #f1f5f9;
+            background: white;
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .message-input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        .modern-message-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .modern-send-btn {
+            background: #6366f1;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .modern-send-btn:hover {
+            background: #5b5bd6;
+        }
+
+        .message-bubble {
+            margin-bottom: 1rem;
+            max-width: 70%;
+        }
+
+        .message-bubble.sent {
+            margin-left: auto;
+        }
+
+        .message-bubble.received {
+            margin-right: auto;
+        }
+
+        .message-content {
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .message-bubble.sent .message-content {
+            background: #6366f1;
+            color: white;
+        }
+
+        .message-bubble.received .message-content {
+            background: white;
+            border: 1px solid #e2e8f0;
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            margin-top: 0.25rem;
+            padding: 0 1rem;
+        }
+
+        .typing-indicator-small {
+            display: flex;
+            gap: 2px;
+            padding: 0.5rem;
+        }
+
+        .typing-indicator-small span {
+            width: 6px;
+            height: 6px;
+            background: #9ca3af;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-indicator-small span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator-small span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @@keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .active-chats-empty {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: #9ca3af;
+        }
+
+        .active-chats-empty i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .chat-item-enter {
+            animation: slideInLeft 0.3s ease-out;
+        }
+
+        @@keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
         /* Footer */
         footer {
             border-top: 1px solid #e5e7eb;
@@ -761,15 +1161,9 @@
                         </a>
                     </div>
                     <div class="nav-item">
-                        <a class="nav-link @(ViewBag.Active == "Coaches" ? "active" : "")" href="~/Client/Coaches">
-                            <div class="nav-icon"><i class="bi bi-person-badge"></i></div>
+                        <a class="nav-link @(ViewBag.Active == "Coaches" ? "active" : "")" href="@Url.Action("ClientCoaches", "Coach")">
+                            <div class="nav-icon"><i class="bi bi-people"></i></div>
                             <span class="nav-text">Browse Coaches</span>
-                        </a>
-                    </div>
-                    <div class="nav-item">
-                        <a class="nav-link @(ViewBag.Active == "Packages" ? "active" : "")" href="~/Client/Packages">
-                            <div class="nav-icon"><i class="bi bi-box-seam"></i></div>
-                            <span class="nav-text">Packages</span>
                         </a>
                     </div>
                 </div>
@@ -801,7 +1195,7 @@
                 <div class="nav-section">
                     <div class="nav-section-title">Communication</div>
                     <div class="nav-item">
-                        <a class="nav-link @(ViewBag.Active == "Chat" ? "active" : "")" href="~/Client/Chat">
+                        <a class="nav-link @(ViewBag.Active == "Chat" ? "active" : "")" href="@Url.Action("ClientChat", "Chat")">
                             <div class="nav-icon"><i class="bi bi-chat-dots"></i></div>
                             <span class="nav-text">Chat</span>
                         </a>

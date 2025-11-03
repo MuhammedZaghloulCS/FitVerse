@@ -1,88 +1,152 @@
 
 @{
-    ViewData["Title"] = "ClientChat";
+    ViewData["Title"] = "ClientChat - FitVerse";
     Layout = "~/Views/Shared/_ClientLayout.cshtml";
+    ViewBag.Active = "Chat";
+    ViewBag.PageTitle = "Messages";
 }
 
-<div class="row g-4">
-    <!-- Conversations List -->
-    <div class="col-lg-4">
-        <div class="card-custom" style="height: 700px; display: flex; flex-direction: column;">
-            <div class="card-header-custom">
-                <i class="bi bi-chat-dots me-2"></i> Messages
-            </div>
-            <div class="p-3 border-bottom">
-                <input type="text" class="form-control-custom" placeholder="Search conversations...">
-            </div>
-            <div id="conversationsList" class="flex-grow-1 overflow-auto">
-                <!-- Active Chats Section -->
-                <div id="activeChatsSection">
-                    <!-- This will be populated by JavaScript -->
-                </div>
-                
-                <!-- Available Coaches Section -->
-                <div class="p-3 border-bottom bg-light">
-                    <h6 class="mb-2 text-muted">Available Coaches</h6>
-                </div>
-                
-                @if (ViewBag.AvailableCoaches != null)
-                {
-                    @foreach (var coach in (IEnumerable<FitVerse.Data.Models.Coach>)ViewBag.AvailableCoaches)
-                    {
-                        <div class="p-3 border-bottom coach-item" style="cursor: pointer;" data-coach-id="@coach.UserId" data-coach-name="@coach.User.FullName">
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="position-relative">
-                                    <img src="@(string.IsNullOrEmpty(coach.User.ImagePath) ? $"https://ui-avatars.com/api/?name={coach.User.FullName}&background=10b981&color=fff" : coach.User.ImagePath)" 
-                                         alt="@coach.User.FullName" style="width: 50px; height: 50px; border-radius: 50%;">
-                                    <span class="position-absolute bottom-0 end-0" style="width: 12px; height: 12px; background: @(coach.User.Status=="Active" ? "#10b981" : "#94a3b8"); border: 2px solid white; border-radius: 50%;"></span>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <div class="fw-semibold">@coach.User.FullName</div>
-                                        <small class="text-muted">@coach.ExperienceYears years exp</small>
-                                    </div>
-                                    <div class="small text-muted text-truncate">@coach.About</div>
-                                </div>
-                                <button class="btn btn-sm btn-primary start-chat-btn" data-coach-id="@coach.UserId">
-                                    <i class="bi bi-chat-dots"></i>
-                                </button>
-                            </div>
-                        </div>
-                    }
-                }
+<!-- Main Content -->
+<div class="container-fluid px-4 py-4">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">
+                <i class="bi bi-chat-dots me-2 text-primary"></i>Messages
+            </h2>
+            <p class="text-muted mb-0">Communicate with your coaches in real-time</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-primary modern-btn" id="refreshChatsBtn">
+                <i class="bi bi-arrow-clockwise me-2"></i>Refresh
+            </button>
+            <div class="dropdown">
+                <button class="btn btn-secondary modern-btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="bi bi-funnel me-2"></i>Filter
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#" data-filter="all">All Conversations</a></li>
+                    <li><a class="dropdown-item" href="#" data-filter="unread">Unread Messages</a></li>
+                    <li><a class="dropdown-item" href="#" data-filter="online">Online Coaches</a></li>
+                </ul>
             </div>
         </div>
     </div>
 
-    <!-- Chat Window -->
-    <div class="col-lg-8">
-        <div class="chat-container">
-            <!-- Chat Header -->
-            <div id="chatHeader" class="chat-header" style="display: none;">
-                <!-- This will be populated dynamically when a chat is selected -->
-            </div>
+    <!-- Chat Interface -->
+    <div class="row g-3">
+        <!-- Conversations List -->
+        <div class="col-lg-4 col-xl-3">
+            <div class="conversations-panel">
+                <!-- Search Bar -->
+                <div class="conversations-search">
+                    <div class="search-wrapper">
+                        <i class="bi bi-search search-icon"></i>
+                        <input type="text" id="conversationSearch" class="form-control modern-search-input" 
+                               placeholder="Search conversations...">
+                    </div>
+                </div>
 
-            <!-- Chat Messages -->
-            <div id="chatMessages" class="chat-messages">
-                <div class="text-center p-4 text-muted">
-                    <i class="bi bi-chat-dots fs-1"></i>
-                    <p class="mt-2">Select a chat to start messaging</p>
+                <!-- Conversations List -->
+                <div id="conversationsList" class="conversations-list">
+                    <!-- Active Chats Section -->
+                    <div id="activeChatsSection">
+                        <!-- This will be populated by JavaScript -->
+                    </div>
+                    
+                    <!-- Available Coaches Section -->
+                    <div class="section-header">
+                        <h6 class="section-title">
+                            <i class="bi bi-people me-2"></i>Available Coaches
+                        </h6>
+                    </div>
+                    
+                    <div class="coaches-list">
+                        @if (ViewBag.AvailableCoaches != null)
+                        {
+                            @foreach (var coach in (IEnumerable<FitVerse.Data.Models.Coach>)ViewBag.AvailableCoaches)
+                            {
+                                <div class="coach-item" data-coach-id="@coach.UserId" data-coach-name="@coach.User.FullName">
+                                    <div class="coach-content">
+                                        <div class="coach-avatar-wrapper">
+                                            <div class="coach-avatar">
+                                                <img src="@(string.IsNullOrEmpty(coach.User.ImagePath) ? $"https://ui-avatars.com/api/?name={coach.User.FullName}&background=10b981&color=fff" : coach.User.ImagePath)" 
+                                                     alt="@coach.User.FullName" class="avatar-img">
+                                                <span class="status-indicator @(coach.User.Status == "Active" ? "online" : "offline")"></span>
+                                            </div>
+                                        </div>
+                                        <div class="coach-info">
+                                            <div class="coach-header">
+                                                <h6 class="coach-name">@coach.User.FullName</h6>
+                                                <small class="coach-experience">@coach.ExperienceYears years exp</small>
+                                            </div>
+                                            <div class="coach-about">@coach.About</div>
+                                        </div>
+                                        <button class="btn btn-primary btn-sm start-chat-btn" data-coach-id="@coach.UserId">
+                                            <i class="bi bi-chat-dots"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Chat Input -->
-            <div class="chat-input-container">
-                <div class="chat-input-wrapper">
-                    <button class="btn btn-light rounded-circle" style="width: 45px; height: 45px;">
-                        <i class="bi bi-paperclip"></i>
-                    </button>
-                    <button class="btn btn-light rounded-circle" style="width: 45px; height: 45px;">
-                        <i class="bi bi-emoji-smile"></i>
-                    </button>
-                    <input type="text" id="messageInput" placeholder="Type your message..." class="form-control">
-                    <button id="sendButton" class="chat-send-btn">
-                        <i class="bi bi-send-fill"></i>
-                    </button>
+        <!-- Chat Window -->
+        <div class="col-lg-8 col-xl-9">
+            <div class="modern-chat-container">
+                <!-- Chat Header -->
+                <div id="chatHeader" class="modern-chat-header" style="display: none;">
+                    <!-- This will be populated dynamically when a chat is selected -->
+                </div>
+
+                <!-- Chat Messages -->
+                <div id="chatMessages" class="modern-chat-messages">
+                    <div class="chat-welcome-state">
+                        <div class="welcome-icon">
+                            <i class="bi bi-chat-dots"></i>
+                        </div>
+                        <h4 class="welcome-title">Welcome to FitVerse Chat</h4>
+                        <p class="welcome-subtitle">Select a conversation or start a new chat with your coaches</p>
+                        <div class="welcome-features">
+                            <div class="feature-item">
+                                <i class="bi bi-lightning-charge"></i>
+                                <span>Real-time messaging</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="bi bi-check-circle"></i>
+                                <span>Read receipts</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="bi bi-three-dots"></i>
+                                <span>Typing indicators</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Input -->
+                <div class="modern-chat-input">
+                    <div class="chat-input-wrapper">
+                        <button class="btn btn-light modern-btn-icon" title="Attach file">
+                            <i class="bi bi-paperclip"></i>
+                        </button>
+                        <button class="btn btn-light modern-btn-icon" title="Add emoji">
+                            <i class="bi bi-emoji-smile"></i>
+                        </button>
+                        <div class="message-input-wrapper">
+                            <input type="text" id="messageInput" placeholder="Type your message..." 
+                                   class="form-control modern-message-input">
+                            <div class="typing-indicator-small" id="typingIndicatorSmall" style="display: none;">
+                                <span></span><span></span><span></span>
+                            </div>
+                        </div>
+                        <button id="sendButton" class="modern-send-btn">
+                            <i class="bi bi-send-fill"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -160,54 +224,121 @@
                 .catch(error => console.error('Error loading chats:', error));
         }
 
-        // Display chats
+        // Display chat list
         function displayChats(chats) {
-            const activeChatsSection = document.getElementById('activeChatsSection');
-            activeChatsSection.innerHTML = '';
+            const section = document.getElementById('activeChatsSection');
+            section.innerHTML = '';
 
-            if (chats && chats.length > 0) {
+            if (chats?.length) {
+                // Create header with chat count
                 const header = document.createElement('div');
-                header.className = 'p-3 border-bottom bg-light';
-                header.innerHTML = '<h6 class="mb-2 text-muted">Active Chats</h6>';
-                activeChatsSection.appendChild(header);
+                header.className = 'section-header';
+                header.innerHTML = `<h6 class="section-title"><i class="bi bi-chat-left-dots me-2"></i>Active Chats (${chats.length})</h6>`;
+                section.appendChild(header);
 
-                chats.forEach(chat => {
-                    const chatElement = createChatElement(chat);
-                    activeChatsSection.appendChild(chatElement);
+                // Sort chats by latest message time and unread status
+                const sortedChats = chats.sort((a, b) => {
+                    // Prioritize unread chats
+                    if (a.UnreadCount > 0 && b.UnreadCount === 0) return -1;
+                    if (a.UnreadCount === 0 && b.UnreadCount > 0) return 1;
+                    
+                    // Then sort by latest message time
+                    return new Date(b.LatestMessageTime) - new Date(a.LatestMessageTime);
                 });
+
+                // Create chat elements with staggered animation
+                sortedChats.forEach((chat, index) => {
+                    const el = createChatElement(chat);
+                    el.style.animationDelay = `${index * 50}ms`;
+                    el.classList.add('chat-item-enter');
+                    section.appendChild(el);
+                });
+            } else {
+                // Show empty state
+                const emptyState = document.createElement('div');
+                emptyState.className = 'active-chats-empty';
+                emptyState.innerHTML = `
+                    <i class="bi bi-chat-dots"></i>
+                    <p>No active conversations yet</p>
+                    <small>Start a conversation with your coaches</small>
+                `;
+                section.appendChild(emptyState);
             }
         }
 
-        // Create chat item
+        // Chat item
         function createChatElement(chat) {
             const div = document.createElement('div');
-            div.className = 'p-3 border-bottom chat-item';
-            div.style.cursor = 'pointer';
+            div.className = 'chat-item modern-chat-item';
             div.dataset.chatId = chat.Id;
             div.dataset.receiverId = chat.OtherUserId;
+            div.dataset.userName = chat.OtherUserName;
+            div.setAttribute('tabindex', '0');
+            div.setAttribute('role', 'button');
+            div.setAttribute('aria-label', `Chat with ${chat.OtherUserName}`);
 
-            const unreadBadge = chat.UnreadCount > 0 ?
-                `<span class="badge bg-primary rounded-circle" style="width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem;">${chat.UnreadCount}</span>` : '';
+            // Enhanced unread badge with count-based styling
+            let unreadBadge = '';
+            if (chat.UnreadCount > 0) {
+                const badgeClass = chat.UnreadCount > 9 ? 'high-count' : 
+                                 chat.UnreadCount > 3 ? 'medium-count' : '';
+                const displayCount = chat.UnreadCount > 99 ? '99+' : chat.UnreadCount;
+                unreadBadge = `<span class="unread-badge ${badgeClass}">${displayCount}</span>`;
+            }
+
+            // Enhanced time display
+            const timeClass = isRecentMessage(chat.LatestMessageTime) ? 'recent' : '';
+            const formattedTime = formatMessageTime(chat.LatestMessageTime);
+
+            // Message preview with type detection
+            const messagePreview = formatMessagePreview(chat.LatestMessage);
+
+            // User name with proper formatting
+            const displayName = formatUserName(chat.OtherUserName);
 
             div.innerHTML = `
-                <div class="d-flex align-items-center gap-3">
-                    <div class="position-relative">
-                        <img src="${chat.OtherUserAvatar}" alt="User" style="width: 50px; height: 50px; border-radius: 50%;">
-                        <span class="position-absolute bottom-0 end-0 user-status"
-                              style="width: 12px; height: 12px; background: ${chat.IsOnline ? '#10b981' : '#94a3b8'}; border: 2px solid white; border-radius: 50%;"></span>
-                    </div>
-                    <div class="flex-grow-1">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <div class="fw-semibold">${chat.OtherUserName}</div>
-                            <small class="text-muted">${chat.LatestMessageTime}</small>
+                <div class="chat-content">
+                    <div class="chat-avatar-wrapper">
+                        <div class="chat-avatar">
+                            <img src="${chat.OtherUserAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=10b981&color=fff`}" 
+                                 alt="${displayName}" 
+                                 class="avatar-img"
+                                 onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=10b981&color=fff'">
+                            <span class="status-indicator ${chat.IsOnline ? 'online' : 'offline'}"></span>
                         </div>
-                        <div class="small text-muted text-truncate">${chat.LatestMessage}</div>
+                    </div>
+                    <div class="chat-info">
+                        <h6 class="chat-name">${displayName}</h6>
+                        <p class="chat-message ${timeClass}">${messagePreview}</p>
+                        <span class="chat-time ${timeClass}">${formattedTime}</span>
                     </div>
                     ${unreadBadge}
                 </div>
             `;
 
-            div.addEventListener('click', () => selectChat(chat.Id, chat.OtherUserId, chat.OtherUserName));
+            // Enhanced click handler with keyboard support
+            const clickHandler = () => selectChat(chat.Id, chat.OtherUserId, chat.OtherUserName);
+            div.addEventListener('click', clickHandler);
+            div.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    clickHandler();
+                }
+            });
+
+            // Add hover effects for better UX
+            div.addEventListener('mouseenter', () => {
+                if (!div.classList.contains('active')) {
+                    div.style.transform = 'translateY(-2px) translateX(4px)';
+                }
+            });
+
+            div.addEventListener('mouseleave', () => {
+                if (!div.classList.contains('active')) {
+                    div.style.transform = '';
+                }
+            });
+
             return div;
         }
 
@@ -326,20 +457,43 @@
         }
 
         function updateChatHeader(receiverName, receiverId) {
-            const chatHeader = document.getElementById('chatHeader');
-            chatHeader.innerHTML = `
-                <img src="https://ui-avatars.com/api/?name=${receiverName}&background=10b981&color=fff" alt="User" class="user-avatar">
-                <div class="user-info flex-grow-1">
-                    <h6>${receiverName}</h6>
-                    <p>Coach • Online</p>
-                </div>
-                <div class="d-flex gap-2">
-                    <button class="btn btn-sm btn-light rounded-circle"><i class="bi bi-telephone"></i></button>
-                    <button class="btn btn-sm btn-light rounded-circle"><i class="bi bi-camera-video"></i></button>
-                    <button class="btn btn-sm btn-light rounded-circle"><i class="bi bi-three-dots-vertical"></i></button>
+            const header = document.getElementById('chatHeader');
+            header.innerHTML = `
+                <div class="chat-header-content">
+                    <div class="chat-header-user">
+                        <div class="chat-header-avatar">
+                            <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(receiverName)}&background=10b981&color=fff" 
+                                 alt="${receiverName}" class="avatar-img">
+                            <span class="status-indicator online"></span>
+                        </div>
+                        <div class="chat-header-info">
+                            <h6 class="chat-header-name">${receiverName}</h6>
+                            <p class="chat-header-status">Coach • <span class="status-text">Online</span></p>
+                        </div>
+                    </div>
+                    <div class="chat-header-actions">
+                        <button class="btn btn-light modern-btn-icon" title="Voice call">
+                            <i class="bi bi-telephone"></i>
+                        </button>
+                        <button class="btn btn-light modern-btn-icon" title="Video call">
+                            <i class="bi bi-camera-video"></i>
+                        </button>
+                        <div class="dropdown">
+                            <button class="btn btn-light modern-btn-icon dropdown-toggle" 
+                                    data-bs-toggle="dropdown" title="More options">
+                                <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>View Profile</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-bell-slash me-2"></i>Mute</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-trash me-2"></i>Delete Chat</a></li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             `;
-            chatHeader.style.display = 'flex';
+            header.style.display = 'block';
         }
 
         function markChatAsRead(chatId) {
@@ -368,24 +522,138 @@
             loadUserChats();
         }
 
+        // Utility functions for enhanced UI
+        function isRecentMessage(timestamp) {
+            const messageTime = new Date(timestamp);
+            const now = new Date();
+            const diffInMinutes = (now - messageTime) / (1000 * 60);
+            return diffInMinutes < 30; // Consider messages within 30 minutes as recent
+        }
+
+        function formatMessageTime(timestamp) {
+            const messageTime = new Date(timestamp);
+            const now = new Date();
+            const diffInDays = Math.floor((now - messageTime) / (1000 * 60 * 60 * 24));
+            
+            if (diffInDays === 0) {
+                return messageTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            } else if (diffInDays === 1) {
+                return 'Yesterday';
+            } else if (diffInDays < 7) {
+                return messageTime.toLocaleDateString([], { weekday: 'short' });
+            } else {
+                return messageTime.toLocaleDateString([], { month: 'short', day: 'numeric' });
+            }
+        }
+
+        function formatMessagePreview(message) {
+            if (!message) return 'No messages yet';
+            
+            // Handle different message types
+            if (message.includes('📷') || message.includes('🖼️')) {
+                return '📷 Photo';
+            } else if (message.includes('📁') || message.includes('📎')) {
+                return '📎 File';
+            } else if (message.length > 50) {
+                return message.substring(0, 47) + '...';
+            }
+            return message;
+        }
+
+        function formatUserName(name) {
+            if (!name) return 'Unknown User';
+            return name.length > 20 ? name.substring(0, 17) + '...' : name;
+        }
+
+        // Enhanced search functionality
+        function performSearch() {
+            const searchTerm = document.getElementById('conversationSearch').value.toLowerCase().trim();
+            
+            // Search in active chats
+            document.querySelectorAll('.chat-item').forEach(item => {
+                const chatName = item.querySelector('.chat-name')?.textContent.toLowerCase() || '';
+                const chatMessage = item.querySelector('.chat-message')?.textContent.toLowerCase() || '';
+                
+                if (chatName.includes(searchTerm) || chatMessage.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            // Search in available coaches
+            document.querySelectorAll('.coach-item').forEach(item => {
+                const coachName = item.querySelector('.coach-name')?.textContent.toLowerCase() || '';
+                const coachAbout = item.querySelector('.coach-about')?.textContent.toLowerCase() || '';
+                
+                if (coachName.includes(searchTerm) || coachAbout.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Filter functionality
+        function applyFilter(filter) {
+            document.querySelectorAll('.chat-item').forEach(item => {
+                const unreadBadge = item.querySelector('.unread-badge');
+                const isOnline = item.querySelector('.status-indicator.online');
+                
+                switch(filter) {
+                    case 'unread':
+                        item.style.display = unreadBadge ? 'block' : 'none';
+                        break;
+                    case 'online':
+                        item.style.display = isOnline ? 'block' : 'none';
+                        break;
+                    default:
+                        item.style.display = 'block';
+                }
+            });
+        }
+
         // Event listeners
         document.addEventListener('DOMContentLoaded', function() {
             initializeSignalR();
 
+            // Message sending
             document.getElementById('sendButton').addEventListener('click', sendMessage);
-
             document.getElementById('messageInput').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     sendMessage();
                 }
             });
 
+            // Typing indicators
             document.getElementById('messageInput').addEventListener('input', function() {
                 startTyping();
                 clearTimeout(typingTimer);
                 typingTimer = setTimeout(stopTyping, 1000);
             });
 
+            // Search functionality
+            document.getElementById('conversationSearch').addEventListener('input', performSearch);
+
+            // Filter functionality
+            document.querySelectorAll('[data-filter]').forEach(filterBtn => {
+                filterBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const filter = this.getAttribute('data-filter');
+                    applyFilter(filter);
+                });
+            });
+
+            // Refresh button
+            document.getElementById('refreshChatsBtn').addEventListener('click', function() {
+                loadUserChats();
+                this.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Refreshing...';
+                setTimeout(() => {
+                    this.innerHTML = '<i class="bi bi-arrow-clockwise me-2"></i>Refresh';
+                }, 1000);
+            });
+
+            // Start chat buttons
             document.querySelectorAll('.start-chat-btn').forEach(button => {
                 button.addEventListener('click', function(e) {
                     e.stopPropagation();

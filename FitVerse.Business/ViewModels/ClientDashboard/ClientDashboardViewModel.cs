@@ -1,4 +1,6 @@
-﻿
+
+
+using FitVerse.Data.Models;
 
 namespace FitVerse.Core.ViewModels.ClientDashboard
 {
@@ -14,5 +16,7 @@ namespace FitVerse.Core.ViewModels.ClientDashboard
         public string DietPlanSummary { get; set; }
         public string CoachImagePath {get;set; }
         public string ClientImagePath { get; set; }
+        public bool HasActiveSubscription { get; set; } = true;
+        public List<Data.Models.Coach> AvailableCoaches { get; set; } = new List<Data.Models.Coach>();
     }
 }
