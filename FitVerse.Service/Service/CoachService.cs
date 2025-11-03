@@ -176,7 +176,7 @@ namespace FitVerse.Data.Service
                 var coachVMs = coaches.Select(c => new CoachWithPackagesVM
                 {
                     Id = c.Id,
-                    Name = c.User?.UserName ?? "Unknown",
+                    Name = c.User?.FullName ?? "Unknown",
                     ExperienceYears = c.ExperienceYears ?? 0,
                     Packages = c.CoachPackages.Select(cp => new PackagesVM
                     {

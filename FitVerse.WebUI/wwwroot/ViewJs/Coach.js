@@ -1,4 +1,4 @@
-﻿
+
 $(function () {
     $("#coachForm").submit(function (e) {
         e.preventDefault();
@@ -54,34 +54,88 @@ function LoadCoaches() {
                 let coachTableBody = $("#Data");
                 coachTableBody.empty();
 
-                coaches.forEach(coach => {
-                    let status = coach.IsActive ? "✅ Active" : "❌ Inactive";
-                    let row = `
+                if (coaches.length === 0) {
+                    coachTableBody.append(`
                         <tr>
-                            <td>${coach.Name}</td>
-                            <td>${coach.Name}</td>
-                            <td>${coach.Title}</td>
-                            <td>${coach.About}</td>
-                            <td><img src="${coach.ImagePath}" alt="${coach.Name}" width="80"/></td>
-                            <td>${status}</td>
-
-                            <td class="actions">
-                                <button type="button" onclick="getById('${coach.Id}')" class="btn-icon" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button type="button" onclick="DeleteCoach('${coach.Id}')" class="btn-icon text-danger" title="Delete">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
+                            <td colspan="5" class="text-center py-5">
+                                <div class="empty-state">
+                                    <i class="bi bi-person-badge"></i>
+                                    <h6>No coaches found</h6>
+                                    <p class="mb-0">Start by adding your first coach to the system.</p>
+                                </div>
                             </td>
-                        </tr>`;
-                    coachTableBody.append(row);
-                });
+                        </tr>
+                    `);
+                } else {
+                    coaches.forEach(coach => {
+                        // Determine experience level
+                        let experienceLevel = 'beginner';
+                        let experienceBadge = 'Beginner';
+                        if (coach.ExperienceYears > 10) {
+                            experienceLevel = 'expert';
+                            experienceBadge = 'Expert';
+                        } else if (coach.ExperienceYears > 5) {
+                            experienceLevel = 'advanced';
+                            experienceBadge = 'Advanced';
+                        } else if (coach.ExperienceYears > 2) {
+                            experienceLevel = 'intermediate';
+                            experienceBadge = 'Intermediate';
+                        }
+
+                        // Status badge
+                        let statusBadge = coach.IsActive 
+                            ? '<span class="coach-status active">Active</span>'
+                            : '<span class="coach-status inactive">Inactive</span>';
+
+                        // Avatar URL
+                        let avatarUrl = coach.ImagePath || `https://ui-avatars.com/api/?name=${encodeURIComponent(coach.Name)}&background=6366f1&color=fff`;
+
+                        let row = `
+                            <tr>
+                                <td class="coach-details">
+                                    <div class="d-flex align-items-center">
+                                        <img src="${avatarUrl}" alt="${coach.Name}" class="coach-avatar">
+                                        <div>
+                                            <div class="coach-name">${coach.Name}</div>
+                                            <p class="coach-title">${coach.Title || 'Fitness Coach'}</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="coach-experience">${coach.ExperienceYears || 0} Years</div>
+                                    <span class="experience-level ${experienceLevel}">${experienceBadge}</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="fw-semibold">${coach.PackageCount || 0}</span>
+                                    <small class="d-block text-muted">Packages</small>
+                                </td>
+                                <td class="text-center">${statusBadge}</td>
+                                <td class="text-center">
+                                    <div class="action-buttons">
+                                        <button type="button" onclick="getById('${coach.Id}')" 
+                                                class="btn btn-sm btn-outline-primary" title="Edit Coach">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button type="button" onclick="DeleteCoach('${coach.Id}')" 
+                                                class="btn btn-sm btn-outline-danger" title="Delete Coach">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>`;
+                        coachTableBody.append(row);
+                    });
+                }
+
+                // Update pagination info
+                $('#paginationInfo').text(`Showing ${coaches.length} of ${coaches.length} coaches`);
+                
             } else {
-                swal("❌ Error", res.message, "error");
+                Swal.fire("Error", res.message, "error");
             }
         },
         error: function () {
-            swal("⚠️ Warning", "An error occurred while fetching coaches.", "error");
+            Swal.fire("Warning", "An error occurred while fetching coaches.", "error");
         }
     });
 }
