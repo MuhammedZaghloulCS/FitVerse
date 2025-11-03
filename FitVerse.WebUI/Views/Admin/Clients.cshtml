@@ -1,0 +1,474 @@
+@model List<FitVerse.Core.ViewModels.Coach.ClientsVM>
+@{
+    ViewData["Title"] = "Clients Management";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card text-white" style="color:white;background: linear-gradient(90deg, #4f47e6, #6a5af9);">
+                <div class="card-header pb-0">
+                    <div class="d-lg-flex">
+                        <div>
+                            <h5 class="mb-0">All Clients</h5>
+                            <p class="text-sm mb-0">
+                                Manage and view all clients in the system
+                            </p>
+                        </div>
+                        <div class="ms-auto my-auto mt-lg-0 mt-4">
+                            <div class="ms-auto my-auto">
+                                <button class="btn bg-gradient-primary text-white btn-sm mb-0" type="button" data-bs-toggle="modal" data-bs-target="#addClientModal">
+                                    <i class="fas fa-plus"></i>&nbsp;&nbsp;Add New Client
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body px-0 pb-0">
+                    <!-- Search and Filter Section -->
+                    <div class="row px-4 mb-3">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                <input type="text" class="form-control" id="searchInput" placeholder="Search clients...">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <select class="form-select" id="statusFilter">
+                                <option value="">All Status</option>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Clients Table -->
+                    <div class="table-responsive">
+                        <table class="table table-flush" id="clientsTable">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Client</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Physical Info</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Goal</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Progress</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="clientsTableBody">
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2">
+                                            <div class="my-auto">
+                                                <img src="https://ui-avatars.com/api/?name=Ahmed+Khaled&background=28a745&color=fff"
+                                                     class="avatar avatar-sm rounded-circle me-2" alt="Client Image">
+                                            </div>
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">Ahmed Khaled</h6>
+                                                <p class="text-xs text-secondary mb-0">Age: 27 years</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <p class="text-sm font-weight-bold mb-0">Height: 178 cm</p>
+                                            <p class="text-sm mb-0">Weight: 76 kg</p>
+                                            <p class="text-xs text-secondary mb-0">Gender: Male</p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <p class="text-sm font-weight-bold mb-0">Muscle Gain</p>
+                                            <p class="text-xs text-secondary mb-0">
+                                                <span class="badge badge-sm bg-gradient-success">Muscle Gain</span>
+                                            </p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <p class="text-sm font-weight-bold mb-0">65%</p>
+                                            <div class="progress progress-sm">
+                                                <div class="progress-bar bg-gradient-success" role="progressbar" style="width: 65%"
+                                                     aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                            <p class="text-xs text-secondary mb-0">24 workouts</p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-sm bg-gradient-success">Active</span>
+                                        <p class="text-xs text-secondary mb-0">Joined: May 12, 2024</p>
+                                    </td>
+                                    <td class="align-middle">
+                                        <div class="dropdown">
+                                            <button class="btn btn-link text-secondary mb-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fa fa-ellipsis-v text-xs"></i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#">View Details</a></li>
+                                                <li><a class="dropdown-item" href="#">Edit</a></li>
+                                                <li><a class="dropdown-item" href="#">View Workouts</a></li>
+                                                <li><a class="dropdown-item" href="#">Assign Coach</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item text-warning" href="#">Deactivate</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2">
+                                            <div class="my-auto">
+                                                <img src="https://ui-avatars.com/api/?name=Sara+Hassan&background=28a745&color=fff"
+                                                     class="avatar avatar-sm rounded-circle me-2" alt="Client Image">
+                                            </div>
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">Sara Hassan</h6>
+                                                <p class="text-xs text-secondary mb-0">Age: 25 years</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <p class="text-sm font-weight-bold mb-0">Height: 165 cm</p>
+                                            <p class="text-sm mb-0">Weight: 60 kg</p>
+                                            <p class="text-xs text-secondary mb-0">Gender: Female</p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <p class="text-sm font-weight-bold mb-0">Weight Loss</p>
+                                            <p class="text-xs text-secondary mb-0">
+                                                <span class="badge badge-sm bg-gradient-warning">Weight Loss</span>
+                                            </p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <p class="text-sm font-weight-bold mb-0">40%</p>
+                                            <div class="progress progress-sm">
+                                                <div class="progress-bar bg-gradient-warning" role="progressbar" style="width: 40%"
+                                                     aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                            <p class="text-xs text-secondary mb-0">12 workouts</p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-sm bg-gradient-secondary">Inactive</span>
+                                        <p class="text-xs text-secondary mb-0">Joined: Jul 03, 2024</p>
+                                    </td>
+                                    <td class="align-middle">
+                                        <div class="dropdown">
+                                            <button class="btn btn-link text-secondary mb-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fa fa-ellipsis-v text-xs"></i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#">View Details</a></li>
+                                                <li><a class="dropdown-item" href="#">Edit</a></li>
+                                                <li><a class="dropdown-item" href="#">View Workouts</a></li>
+                                                <li><a class="dropdown-item" href="#">Assign Coach</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item text-success" href="#">Activate</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2">
+                                            <div class="my-auto">
+                                                <img src="https://ui-avatars.com/api/?name=Omar+Elgendy&background=28a745&color=fff"
+                                                     class="avatar avatar-sm rounded-circle me-2" alt="Client Image">
+                                            </div>
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">Omar Elgendy</h6>
+                                                <p class="text-xs text-secondary mb-0">Age: 30 years</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <p class="text-sm font-weight-bold mb-0">Height: 182 cm</p>
+                                            <p class="text-sm mb-0">Weight: 85 kg</p>
+                                            <p class="text-xs text-secondary mb-0">Gender: Male</p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <p class="text-sm font-weight-bold mb-0">General Fitness</p>
+                                            <p class="text-xs text-secondary mb-0">
+                                                <span class="badge badge-sm bg-gradient-info">General Fitness</span>
+                                            </p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <p class="text-sm font-weight-bold mb-0">80%</p>
+                                            <div class="progress progress-sm">
+                                                <div class="progress-bar bg-gradient-info" role="progressbar" style="width: 80%"
+                                                     aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                            <p class="text-xs text-secondary mb-0">30 workouts</p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-sm bg-gradient-success">Active</span>
+                                        <p class="text-xs text-secondary mb-0">Joined: Jan 21, 2024</p>
+                                    </td>
+                                    <td class="align-middle">
+                                        <div class="dropdown">
+                                            <button class="btn btn-link text-secondary mb-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fa fa-ellipsis-v text-xs"></i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#">View Details</a></li>
+                                                <li><a class="dropdown-item" href="#">Edit</a></li>
+                                                <li><a class="dropdown-item" href="#">View Workouts</a></li>
+                                                <li><a class="dropdown-item" href="#">Assign Coach</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item text-warning" href="#">Deactivate</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="d-flex justify-content-between align-items-center px-4 py-3">
+                        <div>
+                            <p class="text-sm text-secondary mb-0">
+                                Showing <span id="showingFrom">1</span> to <span id="showingTo">@Model.Count</span> of <span id="totalItems">@Model.Count</span> clients
+                            </p>
+                        </div>
+                        <nav aria-label="Clients pagination">
+                            <ul class="pagination pagination-sm mb-0" id="pagination">
+                                <!-- Pagination will be generated by JavaScript -->
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Client Modal -->
+<div class="modal fade" id="addClientModal" tabindex="-1" aria-labelledby="addClientModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addClientModalLabel">Add New Client</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addClientForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="clientName">Client Name</label>
+                                <input type="text" class="form-control" id="clientName" name="Name" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="clientAge">Age</label>
+                                <input type="number" class="form-control" id="clientAge" name="Age" min="16" max="100" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="clientHeight">Height (cm)</label>
+                                <input type="number" class="form-control" id="clientHeight" name="Height" min="100" max="250" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="clientWeight">Weight (kg)</label>
+                                <input type="number" class="form-control" id="clientWeight" name="StartWeight" min="30" max="300" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="clientGender">Gender</label>
+                                <select class="form-control" id="clientGender" name="Gender" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="clientGoal">Fitness Goal</label>
+                                <select class="form-control" id="clientGoal" name="Goal" required>
+                                    <option value="">Select Goal</option>
+                                    <option value="Weight Loss">Weight Loss</option>
+                                    <option value="Muscle Gain">Muscle Gain</option>
+                                    <option value="General Fitness">General Fitness</option>
+                                    <option value="Strength Training">Strength Training</option>
+                                    <option value="Endurance">Endurance</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="clientImage">Client Image</label>
+                        <input type="file" class="form-control" id="clientImage" name="ClientImageFile" accept="image/*">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveClient()">Save Client</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let currentPage = 1;
+        let pageSize = 10;
+        let currentSearch = '';
+
+        $(document).ready(function () {
+            // Search functionality
+            $('#searchInput').on('input', function () {
+                currentSearch = $(this).val();
+                currentPage = 1;
+                loadClients();
+            });
+
+            // Status filter
+            $('#statusFilter').on('change', function () {
+                currentPage = 1;
+                loadClients();
+            });
+        });
+
+        function loadClients() {
+            $.ajax({
+                url: '@Url.Action("GetClientsData", "Admin")',
+                type: 'GET',
+                data: {
+                    page: currentPage,
+                    pageSize: pageSize,
+                    search: currentSearch
+                },
+                success: function (response) {
+                    if (response.success) {
+                        updateClientsTable(response.data);
+                        updatePagination(response.currentPage, response.totalPages, response.totalItems);
+                    }
+                },
+                error: function () {
+                    Swal.fire('Error', 'Failed to load clients data', 'error');
+                }
+            });
+        }
+
+        function updateClientsTable(clients) {
+            // This would update the table with new data
+            // For now, we'll use the server-side rendered data
+        }
+
+        function updatePagination(current, total, totalItems) {
+            $('#showingFrom').text((current - 1) * pageSize + 1);
+            $('#showingTo').text(Math.min(current * pageSize, totalItems));
+            $('#totalItems').text(totalItems);
+
+            // Generate pagination HTML
+            let paginationHtml = '';
+            if (current > 1) {
+                paginationHtml += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${current - 1})">Previous</a></li>`;
+            }
+
+            for (let i = Math.max(1, current - 2); i <= Math.min(total, current + 2); i++) {
+                paginationHtml += `<li class="page-item ${i === current ? 'active' : ''}"><a class="page-link" href="#" onclick="changePage(${i})">${i}</a></li>`;
+            }
+
+            if (current < total) {
+                paginationHtml += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${current + 1})">Next</a></li>`;
+            }
+
+            $('#pagination').html(paginationHtml);
+        }
+
+        function changePage(page) {
+            currentPage = page;
+            loadClients();
+        }
+
+        function viewClient(clientId) {
+            // Implement view client details
+            Swal.fire('Info', 'View client details functionality to be implemented', 'info');
+        }
+
+        function editClient(clientId) {
+            // Implement edit client functionality
+            Swal.fire('Info', 'Edit client functionality to be implemented', 'info');
+        }
+
+        function viewWorkouts(clientId) {
+            // Implement view workouts functionality
+            Swal.fire('Info', 'View workouts functionality to be implemented', 'info');
+        }
+
+        function assignCoach(clientId) {
+            // Implement assign coach functionality
+            Swal.fire('Info', 'Assign coach functionality to be implemented', 'info');
+        }
+
+        function deactivateClient(clientId) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'Do you want to deactivate this client?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, deactivate!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Implement deactivate functionality
+                    Swal.fire('Success', 'Client deactivated successfully', 'success');
+                }
+            });
+        }
+
+        function activateClient(clientId) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'Do you want to activate this client?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, activate!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Implement activate functionality
+                    Swal.fire('Success', 'Client activated successfully', 'success');
+                }
+            });
+        }
+
+        function saveClient() {
+            // Implement save client functionality
+            const formData = new FormData($('#addClientForm')[0]);
+            
+            // For now, just show success message
+            Swal.fire('Success', 'Client added successfully', 'success').then(() => {
+                $('#addClientModal').modal('hide');
+                location.reload();
+            });
+        }
+    </script>
+}

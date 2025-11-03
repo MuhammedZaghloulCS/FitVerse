@@ -1,0 +1,181 @@
+﻿@{
+    var activeRoute = ViewContext.RouteData.Values["controller"]?.ToString();
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gym Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-dumbbell"></i>
+                <h2>GymPro</h2>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li class="@(activeRoute == "Home" ? "active" : "")">
+                        <a href="#admin">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+
+                    <li class="@(activeRoute == "Coach" ? "active" : "")">
+                        <a asp-action="index" asp-controller="Coach">
+                            <i class="fas fa-home"></i>
+                            <span>Coaches</span>
+                        </a>
+                    </li>
+                    <li class="@(activeRoute == "Coach" ? "active" : "")">
+                        <a asp-action="Dashboard" asp-controller="Coach">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard Coach</span>
+                        </a>
+                    </li>
+
+                    <li class="@(activeRoute == "Specialty" ? "active" : "")">
+                        <a asp-action="index" asp-controller="Specialty">
+                            <i class="fas fa-dumbbell"></i>
+                            <span>Specialty</span>
+                        </a>
+                    </li>
+
+
+                    <li class="@(activeRoute == "Equipment" ? "active" : "")">
+                        <a asp-action="index" asp-controller="Equipment">
+                            <i class="fas fa-home"></i>
+                            <span>Equipment</span>
+                        </a>
+                    </li>
+
+                    <li class="@(activeRoute == "Muscle" ? "active" : "")">
+                        <a asp-action="index" asp-controller="Muscle">
+                            <i class="fas fa-dumbbell"></i>
+                            <span>Muscles</span>
+                        </a>
+                    </li>
+                    <li class="@(activeRoute == "Anatomy" ? "active" : "")">
+                        <a asp-action="index" asp-controller="Anatomy">
+                            <i class="fas fa-dumbbell"></i>
+                            <span>Anatomy</span>
+                        </a>
+                    </li>
+                    <li class="@(activeRoute == "Package" ? "active" : "")">
+                        <a asp-action="index" asp-controller="Package">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>Package</span>
+                        </a>
+                    </li>
+                    <li class="@(activeRoute == "Exercise" ? "active" : "")">
+                        <a asp-action="index" asp-controller="Exercise">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>Exersice</span>
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-users"></i>
+                            <span>Members</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-credit-card"></i>
+                            <span>Subscriptions</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-dumbbell"></i>
+                            <span>Trainers</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>Classes</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-clipboard-check"></i>
+                            <span>Attendance</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <img src="https://ui-avatars.com/api/?name=Admin" alt="Admin">
+                </div>
+                <div class="user-info">
+                    <h4>Admin</h4>
+                    <span>Administrator</span>
+                </div>
+                <button class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <header class="top-nav">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search...">
+                </div>
+                <div class="nav-right">
+                    <button class="notification-btn">
+                        <i class="far fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <div class="theme-toggle">
+                        <input type="checkbox" id="theme-switch" class="theme-switch">
+                        <label for="theme-switch" class="theme-toggle-label">
+                            <i class="fas fa-moon"></i>
+                            <i class="fas fa-sun"></i>
+                            <span class="theme-toggle-ball"></span>
+                        </label>
+                    </div>
+                </div>
+            </header>
+
+            <div class="container-fluid">
+                <main role="main" class="pb-3">
+                    @RenderBody()
+                </main>
+            </div>
+            <!-- Dashboard Content -->
+        </main>
+    </div>
+
+    <!-- Chart.js -->
+    <script src="~/jquery/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="~/js/script.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

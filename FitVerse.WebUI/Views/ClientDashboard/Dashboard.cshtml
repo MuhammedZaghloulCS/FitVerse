@@ -1,0 +1,473 @@
+@model FitVerse.Core.ViewModels.ClientDashboard.ClientDashboardViewModel
+@{
+    ViewData["Title"] = "Client Dashboard - FitVerse";
+    Layout = "~/Views/Shared/_ClientLayout.cshtml";
+    ViewBag.Active = "Dashboard";
+    ViewBag.PageTitle = "Dashboard";
+}
+
+<!-- Dashboard-specific styles that complement the layout -->
+<style>
+    /* Dashboard Enhancement Styles */
+    .dashboard-welcome {
+        background: linear-gradient(135deg, #6366f1 0%, #10b981 100%);
+        color: white;
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .dashboard-welcome::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        animation: float 6s ease-in-out infinite;
+    }
+
+    @@keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(180deg); }
+    }
+
+    .coach-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .coach-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .coach-avatar-large {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #e2e8f0;
+        margin: 0 auto 1rem;
+    }
+
+    .coach-avatar-small {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #e2e8f0;
+    }
+
+    .plan-card {
+        background: white;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .plan-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .plan-header {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        color: white;
+        padding: 1.25rem;
+        font-weight: 600;
+    }
+
+    .plan-header.diet {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+
+    .plan-content {
+        padding: 1.5rem;
+    }
+
+    .no-coach-banner {
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        border: 2px dashed #3b82f6;
+        border-radius: 16px;
+        padding: 3rem 2rem;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .no-coach-banner .icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #6366f1, #10b981);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 2rem;
+        color: white;
+    }
+
+    .coach-preview-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .client-info-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        border: 1px solid #e2e8f0;
+        text-align: center;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .client-info-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #6366f1, #10b981);
+    }
+
+    .client-info-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .info-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(16, 185, 129, 0.1));
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        font-size: 1.5rem;
+        color: #6366f1;
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .dashboard-welcome {
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .coach-preview-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .no-coach-banner {
+            padding: 2rem 1rem;
+        }
+    }
+</style>
+
+<!-- Dashboard Content -->
+@if (Model.HasActiveSubscription)
+{
+    <!-- Welcome Section with Coach Info -->
+    <div class="dashboard-welcome">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h2 class="mb-2">Welcome back! 👋</h2>
+                <p class="mb-3 opacity-90">You're currently training with <strong>@Model.CoachName</strong></p>
+                <div class="d-flex gap-2 flex-wrap">
+                    @if (Model.Specialists != null && Model.Specialists.Any())
+                    {
+                        foreach (var spec in Model.Specialists)
+                        {
+                            <span class="badge bg-white bg-opacity-20 text-white px-3 py-1">
+                                @((spec?.GetType().GetProperty("Name") != null) ? spec.Name : spec.ToString())
+                            </span>
+                        }
+                    }
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <img src="@(string.IsNullOrEmpty(Model.CoachImagePath) || Model.CoachImagePath == "--"
+                                      ? $"https://ui-avatars.com/api/?name={Uri.EscapeDataString(Model.CoachName ?? "Coach")}&background=ffffff&color=6366f1"
+                                      : Url.Content(Model.CoachImagePath))"
+                     class="coach-avatar-large" alt="@Model.CoachName" />
+                <p class="mt-2 mb-0 opacity-90">@Model.CoachExperience years experience</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Training Plans Row -->
+    <div class="row mb-4">
+        <!-- Exercise Plan -->
+        <div class="col-lg-6 mb-4">
+            <div class="plan-card">
+                <div class="plan-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-lightning me-2"></i>Exercise Plan</h5>
+                        <span class="badge bg-white bg-opacity-20">Active</span>
+                    </div>
+                </div>
+                <div class="plan-content">
+                    @if (!string.IsNullOrWhiteSpace(Model.ExercisePlanSummary) && Model.ExercisePlanSummary != "No exercise plan yet" && Model.ExercisePlanSummary != "--")
+                    {
+                        <div class="alert alert-primary border-0 bg-light">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <strong>Coach Notes:</strong> @Model.ExercisePlanSummary
+                        </div>
+                        <a href="@Url.Action("Workouts", "Client")" class="btn btn-primary-custom w-100">
+                            <i class="bi bi-play-circle me-2"></i>Start Workout
+                        </a>
+                    }
+                    else
+                    {
+                        <div class="empty-state py-4">
+                            <i class="bi bi-calendar-x fs-2 text-muted mb-3"></i>
+                            <h6 class="text-muted">No exercise plan available</h6>
+                            <p class="text-muted small mb-3">Your coach will add your workout plan soon</p>
+                            <a href="@Url.Action("ClientChat", "Chat")" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-chat-dots me-1"></i>Contact Coach
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Diet Plan -->
+        <div class="col-lg-6 mb-4">
+            <div class="plan-card">
+                <div class="plan-header diet">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-egg-fried me-2"></i>Diet Plan</h5>
+                        <span class="badge bg-white bg-opacity-20">Active</span>
+                    </div>
+                </div>
+                <div class="plan-content">
+                    @if (!string.IsNullOrWhiteSpace(Model.DietPlanSummary) && Model.DietPlanSummary != "No diet plan yet" && Model.DietPlanSummary != "--")
+                    {
+                        <div class="alert alert-success border-0 bg-light">
+                            <i class="bi bi-check-circle me-2"></i>
+                            <strong>Coach Notes:</strong> @Model.DietPlanSummary
+                        </div>
+                        <a href="@Url.Action("DailyLogs", "Client")" class="btn btn-primary-custom w-100">
+                            <i class="bi bi-journal-text me-2"></i>View Diet Plan
+                        </a>
+                    }
+                    else
+                    {
+                        <div class="empty-state py-4">
+                            <i class="bi bi-egg-fried fs-2 text-muted mb-3"></i>
+                            <h6 class="text-muted">No diet plan available</h6>
+                            <p class="text-muted small mb-3">Your coach will add your nutrition plan soon</p>
+                            <a href="@Url.Action("ClientChat", "Chat")" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-chat-dots me-1"></i>Contact Coach
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="card-custom mb-4">
+        <div class="card-header-custom">
+            <h5 class="mb-0"><i class="bi bi-lightning-charge me-2"></i>Quick Actions</h5>
+        </div>
+        <div class="card-body-custom">
+            <div class="row">
+                <div class="col-md-3 col-6 mb-3">
+                    <a href="@Url.Action("ClientChat", "Chat")" class="btn btn-outline-primary w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3">
+                        <i class="bi bi-chat-dots fs-4 mb-2"></i>
+                        <span>Chat with Coach</span>
+                    </a>
+                </div>
+                <div class="col-md-3 col-6 mb-3">
+                    <a href="@Url.Action("Progress", "Client")" class="btn btn-outline-success w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3">
+                        <i class="bi bi-graph-up fs-4 mb-2"></i>
+                        <span>View Progress</span>
+                    </a>
+                </div>
+                <div class="col-md-3 col-6 mb-3">
+                    <a href="@Url.Action("ClientLogs", "DailyLog")" class="btn btn-outline-warning w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3">
+                        <i class="bi bi-journal-text fs-4 mb-2"></i>
+                        <span>Daily Logs</span>
+                    </a>
+                </div>
+                <div class="col-md-3 col-6 mb-3">
+                    <a href="@Url.Action("Profile", "Client")" class="btn btn-outline-info w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3">
+                        <i class="bi bi-person-gear fs-4 mb-2"></i>
+                        <span>Profile Settings</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <!-- No Coach State -->
+    <div class="no-coach-banner">
+        <div class="icon">
+            <i class="bi bi-heart-pulse"></i>
+        </div>
+        <h3 class="text-primary mb-3">Start Your Fitness Journey!</h3>
+        <p class="text-muted mb-4 fs-5">You're not subscribed to any coach yet. Browse our expert trainers and find the perfect match for your fitness goals.</p>
+        <a href="@Url.Action("ClientCoaches", "Coach")" class="btn btn-primary-custom btn-lg px-4">
+            <i class="bi bi-search me-2"></i>Browse Available Coaches
+        </a>
+    </div>
+
+    <!-- Available Coaches Preview -->
+    @if (Model.AvailableCoaches != null && Model.AvailableCoaches.Any())
+    {
+        <div class="card-custom mb-4">
+            <div class="card-header-custom">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <h5 class="mb-0"><i class="bi bi-people me-2"></i>Recommended Coaches</h5>
+                    <span class="badge bg-white bg-opacity-20">@Model.AvailableCoaches.Count Available</span>
+                </div>
+            </div>
+            <div class="card-body-custom">
+                <div class="coach-preview-grid">
+                    @foreach (var coach in Model.AvailableCoaches.Take(3))
+                    {
+                        <div class="coach-card">
+                            <div class="text-center">
+                                <img src="@(string.IsNullOrEmpty(coach.User?.ImagePath)
+                                                      ? $"https://ui-avatars.com/api/?name={Uri.EscapeDataString(coach.User?.FullName ?? "Coach")}&background=6366f1&color=fff"
+                                                      : Url.Content(coach.User.ImagePath))"
+                                     class="coach-avatar-small mx-auto d-block mb-3" alt="@coach.User?.FullName" />
+                                <h6 class="mb-2">@coach.User?.FullName</h6>
+                                <p class="text-muted small mb-3">@coach.ExperienceYears years experience</p>
+                                <a href="@Url.Action("ClientCoaches", "Coach")" class="btn btn-outline-primary btn-sm w-100">
+                                    <i class="bi bi-eye me-1"></i>View Profile
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+                @if (Model.AvailableCoaches.Count > 3)
+                {
+                    <div class="text-center mt-4">
+                        <a href="@Url.Action("ClientCoaches", "Coach")" class="btn btn-primary">
+                            <i class="bi bi-arrow-right me-2"></i>View All Coaches (@Model.AvailableCoaches.Count)
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <!-- Placeholder Plans for Non-Subscribed Users -->
+    <div class="row mb-4">
+        <div class="col-lg-6 mb-4">
+            <div class="plan-card">
+                <div class="plan-header">
+                    <h5 class="mb-0"><i class="bi bi-lightning me-2"></i>Exercise Plan</h5>
+                </div>
+                <div class="plan-content">
+                    <div class="empty-state py-4">
+                        <i class="bi bi-calendar-x fs-2 text-muted mb-3"></i>
+                        <h6 class="text-muted">No Exercise Plan</h6>
+                        <p class="text-muted small mb-3">Choose a coach to get your personalized workout plan</p>
+                        <a href="@Url.Action("ClientCoaches", "Coach")" class="btn btn-primary btn-sm">
+                            <i class="bi bi-search me-1"></i>Find a Coach
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="plan-card">
+                <div class="plan-header diet">
+                    <h5 class="mb-0"><i class="bi bi-egg-fried me-2"></i>Diet Plan</h5>
+                </div>
+                <div class="plan-content">
+                    <div class="empty-state py-4">
+                        <i class="bi bi-egg-fried fs-2 text-muted mb-3"></i>
+                        <h6 class="text-muted">No Diet Plan</h6>
+                        <p class="text-muted small mb-3">Choose a coach to get your personalized nutrition plan</p>
+                        <a href="@Url.Action("ClientCoaches", "Coach")" class="btn btn-primary btn-sm">
+                            <i class="bi bi-search me-1"></i>Find a Coach
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Client Information Section -->
+<div class="card-custom">
+    <div class="card-header-custom">
+        <h5 class="mb-0"><i class="bi bi-person-circle me-2"></i>Client Information</h5>
+    </div>
+    <div class="card-body-custom">
+        <div class="row">
+            <!-- Client Profile -->
+            <div class="col-md-4 mb-3">
+                <div class="client-info-card">
+                    <div class="info-icon">
+                        <i class="bi bi-person"></i>
+                    </div>
+                    <img src="@(string.IsNullOrEmpty(Model.ClientImagePath) || Model.ClientImagePath == "--"
+                                      ? $"https://ui-avatars.com/api/?name={Uri.EscapeDataString(Model.ClientName ?? "Client")}&background=10b981&color=fff"
+                                      : Url.Content(Model.ClientImagePath))"
+                         class="coach-avatar-small mx-auto d-block mb-3" alt="@Model.ClientName" />
+                    <h6 class="mb-1">@Model.ClientName</h6>
+                    <p class="text-muted small mb-0">Client</p>
+                </div>
+            </div>
+
+            <!-- Membership Info -->
+            <div class="col-md-4 mb-3">
+                <div class="client-info-card">
+                    <div class="info-icon">
+                        <i class="bi bi-person-badge"></i>
+                    </div>
+                    <h6 class="mb-1">Membership ID</h6>
+                    <p class="fs-4 fw-bold text-primary mb-1">#@Model.ClientId</p>
+                    <p class="text-muted small mb-0">Active Member</p>
+                </div>
+            </div>
+
+            <!-- Coach Assignment -->
+            <div class="col-md-4 mb-3">
+                <div class="client-info-card">
+                    <div class="info-icon">
+                        <i class="bi bi-person-workspace"></i>
+                    </div>
+                    <h6 class="mb-1">Assigned Coach</h6>
+                    <p class="fs-5 fw-semibold mb-1">@(Model.HasActiveSubscription ? Model.CoachName : "Not Assigned")</p>
+                    <p class="text-muted small mb-0">
+                        @if (Model.HasActiveSubscription)
+                        {
+                            <span class="text-success"><i class="bi bi-check-circle me-1"></i>Active Subscription</span>
+                        }
+                        else
+                        {
+                            <span class="text-warning"><i class="bi bi-exclamation-circle me-1"></i>No Subscription</span>
+                        }
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

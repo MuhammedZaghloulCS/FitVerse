@@ -1,0 +1,136 @@
+﻿@{
+    Layout = "~/Views/Shared/_LandingLayout.cshtml";
+}
+@model Register
+
+    <div class="auth-container">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="auth-card">
+                        <div class="row g-0">
+                            <!-- Left Side -->
+                            <div class="col-lg-5 d-none d-lg-block">
+                                <div class="auth-left h-100">
+                                    <div class="auth-logo">
+                                        <span>💪</span> FitVerse
+                                    </div>
+                                    <h2 class="fw-bold mb-3">Start Your Journey</h2>
+                                    <p class="mb-4 opacity-90">Join thousands of users who have transformed their lives with FitVerse.</p>
+
+                                    <div class="mb-4">
+                                        <h5 class="fw-bold mb-3">What you'll get:</h5>
+                                        <ul class="list-unstyled">
+                                            <li class="mb-2 d-flex align-items-center gap-2">
+                                                <i class="bi bi-check-circle-fill"></i>
+                                                <span>Personalized workout plans</span>
+                                            </li>
+                                            <li class="mb-2 d-flex align-items-center gap-2">
+                                                <i class="bi bi-check-circle-fill"></i>
+                                                <span>Expert coach guidance</span>
+                                            </li>
+                                            <li class="mb-2 d-flex align-items-center gap-2">
+                                                <i class="bi bi-check-circle-fill"></i>
+                                                <span>Progress tracking tools</span>
+                                            </li>
+                                            <li class="mb-2 d-flex align-items-center gap-2">
+                                                <i class="bi bi-check-circle-fill"></i>
+                                                <span>24/7 support community</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="mt-auto">
+                                        <p class="small opacity-75 mb-0">"Best decision I ever made for my health!" - John D.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Side -->
+                            <div class="col-lg-7">
+                                <div class="auth-right">
+                                    <div class="mb-4">
+                                        <h3 class="fw-bold mb-2">Create Account</h3>
+                                        <p class="text-muted">Fill in your details to get started</p>
+                                    </div>
+
+                                <form asp-action="Register" asp-controller="Account">
+                                    <div asp-validation-summary="All" class="text-bg-danger"></div>
+
+                                    <div class="row g-3 mb-3">
+
+                                        <div class="col-md-6">
+                                            <label asp-for="@Model.FirstName" class="form-label fw-semibold">First Name</label>
+                                            <input type="text" asp-for="@Model.FirstName" class="form-control form-control-auth" placeholder="John" required>
+                                            <span asp-validation-for="@Model.FirstName" class="text-danger"></span>
+
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label asp-for="@Model.LastName" class="form-label fw-semibold">Last Name</label>
+                                            <input type="text" asp-for="@Model.LastName" class="form-control form-control-auth" placeholder="Doe" required>
+                                            <span asp-validation-for="@Model.LastName" class="text-danger"></span>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label asp-for="@Model.Email" class="form-label fw-semibold">Email Address</label>
+                                        <input type="email" asp-for="@Model.Email" class="form-control form-control-auth" placeholder="your@email.com" required>
+                                        <span asp-validation-for="@Model.Email" class="text-danger"></span>
+
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label asp-for="@Model.Password" class="form-label fw-semibold">Password</label>
+                                        <input type="password" asp-for="@Model.Password" class="form-control form-control-auth" placeholder="Create a strong password" autocomplete="new-password" required>
+                                        <span asp-validation-for="@Model.Password" class="text-danger"></span>
+
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label asp-for="@Model.ConfirmPassword" class="form-label fw-semibold">Confirm Password</label>
+                                        <input type="password" asp-for="@Model.ConfirmPassword" class="form-control form-control-auth" placeholder="Confirm your password" autocomplete="new-password" required>
+                                        <span asp-validation-for="@Model.ConfirmPassword" class="text-danger"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label asp-for="@Model.PhoneNumber" class="form-label fw-semibold">Phone Number</label>
+                                        <input type="tel" asp-for="@Model.PhoneNumber" class="form-control form-control-auth" placeholder="Enter your Phone Number" required>
+                                        <span asp-validation-for="@Model.PhoneNumber" class="text-danger"></span>
+                                    </div>
+                              
+
+                                        <div class="form-check mb-4">
+                                            <input class="form-check-input" type="checkbox" id="terms" required>
+                                            <label class="form-check-label" for="terms">
+                                                I agree to the <a href="#" style="color: #6366f1;">Terms of Service</a> and <a href="#" style="color: #6366f1;">Privacy Policy</a>
+                                            </label>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-auth w-100 mb-3">Create Account</button>
+
+                                        <div class="text-center">
+                                            <p class="text-muted mb-0">Already have an account? <a asp-action="Login"  asp-controller="Account" class="text-decoration-none fw-semibold" style="color: #6366f1;">Sign In</a></p>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Role card selection
+        document.querySelectorAll('.role-card').forEach(card => {
+            card.addEventListener('click', function() {
+                document.querySelectorAll('.role-card').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                this.querySelector('input[type="radio"]').checked = true;
+            });
+        });
+    </script>

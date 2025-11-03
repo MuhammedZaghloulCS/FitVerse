@@ -1,0 +1,308 @@
+@model dynamic
+@{
+    Layout = "~/Views/Shared/_ClientLayout.cshtml";
+    ViewData["Title"] = "Payment";
+}
+
+<div class="container-fluid px-4 py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Page Header -->
+            <div class="mb-4">
+                <h2 class="fw-bold mb-1">Complete Your Payment</h2>
+                <p class="text-muted mb-0">Review your package details and complete the payment</p>
+            </div>
+
+            <div class="row g-4">
+                <!-- Package & Coach Details -->
+                <div class="col-lg-8">
+                    <!-- Package Information -->
+                    <div class="card-custom mb-4">
+                        <div class="card-body-custom">
+                            <h5 class="fw-bold mb-4">Package Details</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="text-muted small">Package Name</label>
+                                    <p class="fw-bold mb-0">@Model.PackageName</p>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="text-muted small">Price</label>
+                                    <p class="fw-bold mb-0" style="color: #6366f1; font-size: 1.5rem;">$@Model.PackagePrice</p>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="text-muted small">Sessions</label>
+                                    <p class="fw-bold mb-0">@Model.PackageSessions Sessions</p>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="text-muted small">Duration</label>
+                                    <p class="fw-bold mb-0">@Model.DurationDays Days</p>
+                                </div>
+                                <div class="col-12">
+                                    <label class="text-muted small">Description</label>
+                                    <p class="mb-0">@Model.PackageDescription</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Coach Information -->
+                    <div class="card-custom mb-4">
+                        <div class="card-body-custom">
+                            <h5 class="fw-bold mb-4">Your Coach</h5>
+                            <div class="d-flex align-items-center">
+                                <img src="@Model.CoachImagePath" alt="@Model.CoachName"
+                                     style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-right: 20px;">
+                                <div>
+                                    <h6 class="fw-bold mb-1">@Model.CoachName</h6>
+                                    <p class="text-muted mb-0">@Model.CoachExperience Years Experience</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Subscription Period -->
+                    <div class="card-custom">
+                        <div class="card-body-custom">
+                            <h5 class="fw-bold mb-4">Subscription Period</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="text-muted small">Start Date</label>
+                                    <p class="fw-bold mb-0">@Model.SubscriptionStartDate.ToString("MMM dd, yyyy")</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="text-muted small">End Date</label>
+                                    <p class="fw-bold mb-0">@Model.SubscriptionEndDate.ToString("MMM dd, yyyy")</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Summary -->
+                <div class="col-lg-4">
+                    <div class="card-custom" style="position: sticky; top: 20px;">
+                        <div class="card-body-custom">
+                            <h5 class="fw-bold mb-4">Payment Summary</h5>
+
+                            <div class="mb-3 pb-3" style="border-bottom: 1px solid #e5e7eb;">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted">Package Price</span>
+                                    <span class="fw-bold">$@Model.PackagePrice</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted">Sessions</span>
+                                    <span>@Model.PackageSessions</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-muted">Duration</span>
+                                    <span>@Model.DurationDays Days</span>
+                                </div>
+                            </div>
+
+                            <div class="mb-4 pb-3" style="border-bottom: 1px solid #e5e7eb;">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold" style="font-size: 1.1rem;">Total Amount</span>
+                                    <span class="fw-bold" style="color: #6366f1; font-size: 1.5rem;">$@Model.PackagePrice</span>
+                                </div>
+                            </div>
+
+                            <!-- Payment Method Selection -->
+                            <div class="mb-4">
+                                <label class="fw-bold mb-3">Payment Method</label>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="paymentMethod" id="creditCard" value="Credit Card" checked>
+                                    <label class="form-check-label" for="creditCard">
+                                        <i class="bi bi-credit-card me-2"></i> Credit Card
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="paymentMethod" id="paypal" value="PayPal">
+                                    <label class="form-check-label" for="paypal">
+                                        <i class="bi bi-paypal me-2"></i> PayPal
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="paymentMethod" id="cash" value="Cash">
+                                    <label class="form-check-label" for="cash">
+                                        <i class="bi bi-cash me-2"></i> Cash
+                                    </label>
+                                </div>
+                            </div>
+
+                            <button type="button" id="processPaymentBtn" class="btn btn-primary-custom w-100 mb-2">
+                                <i class="bi bi-lock-fill me-2"></i> Process Payment
+                            </button>
+                            <a href="/Coach/ClientCoaches" class="btn btn-outline-custom w-100">
+                                <i class="bi bi-arrow-left me-2"></i> Back to Coaches
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Load SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script>
+        // Wait for everything to load
+        window.addEventListener('load', function() {
+            console.log('[PAYMENT PAGE] Window loaded');
+            console.log('[PAYMENT PAGE] SweetAlert2 available:', typeof Swal !== 'undefined');
+            
+            if (typeof Swal === 'undefined') {
+                console.error('[PAYMENT PAGE] SweetAlert2 failed to load!');
+            }
+        });
+        
+        $(document).ready(function() {
+            console.log('[PAYMENT PAGE] DOM Ready');
+            console.log('[PAYMENT PAGE] Package ID:', @Model.PackageId);
+            console.log('[PAYMENT PAGE] Coach ID:', '@Model.CoachId');
+            
+            // Test SweetAlert2
+            setTimeout(function() {
+                if (typeof Swal !== 'undefined') {
+                    console.log('[PAYMENT PAGE] ✅ SweetAlert2 is ready!');
+                } else {
+                    console.error('[PAYMENT PAGE] ❌ SweetAlert2 is NOT available!');
+                }
+            }, 500);
+
+            let isProcessing = false; // Prevent double clicks
+
+            $('#processPaymentBtn').click(function(e) {
+                e.preventDefault(); // Prevent any default behavior
+                
+                if (isProcessing) {
+                    console.log('[PAYMENT] Already processing, ignoring click');
+                    return false;
+                }
+                
+                isProcessing = true;
+                console.log('[PAYMENT] Process Payment button clicked');
+                
+                const paymentMethod = $('input[name="paymentMethod"]:checked').val();
+                const packageId = @Model.PackageId;
+                const coachId = '@Model.CoachId';
+
+                console.log('[PAYMENT] Payment Method:', paymentMethod);
+                console.log('[PAYMENT] Package ID:', packageId);
+                console.log('[PAYMENT] Coach ID:', coachId);
+
+                // Disable button and show loading
+                const $btn = $(this);
+                $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Processing...');
+
+                console.log('[PAYMENT] Sending AJAX request to /Client/ProcessPayment');
+
+                $.ajax({
+                    url: '/Client/ProcessPayment',
+                    type: 'POST',
+                    data: {
+                        packageId: packageId,
+                        coachId: coachId,
+                        paymentMethod: paymentMethod,
+                        cardNumber: null
+                    },
+                    timeout: 30000, // 30 second timeout
+                    success: function(response) {
+                        console.log('[PAYMENT] Response received:', response);
+                        isProcessing = false; // Reset flag
+                        
+                        if (response && response.success) {
+                            console.log('[PAYMENT] Payment successful!');
+                            
+                            // Show success message
+                            if (typeof Swal !== 'undefined') {
+                                // Use SweetAlert2
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Payment Successful!',
+                                    html: `
+                                        <p>${response.message}</p>
+                                        <hr>
+                                        <p><strong>Transaction ID:</strong> ${response.transactionId}</p>
+                                        <p><strong>Subscription valid until:</strong> ${response.subscriptionEndDate}</p>
+                                    `,
+                                    confirmButtonText: 'Go to Dashboard',
+                                    confirmButtonColor: '#6366f1',
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        console.log('[PAYMENT] Redirecting to dashboard...');
+                                        window.location.href = '/ClientDashboard/Dashboard';
+                                    }
+                                });
+                            } else {
+                                // Fallback to native confirm
+                                console.log('[PAYMENT] SweetAlert2 not available, using native confirm');
+                                if (confirm(`✅ Payment Successful!\n\n${response.message}\n\nTransaction ID: ${response.transactionId}\nSubscription valid until: ${response.subscriptionEndDate}\n\nClick OK to go to your dashboard.`)) {
+                                    console.log('[PAYMENT] Redirecting to dashboard...');
+                                    window.location.href = '/ClientDashboard/Dashboard';
+                                }
+                            }
+                        } else {
+                            console.error('[PAYMENT] Payment failed:', response ? response.message : 'No response');
+                            
+                            // Show error message
+                            if (typeof Swal !== 'undefined') {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Payment Failed!',
+                                    text: (response && response.message) || "Payment processing failed.",
+                                    confirmButtonText: 'Try Again',
+                                    confirmButtonColor: '#ef4444'
+                                });
+                            } else {
+                                alert(`❌ Payment Failed!\n\n${(response && response.message) || "Payment processing failed."}\n\nPlease try again.`);
+                            }
+                            
+                            $btn.prop('disabled', false).html('<i class="bi bi-lock-fill me-2"></i> Process Payment');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('[PAYMENT] AJAX Error:', {
+                            status: status,
+                            error: error,
+                            responseText: xhr.responseText,
+                            statusCode: xhr.status
+                        });
+                        
+                        isProcessing = false; // Reset flag
+                        
+                        let errorMessage = "An error occurred while processing payment.";
+                        if (status === 'timeout') {
+                            errorMessage = "Payment request timed out. Please try again.";
+                        } else if (xhr.status === 500) {
+                            errorMessage = "Server error occurred. Please check the logs.";
+                        } else if (xhr.status === 401) {
+                            errorMessage = "You are not authorized. Please login again.";
+                        }
+
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: errorMessage,
+                                confirmButtonText: 'Try Again',
+                                confirmButtonColor: '#ef4444'
+                            });
+                        } else {
+                            alert(`❌ Error!\n\n${errorMessage}`);
+                        }
+                        
+                        $btn.prop('disabled', false).html('<i class="bi bi-lock-fill me-2"></i> Process Payment');
+                    },
+                    complete: function() {
+                        console.log('[PAYMENT] AJAX request completed');
+                    }
+                });
+            });
+        });
+    </script>
+}

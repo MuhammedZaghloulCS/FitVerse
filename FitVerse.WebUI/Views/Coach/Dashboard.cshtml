@@ -1,0 +1,334 @@
+@model FitVerse.Core.ViewModels.Coach.CoachDashboardViewModel
+@{
+    Layout = "~/Views/Shared/_CoachLayout.cshtml";
+    ViewBag.PageTitle = "Dashboard";
+}
+
+<!-- Dashboard Content -->
+<div class="page-container">
+    <div class="content-wrapper">
+        <div class="dashboard-container">
+            <!-- Welcome Section -->
+            <div class="welcome-section">
+                <div class="container-fluid px-4 py-4">
+                    <div class="row align-items-center">
+                        <div class="col-lg-8">
+                            <h1 class="dashboard-title">Welcome back, @ViewBag.CoachName! 👋</h1>
+                            <p class="dashboard-subtitle">Here's an overview of your coaching activities and performance metrics</p>
+                        </div>
+                        <div class="col-lg-4 text-lg-end">
+                            <div class="dashboard-date">
+                                <i class="bi bi-calendar3 me-2"></i>
+                                <span>@DateTime.Now.ToString("MMMM dd, yyyy")</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    <!-- Stats Cards Section -->
+    <div class="stats-section">
+        <div class="container-fluid px-4">
+            <div class="row g-4 mb-5">
+                <div class="col-xl-3 col-lg-6 col-md-6">
+                    <div class="stat-card stat-card-primary">
+                        <div class="stat-card-body">
+                            <div class="stat-icon-wrapper stat-icon-primary">
+                                <i class="bi bi-people"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">@Model.ActiveClientsCount</div>
+                                <div class="stat-label">Active Clients</div>
+                                <div class="stat-trend">
+                                    <i class="bi bi-arrow-up text-success"></i>
+                                    <span class="text-success">+12% from last month</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-6 col-md-6">
+                    <div class="stat-card stat-card-success">
+                        <div class="stat-card-body">
+                            <div class="stat-icon-wrapper stat-icon-success">
+                                <i class="bi bi-calendar-check"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">@Model.TotalPlans</div>
+                                <div class="stat-label">Workout Plans</div>
+                                <div class="stat-trend">
+                                    <i class="bi bi-arrow-up text-success"></i>
+                                    <span class="text-success">+8% from last month</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-6 col-md-6">
+                    <div class="stat-card stat-card-warning">
+                        <div class="stat-card-body">
+                            <div class="stat-icon-wrapper stat-icon-warning">
+                                <i class="bi bi-lightning"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">@Model.TotalExercises</div>
+                                <div class="stat-label">Total Exercises</div>
+                                <div class="stat-trend">
+                                    <i class="bi bi-arrow-up text-success"></i>
+                                    <span class="text-success">+15% from last month</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-lg-6 col-md-6">
+                    <div class="stat-card stat-card-info">
+                        <div class="stat-card-body">
+                            <div class="stat-icon-wrapper stat-icon-info">
+                                <i class="bi bi-star-fill"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value">@Model.AverageRating</div>
+                                <div class="stat-label">Average Rating</div>
+                                <div class="stat-trend">
+                                    <i class="bi bi-arrow-up text-success"></i>
+                                    <span class="text-success">Excellent performance</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="main-content-section">
+        <div class="container-fluid px-4">
+            <div class="row g-4">
+                <!-- Quick Actions Card -->
+                <div class="col-lg-4 order-lg-2">
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-header">
+                            <h5 class="card-title">
+                                <i class="bi bi-lightning-charge me-2"></i>Quick Actions
+                            </h5>
+                        </div>
+                        <div class="dashboard-card-body">
+                            <div class="d-grid gap-3 mb-4">
+                                <button class="btn btn-success-modern" data-bs-toggle="modal" data-bs-target="#addExerciseModal">
+                                    <i class="bi bi-lightning me-2"></i> Add Exercise
+                                </button>
+                                <button class="btn btn-outline-modern" id="viewAllClientsBtn">
+                                    <i class="bi bi-people me-2"></i> View All Clients
+                                </button>
+                                <button class="btn btn-outline-modern">
+                                    <i class="bi bi-chat-dots me-2"></i> Open Messages
+                                </button>
+                            </div>
+
+                            <div class="performance-section">
+                                <h6 class="section-title">Your Performance</h6>
+                                <div class="chart-container">
+                                    <canvas id="performanceChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Clients Card -->
+                <div class="col-lg-8 order-lg-1">
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-header">
+                            <h5 class="card-title">
+                                <i class="bi bi-people me-2"></i>Recent Clients
+                            </h5>
+                            <a asp-controller="Coach" asp-action="MyClients" class="btn btn-modern-view-all">
+                                <i class="bi bi-eye me-2"></i>View All<i class="bi bi-arrow-right ms-2"></i>
+                            </a>
+                        </div>
+                        <div class="dashboard-card-body">
+                            @if (Model.RecentClients != null && Model.RecentClients.Any())
+                            {
+                                <div class="clients-list">
+                                    @foreach (var client in Model.RecentClients)
+                                    {
+                                        <div class="client-item">
+                                            <div class="client-info">
+                                                <div class="client-avatar">
+                                                    <i class="bi bi-person-circle"></i>
+                                                </div>
+                                                <div class="client-details">
+                                                    <h6 class="client-name">@client.Name</h6>
+                                                    <p class="client-meta">Last payment: @client.LastPaymentAgo</p>
+                                                </div>
+                                            </div>
+                                            <div class="client-status">
+                                                <span class="status-badge @(client.IsActive ? "status-active" : "status-inactive")">
+                                                    @(client.IsActive ? "Active" : "Inactive")
+                                                </span>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="empty-state">
+                                    <i class="bi bi-people text-muted"></i>
+                                    <p class="text-muted">No clients found.</p>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    </div>
+</div>
+
+<!-- Enhanced All Clients Modal -->
+<div class="modal fade" id="viewAllClientsModal" tabindex="-1" aria-labelledby="viewAllClientsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content modern-modal">
+            <div class="modal-header modern-modal-header">
+                <div class="modal-title-wrapper">
+                    <div class="modal-icon">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                    <div class="modal-title-content">
+                        <h5 class="modal-title" id="viewAllClientsModalLabel">All Clients</h5>
+                        <p class="modal-subtitle">Manage and view all your clients</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close modern-btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div class="modal-body modern-modal-body" id="allClientsContainer">
+                <div class="loading-state">
+                    <div class="loading-spinner">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                    <p class="loading-text">Loading clients...</p>
+                </div>
+            </div>
+            <div class="modal-footer modern-modal-footer">
+                <button type="button" class="btn btn-outline-secondary modern-btn" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-2"></i>Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Enhanced Add Exercise Modal -->
+<div class="modal fade" id="addExerciseModal" tabindex="-1" aria-labelledby="addExerciseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content modern-modal">
+            <div class="modal-header modern-modal-header">
+                <div class="modal-title-wrapper">
+                    <div class="modal-icon">
+                        <i class="bi bi-lightning-charge"></i>
+                    </div>
+                    <div class="modal-title-content">
+                        <h5 class="modal-title" id="addExerciseModalLabel">Add New Exercise</h5>
+                        <p class="modal-subtitle">Create a new exercise for your workout library</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close modern-btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+
+            <div class="modal-body modern-modal-body">
+                <form id="exerciseForm" class="modern-form">
+                    <!-- Exercise Name -->
+                    <div class="form-group">
+                        <label for="Name" class="form-label modern-form-label">
+                            <i class="bi bi-tag me-2"></i>Exercise Name
+                        </label>
+                        <input type="text" id="Name" class="form-control modern-form-control" 
+                               placeholder="e.g., Barbell Bench Press" required>
+                        <div class="form-help">Enter a descriptive name for the exercise</div>
+                    </div>
+
+                    <!-- Muscle + Equipment Row -->
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="muscleId" class="form-label modern-form-label">
+                                    <i class="bi bi-person-arms-up me-2"></i>Muscle Group
+                                </label>
+                                <select id="muscleId" class="form-select modern-form-control" required>
+                                    <option value="" disabled selected>Loading muscles...</option>
+                                </select>
+                                <div class="form-help">Select the primary muscle group</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="equipmentId" class="form-label modern-form-label">
+                                    <i class="bi bi-tools me-2"></i>Equipment
+                                </label>
+                                <select id="equipmentId" class="form-select modern-form-control" required>
+                                    <option value="" disabled selected>Loading equipment...</option>
+                                </select>
+                                <div class="form-help">Choose required equipment</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-group">
+                        <label for="description" class="form-label modern-form-label">
+                            <i class="bi bi-text-paragraph me-2"></i>Exercise Description
+                        </label>
+                        <textarea id="description" class="form-control modern-form-control" rows="4"
+                                  placeholder="Detailed instructions for performing the exercise..." required></textarea>
+                        <div class="form-help">Provide step-by-step instructions for proper form</div>
+                    </div>
+
+                    <!-- Video Link -->
+                    <div class="form-group">
+                        <label for="videoLink" class="form-label modern-form-label">
+                            <i class="bi bi-camera-video me-2"></i>Video URL <span class="text-muted">(Optional)</span>
+                        </label>
+                        <input type="url" id="videoLink" class="form-control modern-form-control" 
+                               placeholder="https://youtube.com/watch?v=...">
+                        <div class="form-help">Add a demonstration video link (YouTube, Vimeo, etc.)</div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer modern-modal-footer">
+                <button type="button" class="btn btn-outline-secondary modern-btn" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-2"></i>Cancel
+                </button>
+                <button type="button" id="saveExerciseBtn" class="btn btn-primary modern-btn">
+                    <i class="bi bi-plus-circle me-2"></i>Add Exercise
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="/ViewJs/coachDashboard.js"></script>

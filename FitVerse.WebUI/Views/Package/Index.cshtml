@@ -1,0 +1,1109 @@
+@{
+    ViewData["Title"] = "Packages Management";
+    ViewBag.PageTitle = "Packages Management";
+    ViewBag.Active = "Packages";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<!-- Page Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="section-title mb-2">📦 Packages Management</h1>
+        <p class="section-subtitle mb-0">Create, manage, and organize training packages for your fitness programs</p>
+    </div>
+    <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#addPackageModal">
+        <i class="bi bi-plus-circle me-2"></i>Add New Package
+    </button>
+</div>
+
+
+
+<!-- Search and Filters -->
+<div class="card-custom mb-4">
+    <div class="card-body-custom">
+        <div class="row g-3 align-items-center">
+            <div class="col-md-6">
+                <div class="position-relative">
+                    <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                    <input type="text" id="searchPackage" class="form-control-custom ps-5" placeholder="Search packages by name, description...">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select class="form-control-custom" id="statusFilter">
+                    <option value="">All Status</option>
+                    <option value="active">Active Only</option>
+                    <option value="inactive">Inactive Only</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-outline-secondary w-100" onclick="refreshPackages()">
+                    <i class="bi bi-arrow-clockwise me-2"></i>Refresh
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Packages Table -->
+<div class="card-custom">
+    <div class="card-header-custom d-flex justify-content-between align-items-center">
+        <div>
+            <i class="bi bi-box-seam me-2"></i>All Packages
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-sm btn-outline-light" onclick="exportPackages()">
+                <i class="bi bi-download me-1"></i>Export
+            </button>
+        </div>
+    </div>
+    <div class="card-body-custom p-0">
+        <div class="table-responsive">
+            <table class="table table-custom mb-0">
+                <thead>
+                    <tr>
+                        <th class="text-start">Package Details</th>
+                        <th class="text-center">Price</th>
+                        <th class="text-center">Sessions</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="Data">
+                    <!-- Dynamic content will be loaded here -->
+                    <tr>
+                        <td colspan="5" class="text-center py-5">
+                            <div class="d-flex flex-column align-items-center">
+                                <div class="spinner-border text-primary mb-3" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="text-muted">Loading packages...</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Enhanced Pagination -->
+<div class="d-flex justify-content-between align-items-center mt-4">
+    <div class="text-muted">
+        <span id="paginationInfo">Showing 0 of 0 packages</span>
+    </div>
+    <nav aria-label="Package pagination">
+        <ul class="pagination pagination-fitverse mb-0" id="pagination">
+            <!-- Pagination will be generated here -->
+        </ul>
+    </nav>
+</div>
+
+<!-- ✨ Premium Add/Edit Package Modal -->
+<div class="modal fade" id="addPackageModal" tabindex="-1" aria-labelledby="addPackageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
+            <!-- 🎨 Enhanced Header with Gradient -->
+            <div class="modal-header position-relative border-0 p-0" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 50%, #7c3aed 100%); min-height: 80px;">
+                <div class="d-flex align-items-center w-100 px-4 py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="modal-icon-wrapper me-3">
+                            <i class="bi bi-box-seam"></i>
+                        </div>
+                        <div>
+                            <h4 class="modal-title fw-bold mb-1 text-white" id="addPackageModalLabel">
+                                <span id="modalTitle">Add New Package</span>
+                            </h4>
+                            <p class="mb-0 text-white-50 small">Create a comprehensive training package</p>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <!-- Decorative Wave -->
+                <div class="position-absolute bottom-0 start-0 w-100" style="height: 20px; background: white; clip-path: polygon(0 100%, 100% 100%, 100% 0, 0 80%);"></div>
+            </div>
+
+            <!-- 📝 Enhanced Form Body -->
+            <div class="modal-body p-0">
+                <div class="container-fluid p-4">
+                    <form id="PackageForm" enctype="multipart/form-data">
+                        <input type="hidden" id="id" name="Id" value="0">
+
+                        <!-- 📋 Package Information Section -->
+                        <div class="form-section mb-4">
+                            <div class="section-header mb-3">
+                                <h6 class="section-title">
+                                    <i class="bi bi-info-circle me-2 text-primary"></i>Package Information
+                                </h6>
+                                <p class="section-subtitle">Basic details about your training package</p>
+                            </div>
+
+                            <div class="row g-4">
+                                <div class="col-lg-8 col-md-7">
+                                    <div class="form-floating">
+                                        <input type="text" id="name" name="Name" class="form-control form-control-enhanced" 
+                                               placeholder="Package Name" required>
+                                        <label for="name">
+                                            <i class="bi bi-tag me-2 text-primary"></i>Package Name *
+                                        </label>
+                                    </div>
+                                    <div class="form-helper">
+                                        <small class="text-muted">
+                                            <i class="bi bi-lightbulb me-1"></i>
+                                            Choose a clear, descriptive name (e.g., "Premium Fitness Package", "Beginner Workout Plan")
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4 col-md-5">
+                                    <div class="price-input-wrapper">
+                                        <label class="form-label fw-semibold mb-2">
+                                            <i class="bi bi-currency-dollar me-2 text-success"></i>Price (EGP) *
+                                        </label>
+                                        <div class="input-group input-group-enhanced">
+                                            <span class="input-group-text">
+                                                <i class="bi bi-cash-coin text-success"></i>
+                                            </span>
+                                            <input type="number" id="price" name="Price" class="form-control" 
+                                                   placeholder="0.00" min="0" step="0.01" required>
+                                            <span class="input-group-text">EGP</span>
+                                        </div>
+                                        <div class="form-helper">
+                                            <small class="text-muted">Set competitive pricing for your package</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ⚙️ Package Configuration Section -->
+                        <div class="form-section mb-4">
+                            <div class="section-header mb-3">
+                                <h6 class="section-title">
+                                    <i class="bi bi-gear me-2 text-warning"></i>Package Configuration
+                                </h6>
+                                <p class="section-subtitle">Configure sessions and availability settings</p>
+                            </div>
+
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="number" id="sessions" name="Sessions" class="form-control form-control-enhanced" 
+                                               placeholder="Sessions Count" min="1" required>
+                                        <label for="sessions">
+                                            <i class="bi bi-calendar-check me-2 text-warning"></i>Sessions Count *
+                                        </label>
+                                    </div>
+                                    <div class="form-helper">
+                                        <small class="text-muted">
+                                            <i class="bi bi-info-circle me-1"></i>
+                                            Total number of training sessions included
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="status-toggle-wrapper">
+                                        <label class="form-label fw-semibold mb-3">
+                                            <i class="bi bi-toggle-on me-2 text-info"></i>Package Status
+                                        </label>
+                                        <div class="custom-switch-wrapper">
+                                            <div class="form-check form-switch form-switch-lg">
+                                                <input class="form-check-input" type="checkbox" id="isActive" name="IsActive" checked>
+                                                <label class="form-check-label fw-medium" for="isActive">
+                                                    <span class="switch-text">Active Package</span>
+                                                    <small class="d-block text-muted mt-1">Available for booking by clients</small>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 📄 Package Description Section -->
+                        <div class="form-section mb-4">
+                            <div class="section-header mb-3">
+                                <h6 class="section-title">
+                                    <i class="bi bi-card-text me-2 text-info"></i>Package Description
+                                </h6>
+                                <p class="section-subtitle">Detailed information about what's included</p>
+                            </div>
+
+                            <div class="description-wrapper">
+                                <div class="form-floating">
+                                    <textarea id="description" name="Description" class="form-control form-control-enhanced" 
+                                              placeholder="Package Description" rows="4" style="min-height: 120px;"></textarea>
+                                    <label for="description">
+                                        <i class="bi bi-card-text me-2 text-info"></i>Description & Benefits
+                                    </label>
+                                </div>
+                                <div class="form-helper">
+                                    <small class="text-muted">
+                                        <i class="bi bi-lightbulb me-1"></i>
+                                        Describe what this package includes, target audience, benefits, and any special features
+                                    </small>
+                                </div>
+                                <div class="description-suggestions mt-2">
+                                    <small class="text-muted">
+                                        <strong>Suggestions:</strong> Include workout types, equipment used, skill level, expected results, duration per session
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 🎯 Enhanced Action Footer -->
+            <div class="modal-footer border-0 bg-light p-4">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <div class="footer-info">
+                        <small class="text-muted">
+                            <i class="bi bi-shield-check me-1"></i>
+                            All fields marked with * are required
+                        </small>
+                    </div>
+                    <div class="footer-actions">
+                        <button type="button" class="btn btn-outline-secondary btn-lg me-3" data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle me-2"></i>Cancel
+                        </button>
+                        <button type="submit" form="PackageForm" id="addBtn" class="btn btn-primary-custom btn-lg px-4">
+                            <i class="bi bi-plus-circle me-2"></i>Create Package
+                        </button>
+                        <button type="submit" form="PackageForm" id="editBtn" class="btn btn-primary-custom btn-lg px-4 d-none">
+                            <i class="bi bi-pencil-square me-2"></i>Update Package
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Enhanced Delete Confirmation Modal -->
+<div class="modal fade" id="deletePackageModal" tabindex="-1" aria-labelledby="deletePackageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-danger text-white border-0">
+                <h5 class="modal-title fw-bold" id="deletePackageModalLabel">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>Confirm Deletion
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <div class="mb-3">
+                    <i class="bi bi-trash3 text-danger" style="font-size: 3rem;"></i>
+                </div>
+                <h6 class="fw-bold mb-3">Delete Package</h6>
+                <p class="text-muted mb-0">
+                    Are you sure you want to delete this package? This action cannot be undone and will remove all associated data.
+                </p>
+            </div>
+            <div class="modal-footer border-0 justify-content-center p-4">
+                <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-2"></i>Cancel
+                </button>
+                <button type="button" id="confirmDeleteBtn" class="btn btn-danger">
+                    <i class="bi bi-trash3 me-2"></i>Delete Package
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/ViewJs/Package.js"></script>
+
+    <style>
+        /* ========================================
+           Enhanced Package Page Styles
+           ======================================== */
+
+        /* Modern Pagination */
+        .pagination-fitverse .page-item .page-link {
+            color: var(--primary-color);
+            font-weight: 500;
+            border: 1px solid #e2e8f0;
+            margin: 0 2px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0.75rem;
+        }
+
+        .pagination-fitverse .page-item .page-link:hover {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
+        }
+
+        .pagination-fitverse .page-item.active .page-link {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        .pagination-fitverse .page-item.disabled .page-link {
+            color: #94a3b8;
+            background-color: #f8fafc;
+            border-color: #e2e8f0;
+        }
+
+        /* Enhanced Table Styles */
+        .table-custom th, .table-custom td {
+            vertical-align: middle;
+            border-color: #f1f5f9;
+        }
+
+        .table-custom tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .table-custom tbody tr:hover {
+            background-color: #f8fafc;
+            transform: translateX(4px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Package Status Badges */
+        .package-status {
+            padding: 0.375rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .package-status.active {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--secondary-color);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .package-status.inactive {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .action-buttons .btn {
+            padding: 0.375rem 0.75rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .action-buttons .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Package Details Cell */
+        .package-details {
+            text-align: left !important;
+        }
+
+        .package-name {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .package-description {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin: 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Price Display */
+        .package-price {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+
+        .package-sessions {
+            font-weight: 600;
+            color: #475569;
+        }
+
+        /* Loading State */
+        .loading-row {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @@keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Stats Cards Animation */
+        .stat-card {
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+        @@keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ========================================
+           Premium Modal Enhancements
+           ======================================== */
+
+        /* Modal Structure */
+        .modal-content {
+            border-radius: 20px;
+            overflow: hidden;
+            border: none;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            border-bottom: none;
+        }
+
+        .modal-footer {
+            border-top: none;
+        }
+
+        /* Modal Icon Wrapper */
+        .modal-icon-wrapper {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Form Sections */
+        .form-section {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #f1f5f9;
+            transition: all 0.3s ease;
+        }
+
+        .form-section:hover {
+            border-color: #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-header {
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 0.75rem;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0;
+        }
+
+        .section-subtitle {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin: 0;
+        }
+
+        /* Enhanced Form Controls */
+        .form-control-enhanced {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 0.875rem 1rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: #fafbfc;
+        }
+
+        .form-control-enhanced:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            background: white;
+            transform: translateY(-1px);
+        }
+
+        /* Floating Labels Enhancement */
+        .form-floating > label {
+            font-weight: 500;
+            color: #64748b;
+            padding: 0.875rem 1rem;
+        }
+
+        .form-floating > .form-control:focus ~ label,
+        .form-floating > .form-control:not(:placeholder-shown) ~ label {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* Input Group Enhancement */
+        .input-group-enhanced {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .input-group-enhanced .input-group-text {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-right: none;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .input-group-enhanced .form-control {
+            border: 2px solid #e2e8f0;
+            border-left: none;
+            border-right: none;
+            background: #fafbfc;
+        }
+
+        .input-group-enhanced .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: none;
+            background: white;
+        }
+
+        .input-group-enhanced .form-control:focus + .input-group-text,
+        .input-group-enhanced .input-group-text:has(+ .form-control:focus) {
+            border-color: var(--primary-color);
+            background: white;
+            color: var(--primary-color);
+        }
+
+        /* Price Input Wrapper */
+        .price-input-wrapper {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(16, 185, 129, 0.02) 100%);
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid rgba(16, 185, 129, 0.1);
+        }
+
+        /* Custom Switch Enhancement */
+        .form-switch-lg .form-check-input {
+            width: 3rem;
+            height: 1.5rem;
+            border-radius: 1rem;
+            background-color: #e2e8f0;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-switch-lg .form-check-input:checked {
+            background-color: var(--primary-color);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .custom-switch-wrapper {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(99, 102, 241, 0.02) 100%);
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+        }
+
+        .switch-text {
+            font-size: 1rem;
+            color: #1e293b;
+        }
+
+        /* Description Wrapper */
+        .description-wrapper {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(59, 130, 246, 0.02) 100%);
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
+        /* Form Helpers */
+        .form-helper {
+            margin-top: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .description-suggestions {
+            padding: 0.5rem 0.75rem;
+            background: rgba(245, 158, 11, 0.05);
+            border-radius: 8px;
+            border-left: 3px solid #f59e0b;
+        }
+
+        /* Footer Enhancements */
+        .footer-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .footer-actions .btn {
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-actions .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Responsive Modal Enhancements */
+        @@media (max-width: 1200px) {
+            .modal-xl {
+                max-width: 95%;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .modal-xl {
+                max-width: 98%;
+                margin: 0.5rem;
+            }
+            
+            .modal-header {
+                min-height: 70px !important;
+            }
+            
+            .modal-icon-wrapper {
+                width: 40px;
+                height: 40px;
+                font-size: 1.25rem;
+            }
+            
+            .form-section {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+            
+            .footer-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .footer-actions .btn {
+                width: 100%;
+                margin: 0.25rem 0;
+            }
+            
+            .d-flex.justify-content-between {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        @@media (max-width: 576px) {
+            .modal-dialog {
+                margin: 0.25rem;
+            }
+            
+            .container-fluid {
+                padding: 1rem !important;
+            }
+            
+            .row.g-4 {
+                gap: 1rem !important;
+            }
+            
+            .col-lg-8, .col-lg-4, .col-md-7, .col-md-5, .col-md-6 {
+                margin-bottom: 1rem;
+            }
+        }
+
+        /* Form Enhancements */
+        .form-control-custom:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-check-input:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        /* Responsive Enhancements */
+        @@media (max-width: 992px) {
+            .section-title {
+                font-size: 1.75rem;
+            }
+            
+            .section-subtitle {
+                font-size: 0.9rem;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .stat-card {
+                margin-bottom: 1rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+            
+            .package-description {
+                -webkit-line-clamp: 1;
+            }
+            
+            .table-responsive {
+                font-size: 0.9rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .section-subtitle {
+                font-size: 0.85rem;
+            }
+            
+            /* Mobile table improvements */
+            .table-custom th:nth-child(3),
+            .table-custom td:nth-child(3) {
+                display: none; /* Hide sessions column on mobile */
+            }
+            
+            .package-price {
+                font-size: 1rem;
+            }
+            
+            /* Mobile modal improvements */
+            .modal-dialog {
+                margin: 1rem;
+            }
+            
+            .modal-body {
+                padding: 1.5rem !important;
+            }
+        }
+
+        @@media (max-width: 576px) {
+            .section-title {
+                font-size: 1.25rem;
+            }
+            
+            .d-flex.justify-content-between {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .d-flex.justify-content-between .btn {
+                width: 100%;
+            }
+            
+            /* Stack search and filter on mobile */
+            .row.g-3.align-items-center .col-md-6,
+            .row.g-3.align-items-center .col-md-3 {
+                margin-bottom: 0.75rem;
+            }
+            
+            /* Mobile table - show only essential columns */
+            .table-custom th:nth-child(4),
+            .table-custom td:nth-child(4) {
+                display: none; /* Hide status column on small mobile */
+            }
+            
+            .package-name {
+                font-size: 0.9rem;
+            }
+            
+            .package-description {
+                font-size: 0.8rem;
+            }
+            
+            .action-buttons .btn {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #64748b;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Search Enhancement */
+        .search-highlight {
+            background-color: rgba(255, 235, 59, 0.3);
+            padding: 0.1rem 0.2rem;
+            border-radius: 3px;
+        }
+    </style>
+
+    <script>
+        // Enhanced functionality for the new design
+        $(document).ready(function() {
+            // Update modal title and subtitle based on action
+            $('#addPackageModal').on('show.bs.modal', function() {
+                const isEdit = !$('#editBtn').hasClass('d-none');
+                $('#modalTitle').text(isEdit ? 'Edit Package' : 'Add New Package');
+                
+                // Update subtitle
+                const subtitle = $(this).find('.modal-header p');
+                subtitle.text(isEdit ? 'Update your training package details' : 'Create a comprehensive training package');
+                
+                // Add entrance animation to form sections
+                setTimeout(() => {
+                    $('.form-section').each(function(index) {
+                        $(this).css({
+                            'opacity': '0',
+                            'transform': 'translateY(20px)'
+                        }).animate({
+                            'opacity': '1',
+                            'transform': 'translateY(0)'
+                        }, 300 + (index * 100));
+                    });
+                }, 100);
+            });
+
+            // Enhanced form validation feedback
+            $('#PackageForm input, #PackageForm textarea').on('blur', function() {
+                const $this = $(this);
+                const value = $this.val().trim();
+                const isRequired = $this.prop('required');
+                
+                // Remove previous validation classes
+                $this.removeClass('is-valid is-invalid');
+                
+                if (isRequired && !value) {
+                    $this.addClass('is-invalid');
+                    showFieldError($this, 'This field is required');
+                } else if (value) {
+                    $this.addClass('is-valid');
+                    hideFieldError($this);
+                    
+                    // Specific validations
+                    if ($this.attr('id') === 'price') {
+                        const price = parseFloat(value);
+                        if (price <= 0) {
+                            $this.removeClass('is-valid').addClass('is-invalid');
+                            showFieldError($this, 'Price must be greater than 0');
+                        }
+                    } else if ($this.attr('id') === 'sessions') {
+                        const sessions = parseInt(value);
+                        if (sessions <= 0) {
+                            $this.removeClass('is-valid').addClass('is-invalid');
+                            showFieldError($this, 'Sessions must be at least 1');
+                        }
+                    }
+                }
+            });
+
+            // Real-time character count for description
+            $('#description').on('input', function() {
+                const maxLength = 500;
+                const currentLength = $(this).val().length;
+                const remaining = maxLength - currentLength;
+                
+                let countElement = $(this).siblings('.char-count');
+                if (countElement.length === 0) {
+                    countElement = $('<div class="char-count mt-1"></div>');
+                    $(this).parent().append(countElement);
+                }
+                
+                if (remaining < 50) {
+                    countElement.html(`<small class="text-warning"><i class="bi bi-exclamation-triangle me-1"></i>${remaining} characters remaining</small>`);
+                } else {
+                    countElement.html(`<small class="text-muted">${remaining} characters remaining</small>`);
+                }
+            });
+
+            // Enhanced price formatting
+            $('#price').on('input', function() {
+                let value = $(this).val();
+                if (value && !isNaN(value)) {
+                    const formatted = parseFloat(value).toFixed(2);
+                    if (value !== formatted) {
+                        $(this).val(formatted);
+                    }
+                }
+            });
+
+            // Form section hover effects
+            $('.form-section').hover(
+                function() {
+                    $(this).css('transform', 'translateY(-2px)');
+                },
+                function() {
+                    $(this).css('transform', 'translateY(0)');
+                }
+            );
+
+            // Helper functions for validation
+            function showFieldError($field, message) {
+                hideFieldError($field);
+                const errorDiv = $(`<div class="invalid-feedback d-block mt-1">
+                    <i class="bi bi-exclamation-circle me-1"></i>${message}
+                </div>`);
+                $field.parent().append(errorDiv);
+            }
+
+            function hideFieldError($field) {
+                $field.parent().find('.invalid-feedback').remove();
+            }
+
+            // Clear validation on modal close
+            $('#addPackageModal').on('hidden.bs.modal', function() {
+                $('#PackageForm input, #PackageForm textarea').removeClass('is-valid is-invalid');
+                $('.invalid-feedback').remove();
+                $('.char-count').remove();
+            });
+
+            // Add status filter functionality
+            $('#statusFilter').on('change', function() {
+                currentPage = 1;
+                loadPackagePaged();
+            });
+
+            // Add export functionality placeholder
+            window.exportPackages = function() {
+                Swal.fire({
+                    title: 'Export Packages',
+                    text: 'This feature will be implemented soon!',
+                    icon: 'info',
+                    confirmButtonText: 'OK'
+                });
+            };
+
+            // Update stats when data loads
+            function updateStats(data) {
+                const total = data.length;
+                const active = data.filter(p => p.IsActive).length;
+                const avgPrice = total > 0 ? (data.reduce((sum, p) => sum + p.Price, 0) / total).toFixed(0) : 0;
+                const totalSessions = data.reduce((sum, p) => sum + p.Sessions, 0);
+
+                $('#totalPackages').text(total);
+                $('#activePackages').text(active);
+                $('#avgPrice').text(avgPrice);
+                $('#totalSessions').text(totalSessions);
+            }
+
+            // Create enhanced version that will be called by the original function
+            window.loadPackagePagedEnhanced = function() {
+                const statusFilter = $('#statusFilter').val();
+                
+                $.ajax({
+                    url: '/Package/GetPaged',
+                    method: 'GET',
+                    data: { 
+                        page: currentPage, 
+                        pageSize: pageSize, 
+                        search: currentSearch,
+                        status: statusFilter 
+                    },
+                    success: function (response) {
+                        $('#Data').empty();
+
+                        if (response.data.length === 0) {
+                            $('#Data').append(`
+                                <tr>
+                                    <td colspan="5" class="empty-state">
+                                        <i class="bi bi-box-seam"></i>
+                                        <h6>No packages found</h6>
+                                        <p class="mb-0">Try adjusting your search criteria or create a new package.</p>
+                                    </td>
+                                </tr>
+                            `);
+                            renderPagination(1, 1);
+                            $('#paginationInfo').text('Showing 0 of 0 packages');
+                            return;
+                        }
+
+                        response.data.forEach(item => {
+                            const statusBadge = item.IsActive 
+                                ? '<span class="package-status active">Active</span>'
+                                : '<span class="package-status inactive">Inactive</span>';
+
+                            $('#Data').append(`
+                                <tr>
+                                    <td class="package-details">
+                                        <div class="package-name">${item.Name}</div>
+                                        <p class="package-description">${item.Description || 'No description available'}</p>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="package-price">${item.Price} EGP</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="package-sessions">${item.Sessions}</span>
+                                    </td>
+                                    <td class="text-center">${statusBadge}</td>
+                                    <td class="text-center">
+                                        <div class="action-buttons">
+                                            <button type="button" onclick="getById(${item.Id})" 
+                                                    class="btn btn-sm btn-outline-primary" title="Edit Package">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button type="button" onclick="Delete(${item.Id})" 
+                                                    class="btn btn-sm btn-outline-danger" title="Delete Package">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            `);
+                        });
+
+                        renderPagination(response.currentPage, response.totalPages);
+                        
+                        const start = (response.currentPage - 1) * pageSize + 1;
+                        const end = Math.min(response.currentPage * pageSize, response.totalCount || response.data.length);
+                        const total = response.totalCount || response.data.length;
+                        $('#paginationInfo').text(`Showing ${start}-${end} of ${total} packages`);
+
+                        // Update stats (you might need to fetch all data for accurate stats)
+                        updateStats(response.data);
+                    },
+                    error: function () {
+                        Swal.fire("Error", "Failed to load packages.", "error");
+                    }
+                });
+            };
+        });
+    </script>
+}

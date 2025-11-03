@@ -1,0 +1,142 @@
+@model FitVerse.Core.ViewModels.Admin.AdminDashboardViewModel
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<!-- Main Content -->
+<div class="w-100 py-4">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 px-3">
+        <div>
+            <h2 class="fw-bold mb-1">Admin Dashboard</h2>
+            <p class="text-muted mb-0">Welcome back! Here's what's happening with FitVerse today.</p>
+        </div>
+
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4 px-3">
+
+        <!-- Total Users -->
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card primary">
+                <div class="stat-icon primary">
+                    <i class="bi bi-people"></i>
+                </div>
+                <div class="stat-value">@Model.TotalUsers</div>
+                <div class="stat-label">Total Users</div>
+            </div>
+        </div>
+
+        <!-- Active Coaches -->
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card success">
+                <div class="stat-icon success">
+                    <i class="bi bi-person-badge"></i>
+                </div>
+                <div class="stat-value">@Model.TotalCoaches</div>
+                <div class="stat-label">Active Coaches</div>
+            </div>
+        </div>
+
+        <!-- Packages Sold -->
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card warning">
+                <div class="stat-icon warning">
+                    <i class="bi bi-box-seam"></i>
+                </div>
+                <div class="stat-value">@Model.SoldedPackages</div>
+                <div class="stat-label">Packages Sold</div>
+            </div>
+        </div>
+
+        <!-- Total Revenue -->
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card danger">
+                <div class="stat-icon danger">
+                    <i class="bi bi-currency-dollar"></i>
+                </div>
+                <div class="stat-value">$@Model.TotalRevenue</div>
+                <div class="stat-label">Total Revenue</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Coaches Card -->
+    <div class="row px-3">
+        <div class="col-12">
+            <div class="card-custom w-100">
+                <div class="card-header-custom">
+                    <i class="bi bi-star-fill me-2" style="color: #fbbf24;"></i> Top Coaches
+                </div>
+                <div class="card-body-custom">
+                    @if (Model.TopCoaches != null && Model.TopCoaches.Any())
+                    {
+                        @foreach (var coach in Model.TopCoaches)
+                        {
+                            <div class="d-flex align-items-center justify-content-between mb-3 pb-3 border-bottom">
+                                <div class="d-flex align-items-center gap-3">
+                                    @{
+                                        var imageUrl = !string.IsNullOrEmpty(coach.ImagePath) 
+                                            ? Url.Content(coach.ImagePath)
+                                            : $"https://ui-avatars.com/api/?name={Uri.EscapeDataString(coach.Name)}&background=3b82f6&color=fff&size=100";
+                                    }
+                                    <img src="@imageUrl"
+                                         alt="@coach.Name" 
+                                         style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 3px solid #e5e7eb;">
+                                    <div>
+                                        <div class="fw-bold" style="font-size: 1.05rem;">@coach.Name</div>
+                                        <small class="text-muted">
+                                            <i class="bi bi-people-fill me-1"></i>@coach.ClientsCount Active Clients
+                                        </small>
+                                        <br />
+                                        <small class="text-muted">
+                                            <i class="bi bi-chat-square-text me-1"></i>@coach.FeedbackCount Reviews
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <div class="fw-bold mb-1" style="color: #10b981; font-size: 1.5rem;">
+                                        @coach.Rating.ToString("0.0")
+                                    </div>
+                                    <div style="color: #fbbf24; font-size: 1.1rem; letter-spacing: 2px;">
+                                        @{
+                                            var fullStars = (int)Math.Floor(coach.Rating);
+                                            var hasHalfStar = (coach.Rating - fullStars) >= 0.5;
+                                            var emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+                                            
+                                            for (int i = 0; i < fullStars; i++)
+                                            {
+                                                <i class="bi bi-star-fill"></i>
+                                            }
+                                            if (hasHalfStar)
+                                            {
+                                                <i class="bi bi-star-half"></i>
+                                            }
+                                            for (int i = 0; i < emptyStars; i++)
+                                            {
+                                                <i class="bi bi-star"></i>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="bi bi-star" style="font-size: 3rem; color: #d1d5db;"></i>
+                            <p class="text-muted mt-3 mb-0">No feedback data available yet.</p>
+                            <small class="text-muted">Coaches will appear here once they receive ratings from clients.</small>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

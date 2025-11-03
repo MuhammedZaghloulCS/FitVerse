@@ -1,0 +1,157 @@
+@{
+    ViewData["Title"] = "My Clients";
+    Layout = "~/Views/Shared/_CoachLayout.cshtml";
+}
+
+<!-- Main Content -->
+<div class="container-fluid px-4 py-4">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">
+                <i class="bi bi-people me-2 text-primary"></i>My Clients
+            </h2>
+            <p class="text-muted mb-0">Manage and track your clients' progress and achievements</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-primary modern-btn" id="refreshClientsBtn">
+                <i class="bi bi-arrow-clockwise me-2"></i>Refresh
+            </button>
+            <div class="dropdown">
+                <button class="btn btn-secondary modern-btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="bi bi-funnel me-2"></i>Filter
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#" data-filter="all">All Clients</a></li>
+                    <li><a class="dropdown-item" href="#" data-filter="active">Active Only</a></li>
+                    <li><a class="dropdown-item" href="#" data-filter="inactive">Inactive Only</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="row g-4 mb-4" id="clientsStats">
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card modern-stat-card">
+                <div class="stat-icon-wrapper">
+                    <div class="stat-icon primary">
+                        <i class="bi bi-people"></i>
+                    </div>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="totalClientsCount">0</div>
+                    <div class="stat-label">Total Clients</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card modern-stat-card">
+                <div class="stat-icon-wrapper">
+                    <div class="stat-icon success">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="activeClientsCount">0</div>
+                    <div class="stat-label">Active Clients</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card modern-stat-card">
+                <div class="stat-icon-wrapper">
+                    <div class="stat-icon warning">
+                        <i class="bi bi-trophy"></i>
+                    </div>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="avgProgressCount">0%</div>
+                    <div class="stat-label">Avg Progress</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card modern-stat-card">
+                <div class="stat-icon-wrapper">
+                    <div class="stat-icon info">
+                        <i class="bi bi-lightning"></i>
+                    </div>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-value" id="totalWorkoutsCount">0</div>
+                    <div class="stat-label">Total Workouts</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="card modern-card mb-4">
+        <div class="card-body">
+            <div class="row g-3 align-items-center">
+                <div class="col-lg-6">
+                    <div class="search-wrapper">
+                        <i class="bi bi-search search-icon"></i>
+                        <input type="text" class="form-control modern-search-input" id="clientSearchInput" 
+                               placeholder="Search clients by name, email, or subscription...">
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <select class="form-select modern-form-control" id="subscriptionFilter">
+                        <option value="">All Subscriptions</option>
+                        <option value="Premium">Premium</option>
+                        <option value="Standard">Standard</option>
+                        <option value="Basic">Basic</option>
+                    </select>
+                </div>
+                <div class="col-lg-3">
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-secondary modern-btn flex-fill" id="clearFiltersBtn">
+                            <i class="bi bi-x-circle me-1"></i>Clear
+                        </button>
+                        <div class="view-toggle">
+                            <button class="btn btn-outline-primary modern-btn" id="gridViewBtn" title="Grid View">
+                                <i class="bi bi-grid-3x3-gap"></i>
+                            </button>
+                            <button class="btn btn-outline-primary modern-btn" id="listViewBtn" title="List View">
+                                <i class="bi bi-list"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="text-center py-5" id="loadingState">
+        <div class="spinner-border text-primary mb-3" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="text-muted">Loading your clients...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div class="text-center py-5" id="emptyState" style="display: none;">
+        <div class="empty-state-icon mb-3">
+            <i class="bi bi-people text-muted" style="font-size: 4rem;"></i>
+        </div>
+        <h4 class="text-muted mb-2">No Clients Found</h4>
+        <p class="text-muted mb-4">You don't have any clients assigned yet, or they don't match your current filters.</p>
+        <button class="btn btn-primary modern-btn" id="clearFiltersFromEmpty">
+            <i class="bi bi-funnel me-2"></i>Clear Filters
+        </button>
+    </div>
+
+    <!-- Clients Container -->
+    <div class="clients-container">
+        <div class="row g-4" id="clientsContainer">
+            <!-- Clients will be loaded here dynamically -->
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/ViewJs/ClientsOnCoach.js"></script>
+}

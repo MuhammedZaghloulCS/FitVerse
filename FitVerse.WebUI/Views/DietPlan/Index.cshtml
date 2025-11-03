@@ -1,0 +1,588 @@
+
+@{
+    Layout = "~/Views/Shared/_CoachLayout.cshtml";
+    ViewBag.Active = "DietPlans";
+    ViewBag.PageTitle = "Diet Plans";
+}
+@model FitVerse.Core.ViewModels.DietPlan.DietPlanDashboardVM
+
+<!-- Main Content -->
+<div class="container-fluid px-4 py-4">
+    <!-- Enhanced Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">
+                <i class="bi bi-egg-fried me-2 text-primary"></i>Diet Plans
+            </h2>
+            <p class="text-muted mb-0">Create and manage comprehensive nutrition plans for your clients</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-primary modern-btn" id="refreshPlansBtn">
+                <i class="bi bi-arrow-clockwise me-2"></i>Refresh
+            </button>
+            <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#createDietPlanModal">
+                <i class="bi bi-plus-circle me-2"></i>Create Diet Plan
+            </button>
+        </div>
+    </div>
+
+    <!-- Enhanced Stats Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card primary w-100">
+                <div class="stat-icon primary"><i class="bi bi-egg-fried"></i></div>
+                <div class="stat-content">
+                    <div class="stat-value">@Model.DietPlanCount</div>
+                    <div class="stat-label">Total Diet Plans</div>
+                </div>
+                <div class="stat-trend positive">
+                    <i class="bi bi-arrow-up"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card success w-100">
+                <div class="stat-icon success"><i class="bi bi-people"></i></div>
+                <div class="stat-content">
+                    <div class="stat-value">@Model.ClientFollowingCount</div>
+                    <div class="stat-label">Clients Following</div>
+                </div>
+                <div class="stat-trend positive">
+                    <i class="bi bi-arrow-up"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card warning w-100">
+                <div class="stat-icon warning"><i class="bi bi-calendar-check"></i></div>
+                <div class="stat-content">
+                    <div class="stat-value" id="activePlansCount">-</div>
+                    <div class="stat-label">Active Plans</div>
+                </div>
+                <div class="stat-trend positive">
+                    <i class="bi bi-arrow-up"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card info w-100">
+                <div class="stat-icon info"><i class="bi bi-graph-up"></i></div>
+                <div class="stat-content">
+                    <div class="stat-value" id="avgCaloriesCount">-</div>
+                    <div class="stat-label">Avg Calories</div>
+                </div>
+                <div class="stat-trend positive">
+                    <i class="bi bi-arrow-up"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <!-- Enhanced Search and Filters -->
+    <div class="card-custom mb-4">
+        <div class="card-body-custom">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="search-wrapper">
+                        <i class="bi bi-search search-icon"></i>
+                        <input type="text" id="searchDietPlan" class="form-control-custom search-input" placeholder="Search diet plans by name, goal, or calories...">
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="d-flex gap-2 justify-content-lg-end">
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-funnel me-2"></i>Filter by Goal
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item filter-option" data-filter="all">All Plans</a></li>
+                                <li><a class="dropdown-item filter-option" data-filter="weight-loss">Weight Loss</a></li>
+                                <li><a class="dropdown-item filter-option" data-filter="muscle-gain">Muscle Gain</a></li>
+                                <li><a class="dropdown-item filter-option" data-filter="maintenance">Maintenance</a></li>
+                            </ul>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-sort-down me-2"></i>Sort by
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item sort-option" data-sort="name">Name</a></li>
+                                <li><a class="dropdown-item sort-option" data-sort="calories">Calories</a></li>
+                                <li><a class="dropdown-item sort-option" data-sort="created">Date Created</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Enhanced Diet Plans Grid -->
+    <div class="card-custom">
+        <div class="card-header-custom">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="bi bi-grid me-2"></i>Your Diet Plans
+                </h5>
+                <div class="view-toggle">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-secondary btn-sm active" id="gridViewBtn">
+                            <i class="bi bi-grid-3x3-gap"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" id="listViewBtn">
+                            <i class="bi bi-list"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body-custom">
+            <!-- Loading State -->
+            <div class="loading-state text-center py-5" id="loadingState" style="display: none;">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="text-muted">Loading your diet plans...</p>
+            </div>
+            
+            <!-- Plans Container -->
+            <div class="row g-4" id="dietPlansContainer">
+                <!-- Plans will be loaded here dynamically -->
+            </div>
+            
+            <!-- Empty State -->
+            <div class="empty-state text-center py-5" id="emptyState" style="display: none;">
+                <i class="bi bi-egg-fried fs-1 text-muted mb-3"></i>
+                <h5 class="text-muted mb-2">No Diet Plans Found</h5>
+                <p class="text-muted mb-4">Create your first diet plan to get started</p>
+                <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#createDietPlanModal">
+                    <i class="bi bi-plus-circle me-2"></i>Create Your First Plan
+                </button>
+            </div>
+        </div>
+    </div>
+@*     <div class="row g-4"> *@
+@*         <div class="col-lg-4 col-md-6"> *@
+@*             <div class="card-custom h-100"> *@
+@*                 <div class="card-body-custom"> *@
+@*                     <div class="d-flex justify-content-between align-items-start mb-3"> *@
+@*                         <div> *@
+@*                             <h5 class="fw-bold mb-1">🥗 Weight Loss Plan</h5> *@
+@*                             <small class="text-muted">1,800 calories/day</small> *@
+@*                         </div> *@
+@*                         <div class="dropdown"> *@
+@*                             <button class="btn btn-sm btn-outline-custom" data-bs-toggle="dropdown"> *@
+@*                                 <i class="bi bi-three-dots-vertical"></i> *@
+@*                             </button> *@
+@*                             <ul class="dropdown-menu"> *@
+@*                                 <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#viewDietPlanModal"><i class="bi bi-eye me-2"></i>View Details</a></li> *@
+@*                                 <li><a class="dropdown-item" href="#"><i class="bi bi-pencil me-2"></i>Edit</a></li> *@
+@*                                 <li><a class="dropdown-item" href="#"><i class="bi bi-person-plus me-2"></i>Assign to Client</a></li> *@
+@*                                 <li><hr class="dropdown-divider"></li> *@
+@*                                 <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-trash me-2"></i>Delete</a></li> *@
+@*                             </ul> *@
+@*                         </div> *@
+@*                     </div> *@
+
+@*                     <div class="mb-3"> *@
+@*                         <div class="d-flex justify-content-between mb-2"> *@
+@*                             <span class="text-muted small">Protein</span> *@
+@*                             <strong class="small">135g (30%)</strong> *@
+@*                         </div> *@
+@*                         <div class="progress mb-2" style="height: 6px;"> *@
+@*                             <div class="progress-bar bg-danger" style="width: 30%;"></div> *@
+@*                         </div> *@
+
+@*                         <div class="d-flex justify-content-between mb-2"> *@
+@*                             <span class="text-muted small">Carbs</span> *@
+@*                             <strong class="small">202g (45%)</strong> *@
+@*                         </div> *@
+@*                         <div class="progress mb-2" style="height: 6px;"> *@
+@*                             <div class="progress-bar bg-warning" style="width: 45%;"></div> *@
+@*                         </div> *@
+
+@*                         <div class="d-flex justify-content-between mb-2"> *@
+@*                             <span class="text-muted small">Fats</span> *@
+@*                             <strong class="small">50g (25%)</strong> *@
+@*                         </div> *@
+@*                         <div class="progress" style="height: 6px;"> *@
+@*                             <div class="progress-bar bg-success" style="width: 25%;"></div> *@
+@*                         </div> *@
+@*                     </div> *@
+
+@*                     <div class="d-flex gap-2 mb-3"> *@
+@*                         <span class="badge-custom badge-success">Active</span> *@
+@*                         <span class="badge-custom badge-primary">32 Clients</span> *@
+@*                     </div> *@
+
+@*                     <button class="btn btn-primary-custom btn-sm w-100" data-bs-toggle="modal" data-bs-target="#viewDietPlanModal"> *@
+@*                         <i class="bi bi-eye me-1"></i> View Full Plan *@
+@*                     </button> *@
+@*                 </div> *@
+@*             </div> *@
+@*         </div> *@
+
+@*         <div class="col-lg-4 col-md-6"> *@
+@*             <div class="card-custom h-100"> *@
+@*                 <div class="card-body-custom"> *@
+@*                     <div class="d-flex justify-content-between align-items-start mb-3"> *@
+@*                         <div> *@
+@*                             <h5 class="fw-bold mb-1">💪 Muscle Gain Plan</h5> *@
+@*                             <small class="text-muted">2,800 calories/day</small> *@
+@*                         </div> *@
+@*                         <div class="dropdown"> *@
+@*                             <button class="btn btn-sm btn-outline-custom" data-bs-toggle="dropdown"> *@
+@*                                 <i class="bi bi-three-dots-vertical"></i> *@
+@*                             </button> *@
+@*                             <ul class="dropdown-menu"> *@
+@*                                 <li><a class="dropdown-item" href="#"><i class="bi bi-eye me-2"></i>View Details</a></li> *@
+@*                                 <li><a class="dropdown-item" href="#"><i class="bi bi-pencil me-2"></i>Edit</a></li> *@
+@*                                 <li><a class="dropdown-item" href="#"><i class="bi bi-person-plus me-2"></i>Assign to Client</a></li> *@
+@*                                 <li><hr class="dropdown-divider"></li> *@
+@*                                 <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-trash me-2"></i>Delete</a></li> *@
+@*                             </ul> *@
+@*                         </div> *@
+@*                     </div> *@
+
+@*                     <div class="mb-3"> *@
+@*                         <div class="d-flex justify-content-between mb-2"> *@
+@*                             <span class="text-muted small">Protein</span> *@
+@*                             <strong class="small">210g (30%)</strong> *@
+@*                         </div> *@
+@*                         <div class="progress mb-2" style="height: 6px;"> *@
+@*                             <div class="progress-bar bg-danger" style="width: 30%;"></div> *@
+@*                         </div> *@
+
+@*                         <div class="d-flex justify-content-between mb-2"> *@
+@*                             <span class="text-muted small">Carbs</span> *@
+@*                             <strong class="small">350g (50%)</strong> *@
+@*                         </div> *@
+@*                         <div class="progress mb-2" style="height: 6px;"> *@
+@*                             <div class="progress-bar bg-warning" style="width: 50%;"></div> *@
+@*                         </div> *@
+
+@*                         <div class="d-flex justify-content-between mb-2"> *@
+@*                             <span class="text-muted small">Fats</span> *@
+@*                             <strong class="small">62g (20%)</strong> *@
+@*                         </div> *@
+@*                         <div class="progress" style="height: 6px;"> *@
+@*                             <div class="progress-bar bg-success" style="width: 20%;"></div> *@
+@*                         </div> *@
+@*                     </div> *@
+
+@*                     <div class="d-flex gap-2 mb-3"> *@
+@*                         <span class="badge-custom badge-success">Active</span> *@
+@*                         <span class="badge-custom badge-primary">28 Clients</span> *@
+@*                     </div> *@
+
+@*                     <button class="btn btn-primary-custom btn-sm w-100"> *@
+@*                         <i class="bi bi-eye me-1"></i> View Full Plan *@
+@*                     </button> *@
+@*                 </div> *@
+@*             </div> *@
+@*         </div> *@
+
+@*         <div class="col-lg-4 col-md-6"> *@
+@*             <div class="card-custom h-100"> *@
+@*                 <div class="card-body-custom"> *@
+@*                     <div class="d-flex justify-content-between align-items-start mb-3"> *@
+@*                         <div> *@
+@*                             <h5 class="fw-bold mb-1">⚖️ Maintenance Plan</h5> *@
+@*                             <small class="text-muted">2,200 calories/day</small> *@
+@*                         </div> *@
+@*                         <div class="dropdown"> *@
+@*                             <button class="btn btn-sm btn-outline-custom" data-bs-toggle="dropdown"> *@
+@*                                 <i class="bi bi-three-dots-vertical"></i> *@
+@*                             </button> *@
+@*                             <ul class="dropdown-menu"> *@
+@*                                 <li><a class="dropdown-item" href="#"><i class="bi bi-eye me-2"></i>View Details</a></li> *@
+@*                                 <li><a class="dropdown-item" href="#"><i class="bi bi-pencil me-2"></i>Edit</a></li> *@
+@*                                 <li><a class="dropdown-item" href="#"><i class="bi bi-person-plus me-2"></i>Assign to Client</a></li> *@
+@*                                 <li><hr class="dropdown-divider"></li> *@
+@*                                 <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-trash me-2"></i>Delete</a></li> *@
+@*                             </ul> *@
+@*                         </div> *@
+@*                     </div> *@
+
+@*                     <div class="mb-3"> *@
+@*                         <div class="d-flex justify-content-between mb-2"> *@
+@*                             <span class="text-muted small">Protein</span> *@
+@*                             <strong class="small">165g (30%)</strong> *@
+@*                         </div> *@
+@*                         <div class="progress mb-2" style="height: 6px;"> *@
+@*                             <div class="progress-bar bg-danger" style="width: 30%;"></div> *@
+@*                         </div> *@
+
+@*                         <div class="d-flex justify-content-between mb-2"> *@
+@*                             <span class="text-muted small">Carbs</span> *@
+@*                             <strong class="small">247g (45%)</strong> *@
+@*                         </div> *@
+@*                         <div class="progress mb-2" style="height: 6px;"> *@
+@*                             <div class="progress-bar bg-warning" style="width: 45%;"></div> *@
+@*                         </div> *@
+
+@*                         <div class="d-flex justify-content-between mb-2"> *@
+@*                             <span class="text-muted small">Fats</span> *@
+@*                             <strong class="small">61g (25%)</strong> *@
+@*                         </div> *@
+@*                         <div class="progress" style="height: 6px;"> *@
+@*                             <div class="progress-bar bg-success" style="width: 25%;"></div> *@
+@*                         </div> *@
+@*                     </div> *@
+
+@*                     <div class="d-flex gap-2 mb-3"> *@
+@*                         <span class="badge-custom badge-success">Active</span> *@
+@*                         <span class="badge-custom badge-primary">29 Clients</span> *@
+@*                     </div> *@
+
+@*                     <button class="btn btn-primary-custom btn-sm w-100"> *@
+@*                         <i class="bi bi-eye me-1"></i> View Full Plan *@
+@*                     </button> *@
+@*                 </div> *@
+@*             </div> *@
+@*         </div> *@
+@*     </div> *@
+@* </div> *@
+
+<!-- Create Diet Plan Modal -->
+    <div class="modal fade" id="createDietPlanModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content" style="border-radius: 16px; border: none;">
+                <div class="modal-header" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none;">
+                    <h5 class="modal-title fw-bold">Create Diet Plan</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="dietPlanForm">
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <label class="form-label-custom">Plan Name</label>
+                                <input type="text" id="planName" class="form-control-custom" placeholder="e.g., Weight Loss Plan">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label-custom">Goal</label>
+                                <input type="text" id="goal" class="form-control-custom" placeholder="e.g., Muscle Gain">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label-custom">Age</label>
+                                <input type="number" id="age" class="form-control-custom" placeholder="0">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label-custom">Gender</label>
+                                <input type="text" id="gender" class="form-control-custom" placeholder="Male">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label-custom">Weight</label>
+                                <input type="number" id="weight" class="form-control-custom" placeholder="0">
+                            </div>
+                            <div class="col-md-4">
+                            <label class="form-label-custom">Height</label>
+                            <input type="number" id="height" class="form-control-custom" placeholder="0">
+                           
+                            </div>
+
+
+
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-3">
+                                <label class="form-label-custom">Daily Calories</label>
+                                <input type="number" id="totalCal" class="form-control-custom" placeholder="2000">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label-custom">Protein (g)</label>
+                                <input type="number" id="protein" class="form-control-custom" placeholder="150">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label-custom">Carbs (g)</label>
+                                <input type="number" id="carbs" class="form-control-custom" placeholder="200">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label-custom">Fats (g)</label>
+                                <input type="number" id="fats" class="form-control-custom" placeholder="60">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" id="saveDietPlanBtn" class="btn btn-primary">Save Plan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<!-- View Diet Plan Modal -->
+<div class="modal fade" id="viewDietPlanModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" style="border-radius: 16px; border: none;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none;">
+                <div>
+                    <h5 class="modal-title fw-bold">🥗 Weight Loss Plan</h5>
+                    <small>1,800 calories/day • 30% Protein • 45% Carbs • 25% Fats</small>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="alert alert-success mb-4">
+                    <strong>@Model.ClientFollowingCount</strong> are currently following this diet plan
+                </div>
+
+      
+            </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Diet Plan Modal -->
+    <div class="modal fade" id="editDietPlanModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content" style="border-radius: 16px; border: none;">
+                <div class="modal-header" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border: none;">
+                    <h5 class="modal-title fw-bold">Edit Diet Plan</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="editDietPlanForm">
+                        <input type="hidden" id="editPlanId" />
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <label class="form-label-custom">Plan Name</label>
+                                <input type="text" id="editPlanName" class="form-control-custom">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label-custom">Goal</label>
+                                <input type="text" id="editGoal" class="form-control-custom">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label-custom">Age</label>
+                                <input type="number" id="editage" class="form-control-custom" placeholder="0">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label-custom">Gender</label>
+                                <input type="text" id="editgender" class="form-control-custom" placeholder="Male">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label-custom">Weight</label>
+                                <input type="number" id="editweight" class="form-control-custom" placeholder="0">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label-custom">Height</label>
+                                <input type="number" id="editheight" class="form-control-custom" placeholder="0">
+
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-3">
+                                <label class="form-label-custom">Daily Calories</label>
+                                <input type="number" id="editTotalCal" class="form-control-custom">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label-custom">Protein (g)</label>
+                                <input type="number" id="editProtein" class="form-control-custom">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label-custom">Carbs (g)</label>
+                                <input type="number" id="editCarbs" class="form-control-custom">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label-custom">Fats (g)</label>
+                                <input type="number" id="editFats" class="form-control-custom">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" id="updateDietPlanBtn" class="btn btn-warning">Update Plan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assign Diet Plan to Client Modal -->
+    <div class="modal fade" id="assignDietPlanModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 16px; border: none;">
+                <div class="modal-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none;">
+                    <div class="modal-title-wrapper">
+                        <div class="modal-icon me-3">
+                            <i class="bi bi-person-plus fs-4"></i>
+                        </div>
+                        <div class="modal-title-content">
+                            <h5 class="modal-title fw-bold mb-0">Assign Diet Plan to Client</h5>
+                            <small class="opacity-75">Select a client to assign this nutrition plan</small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="assignDietPlanForm">
+                        <input type="hidden" id="assignPlanId" name="PlanId">
+                        
+                        <!-- Current Plan Info -->
+                        <div class="current-plan-info mb-4">
+                            <h6 class="section-title mb-3">
+                                <i class="bi bi-info-circle me-2"></i>Plan Details
+                            </h6>
+                            <div class="plan-info-card p-3 bg-light rounded">
+                                <div class="d-flex align-items-center">
+                                    <div class="plan-icon me-3">
+                                        <i class="bi bi-egg-fried fs-2 text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold" id="assignPlanName">Loading...</div>
+                                        <div class="text-muted small" id="assignPlanDetails"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Client Selection -->
+                        <div class="client-selection">
+                            <h6 class="section-title mb-3">
+                                <i class="bi bi-person me-2"></i>Select Client
+                            </h6>
+                            <div class="form-group">
+                                <label class="form-label-custom">
+                                    <i class="bi bi-people me-2"></i>Choose Client
+                                </label>
+                                <select name="ClientId" id="assignClientSelector" class="form-control-custom" required>
+                                    <option value="">Select a client...</option>
+                                </select>
+                                <div class="form-text mt-2">
+                                    <i class="bi bi-info-circle me-1"></i>This will assign the diet plan to the selected client
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-2"></i>Cancel
+                    </button>
+                    <button type="button" id="confirmAssignDietPlanBtn" class="btn btn-success">
+                        <i class="bi bi-check-circle me-2"></i>Assign Plan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="/ViewJs/DietPlan.js"></script>

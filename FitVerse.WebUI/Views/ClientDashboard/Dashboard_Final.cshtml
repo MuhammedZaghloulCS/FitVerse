@@ -1,0 +1,489 @@
+@model FitVerse.Core.ViewModels.ClientDashboard.ClientDashboardViewModel
+@{
+    ViewData["Title"] = "لوحة تحكم العميل - FitVerse";
+    Layout = "~/Views/Shared/_ClientLayout.cshtml";
+}
+
+<style>
+    :root {
+        --primary-color: #5B46E5;
+        --primary-dark: #4A36CA;
+        --primary-light: #F0EDFF; 
+        --secondary-color: #10B981; 
+        --secondary-dark: #0D9F7F;
+        --accent-color: #F59E0B;
+        --light-bg: #F8FAFF;
+        --card-bg: #FFFFFF;
+        --text-primary: #1F2937;
+        --text-secondary: #4B5563;
+        --border-color: #E5E7EB;
+        --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.04);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --border-radius: 14px;
+        --border-radius-lg: 18px;
+    }
+
+    body {
+        background-color: var(--light-bg);
+        color: var(--text-primary);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    .main-content {
+        padding: 2rem;
+        max-width: 1440px;
+        margin: 0 auto;
+    }
+
+    .card-custom {
+        background: var(--card-bg);
+        border-radius: var(--border-radius-lg);
+        box-shadow: var(--shadow-md);
+        margin-bottom: 2rem;
+        border: 1px solid var(--border-color);
+        overflow: hidden;
+        transition: var(--transition);
+    }
+
+    .card-custom:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .card-header-custom {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        color: white;
+        padding: 1.5rem 2rem;
+        font-weight: 700;
+        font-size: 1.2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: none;
+    }
+
+    .card-body {
+        padding: 2rem;
+    }
+
+    .coach-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 20px;
+        object-fit: cover;
+        margin-left: 2rem;
+        border: 4px solid white;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        transition: var(--transition);
+    }
+
+    .coach-avatar:hover {
+        transform: scale(1.05) rotate(2deg);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        color: white;
+        padding: 0.8rem 2rem;
+        border-radius: 12px;
+        text-decoration: none;
+        transition: var(--transition);
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        box-shadow: 0 4px 15px rgba(91, 70, 229, 0.3);
+    }
+
+    .btn-primary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(91, 70, 229, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3.5rem 2rem;
+        border-radius: 16px;
+        background: var(--light-bg);
+        border: 2px dashed var(--border-color);
+        transition: var(--transition);
+    }
+
+    .empty-state:hover {
+        background: white;
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .empty-state i {
+        font-size: 2.75rem;
+        color: #CBD5E1;
+        margin-bottom: 1.25rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        background: white;
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition);
+    }
+
+    .info-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.75rem;
+        height: 100%;
+        border: 1px solid var(--border-color);
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .info-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        transition: var(--transition);
+    }
+
+    .info-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .info-card:hover::before {
+        height: 6px;
+    }
+
+    .badge-custom {
+        background-color: var(--primary-light);
+        color: var(--primary-dark);
+        font-size: 0.8rem;
+        border-radius: 20px;
+        padding: 0.5rem 1rem;
+        font-weight: 600;
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition);
+        border: 1px solid rgba(91, 70, 229, 0.15);
+    }
+
+    .no-coach-state {
+        background: linear-gradient(135deg, #F0EDFF 0%, #E0F2FE 100%);
+        border: none;
+        padding: 4rem 2rem;
+    }
+
+    .no-coach-state i {
+        color: var(--primary-color) !important;
+        background: white !important;
+        font-size: 3rem !important;
+        width: 100px !important;
+        height: 100px !important;
+    }
+
+    .coach-preview-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        border: 1px solid var(--border-color);
+        transition: var(--transition);
+        height: 100%;
+    }
+
+    .coach-preview-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .coach-preview-card .coach-avatar {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 1rem;
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .main-content {
+            padding: 1.25rem;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .coach-avatar {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .btn-primary-custom {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .main-content {
+            padding: 1rem;
+        }
+        
+        .card-header-custom {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 1.25rem;
+        }
+        
+        .card-body {
+            padding: 1.25rem;
+        }
+    }
+</style>
+
+<div class="main-content">
+    @if (Model.HasActiveSubscription)
+    {
+        <!-- Coach Info Section -->
+        <div class="card-custom mb-4" style="animation: slideInRight 0.6s ease-out;">
+            <div class="card-body d-flex align-items-center">
+                <div class="flex-grow-1">
+                    <h4 class="mb-1">@Model.CoachName</h4>
+                    <div class="text-muted mb-3">مدرب معتمد</div>
+
+                    <div class="d-flex gap-2 mb-3 flex-wrap">
+                        @if (Model.Specialists != null && Model.Specialists.Any())
+                        {
+                            foreach (var spec in Model.Specialists)
+                            {
+                                <span class="badge-custom">
+                                    @((spec?.GetType().GetProperty("Name") != null) ? spec.Name : spec.ToString())
+                                </span>
+                            }
+                        }
+                    </div>
+
+                    <p class="text-secondary mb-3">
+                        @Model.CoachExperience سنوات من الخبرة في التدريب والتغذية
+                    </p>
+
+                    <a href="@Url.Action("ClientChat", "Chat")" class="btn-primary-custom">
+                        <i class="bi bi-chat-left-text"></i> تواصل مع المدرب
+                    </a>
+                </div>
+
+                <img src="@(string.IsNullOrEmpty(Model.CoachImagePath) || Model.CoachImagePath == "--"
+                                      ? $"https://ui-avatars.com/api/?name={Uri.EscapeDataString(Model.CoachName ?? "Coach")}&background=4f46e5&color=fff"
+                                      : Url.Content(Model.CoachImagePath))"
+                     class="coach-avatar" alt="@Model.CoachName" />
+            </div>
+        </div>
+
+        <!-- Exercise Plan Section -->
+        <div class="card-custom mb-4">
+            <div class="card-header-custom">
+                <h5 class="mb-0">خطة التمارين</h5>
+                <span class="badge bg-primary bg-opacity-10 text-white">أحدث خطة</span>
+            </div>
+            <div class="card-body">
+                @if (!string.IsNullOrWhiteSpace(Model.ExercisePlanSummary) && Model.ExercisePlanSummary != "No exercise plan yet" && Model.ExercisePlanSummary != "--")
+                {
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>ملاحظات المدرب:</strong> @Model.ExercisePlanSummary
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="bi bi-calendar-x"></i>
+                        <h5 class="mb-2">لا توجد خطة تمارين متاحة</h5>
+                        <p class="text-muted mb-0">سيتم إضافة الخطة قريباً، يرجى التواصل مع المدرب</p>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Diet Plan Section -->
+        <div class="card-custom mb-4">
+            <div class="card-header-custom">
+                <h5 class="mb-0">الخطة الغذائية</h5>
+                <span class="badge bg-success bg-opacity-10 text-white">نشطة</span>
+            </div>
+            <div class="card-body">
+                @if (!string.IsNullOrWhiteSpace(Model.DietPlanSummary) && Model.DietPlanSummary != "No diet plan yet" && Model.DietPlanSummary != "--")
+                {
+                    <div class="alert alert-success">
+                        <i class="bi bi-check-circle me-2"></i>
+                        <strong>ملاحظات المدرب:</strong> @Model.DietPlanSummary
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="bi bi-egg-fried"></i>
+                        <h5 class="mb-2">لا توجد خطة غذائية متاحة</h5>
+                        <p class="text-muted mb-0">سيتم إضافة الخطة قريباً، يرجى التواصل مع المدرب</p>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- No Coach State -->
+        <div class="card-custom mb-4" style="animation: slideInRight 0.6s ease-out;">
+            <div class="card-header-custom">
+                <h5 class="mb-0">
+                    <i class="bi bi-person-plus me-2"></i>
+                    ابدأ رحلتك الصحية
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="no-coach-state">
+                    <i class="bi bi-heart-pulse"></i>
+                    <h4 class="mb-3" style="color: var(--primary-dark);">أنت لست مشترك مع أي مدرب حتى الآن</h4>
+                    <p class="text-muted mb-4" style="font-size: 1.1rem;">
+                        تصفح المدربين المتاحين واختر الأنسب لك لبدء خطة التدريب والتغذية المخصصة
+                    </p>
+                    <a href="@Url.Action("ClientCoaches", "Coach")" class="btn-primary-custom" style="font-size: 1.1rem; padding: 1rem 2.5rem;">
+                        <i class="bi bi-search me-2"></i>
+                        تصفح المدربين المتاحين
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Available Coaches Preview -->
+        @if (Model.AvailableCoaches != null && Model.AvailableCoaches.Any())
+        {
+            <div class="card-custom mb-4">
+                <div class="card-header-custom">
+                    <h5 class="mb-0">
+                        <i class="bi bi-people me-2"></i>
+                        مدربين مقترحين لك
+                    </h5>
+                    <span class="badge bg-white bg-opacity-20 text-white">@Model.AvailableCoaches.Count مدرب متاح</span>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        @foreach (var coach in Model.AvailableCoaches.Take(3))
+                        {
+                            <div class="col-md-4 mb-3">
+                                <div class="coach-preview-card">
+                                    <img src="@(string.IsNullOrEmpty(coach.User?.ImagePath)
+                                                      ? $"https://ui-avatars.com/api/?name={Uri.EscapeDataString(coach.User?.FullName ?? "Coach")}&background=4f46e5&color=fff"
+                                                      : Url.Content(coach.User.ImagePath))"
+                                         class="coach-avatar" alt="@coach.User?.FullName" />
+                                    <h6 class="mb-2">@coach.User?.FullName</h6>
+                                    <p class="text-muted small mb-3">@coach.ExperienceYears سنوات خبرة</p>
+                                    <a href="@Url.Action("ClientCoaches", "Coach")" class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-eye me-1"></i>
+                                        عرض التفاصيل
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    @if (Model.AvailableCoaches.Count > 3)
+                    {
+                        <div class="text-center mt-3">
+                            <a href="@Url.Action("ClientCoaches", "Coach")" class="btn btn-outline-primary">
+                                <i class="bi bi-arrow-left me-2"></i>
+                                عرض جميع المدربين (@Model.AvailableCoaches.Count)
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        <!-- Placeholder Plans -->
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card-custom">
+                    <div class="card-header-custom">
+                        <h5 class="mb-0">خطة التمارين</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="empty-state">
+                            <i class="bi bi-calendar-x"></i>
+                            <h5 class="mb-2">لا توجد خطة تمارين</h5>
+                            <p class="text-muted mb-0">اختر مدرب لبدء خطة التمارين المخصصة</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card-custom">
+                    <div class="card-header-custom">
+                        <h5 class="mb-0">الخطة الغذائية</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="empty-state">
+                            <i class="bi bi-egg-fried"></i>
+                            <h5 class="mb-2">لا توجد خطة غذائية</h5>
+                            <p class="text-muted mb-0">اختر مدرب لبدء الخطة الغذائية المخصصة</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Client Info Section -->
+    <div class="card-custom">
+        <div class="card-header-custom">
+            <h6 class="mb-0">معلومات العميل</h6>
+        </div>
+        <div class="card-body">
+            <div class="row align-items-center">
+                <!-- Client Image & Name -->
+                <div class="col-md-4 mb-3 mb-md-0 text-center">
+                    <div class="info-card h-100 d-flex flex-column align-items-center">
+                        <img src="@(string.IsNullOrEmpty(Model.ClientImagePath) || Model.ClientImagePath == "--"
+                                                              ? $"https://ui-avatars.com/api/?name={Uri.EscapeDataString(Model.ClientName ?? "Client")}&background=10b981&color=fff"
+                                                              : Url.Content(Model.ClientImagePath))"
+                             class="coach-avatar mb-2" style="width:100px; height:100px;" alt="@Model.ClientName" />
+                        <h6 class="text-muted small mb-1">العميل</h6>
+                        <h5 class="mb-0">@Model.ClientName</h5>
+                    </div>
+                </div>
+
+                <!-- Membership Number -->
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <div class="info-card h-100 text-center">
+                        <i class="bi bi-person-badge" style="font-size: 1.75rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+                        <h6 class="text-muted small mb-1">رقم العضوية</h6>
+                        <h5 class="mb-0">@Model.ClientId</h5>
+                    </div>
+                </div>
+
+                <!-- Coach Info -->
+                <div class="col-md-4">
+                    <div class="info-card h-100 text-center">
+                        <i class="bi bi-person-workspace" style="font-size: 1.75rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+                        <h6 class="text-muted small mb-1">المدرب</h6>
+                        <h5 class="mb-0">@(Model.HasActiveSubscription ? Model.CoachName : "غير محدد")</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

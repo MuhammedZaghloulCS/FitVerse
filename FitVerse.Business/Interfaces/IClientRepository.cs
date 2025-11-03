@@ -1,0 +1,19 @@
+﻿using FitVerse.Core.ViewModels.Anatomy;
+using FitVerse.Core.ViewModels.Coach;
+using FitVerse.Core.ViewModels.Profile;
+using FitVerse.Data.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace FitVerse.Core.Interfaces
+{
+    public interface IClientRepository:IGenericRepository<Client>
+    {
+        public (bool Success, string Message) UpdateClientGoalsRepo(string userName, ClientViewModel clientPhysicalInfo);
+        public void DeleteByUserId(string UserId);
+
+    }
+}

@@ -1,0 +1,724 @@
+﻿@model FitVerse.Core.ViewModels.Anatomy.AnatomyDashboardVM
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewBag.Active = "Anatomy";
+    ViewBag.PageTitle = "Anatomy Management";
+}
+
+<!-- Main Content -->
+<div class="container-fluid p-0">
+    <!-- Page Header -->
+    <div class="page-header mb-4">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+            <div>
+                <h2 class="page-title mb-2">Anatomy Management</h2>
+                <p class="page-subtitle mb-0">Add and manage body parts and anatomical information</p>
+            </div>
+            <button class="btn-action btn-action-primary" data-bs-toggle="modal" data-bs-target="#addAnatomyModal">
+                <i class="bi bi-plus-lg me-2"></i>Add Body Part
+            </button>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-lg-4 col-md-6">
+            <div class="stats-card stats-card-primary">
+                <div class="stats-card-icon">
+                    <i class="bi bi-person-arms-up"></i>
+                </div>
+                <div class="stats-card-content">
+                    <div class="stats-card-value">@Model.AnatomyCount</div>
+                    <div class="stats-card-label">Body Parts</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="stats-card stats-card-success">
+                <div class="stats-card-icon">
+                    <i class="bi bi-heart-pulse-fill"></i>
+                </div>
+                <div class="stats-card-content">
+                    <div class="stats-card-value">@Model.MuscleCount</div>
+                    <div class="stats-card-label">Linked Muscles</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="stats-card stats-card-warning">
+                <div class="stats-card-icon">
+                    <i class="bi bi-lightning-fill"></i>
+                </div>
+                <div class="stats-card-content">
+                    <div class="stats-card-value">@Model.ExerciseCount</div>
+                    <div class="stats-card-label">Related Exercises</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Section -->
+    <div class="card-modern mb-4">
+        <div class="card-modern-body">
+            <div class="search-wrapper">
+                <div class="search-icon">
+                    <i class="bi bi-search"></i>
+                </div>
+                <input type="text"
+                       id="searchAnatomy"
+                       class="search-input"
+                       placeholder="Search body parts by name...">
+            </div>
+        </div>
+    </div>
+
+    <!-- Anatomy Grid -->
+    <div id="anatomyContainer" class="row g-3">
+        <!-- Anatomy items will be loaded here dynamically -->
+        <div class="col-12">
+            <div class="loading-spinner text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Anatomy Modal -->
+<div class="modal fade" id="addAnatomyModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-modern">
+            <div class="modal-header-modern">
+                <h5 class="modal-title-modern">
+                    <i class="bi bi-plus-circle me-2"></i>Add Body Part
+                </h5>
+                <button type="button" class="btn-close-modern" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body-modern">
+                <form id="anatomyForm">
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">Body Part Name</label>
+                        <input type="text"
+                               id="Name"
+                               name="Name"
+                               class="form-control-modern"
+                               placeholder="e.g., Chest"
+                               required>
+                    </div>
+
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">Body Part Image</label>
+                        <div class="file-upload-wrapper">
+                            <input type="file"
+                                   id="Image"
+                                   name="Image"
+                                   accept="image/*"
+                                   class="file-input-modern">
+                            <label for="Image" class="file-label-modern">
+                                <i class="bi bi-cloud-upload me-2"></i>Choose Image
+                            </label>
+                        </div>
+                        <div class="image-preview-wrapper" id="addImagePreviewWrapper" style="display:none;">
+                            <img id="addImagePreview" src="#" alt="Preview" class="image-preview">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer-modern">
+                <button type="button" class="btn-modern btn-modern-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-2"></i>Cancel
+                </button>
+                <button type="button" id="saveAnatomyBtn" class="btn-modern btn-modern-primary">
+                    <i class="bi bi-check-circle me-2"></i>Save Body Part
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Anatomy Modal -->
+<div class="modal fade" id="editAnatomyModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-modern">
+            <div class="modal-header-modern">
+                <h5 class="modal-title-modern">
+                    <i class="bi bi-pencil-square me-2"></i>Edit Body Part
+                </h5>
+                <button type="button" class="btn-close-modern" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body-modern">
+                <form id="editAnatomyForm">
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">Body Part Name</label>
+                        <input type="text"
+                               id="editAnatomyName"
+                               class="form-control-modern"
+                               required>
+                    </div>
+
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">Current Image</label>
+                        <div class="image-preview-wrapper">
+                            <img id="currentAnatomyImage"
+                                 src="/Images/default.jpg"
+                                 alt="Current"
+                                 class="image-preview">
+                        </div>
+                    </div>
+
+                    <div class="form-group-modern">
+                        <label class="form-label-modern">Change Image (optional)</label>
+                        <div class="file-upload-wrapper">
+                            <input type="file"
+                                   id="editAnatomyImage"
+                                   accept="image/*"
+                                   class="file-input-modern">
+                            <label for="editAnatomyImage" class="file-label-modern">
+                                <i class="bi bi-cloud-upload me-2"></i>Choose New Image
+                            </label>
+                        </div>
+                        <div class="image-preview-wrapper" id="editImagePreviewWrapper" style="display:none;">
+                            <img id="editImagePreview" src="#" alt="Preview" class="image-preview">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer-modern">
+                <button type="button" class="btn-modern btn-modern-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-2"></i>Cancel
+                </button>
+                <button type="button" id="editSaveBtn" class="btn-modern btn-modern-primary">
+                    <i class="bi bi-check-circle me-2"></i>Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- View Muscles Modal -->
+<div class="modal fade" id="viewMusclesModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content modal-modern">
+            <div class="modal-header-modern">
+                <h5 class="modal-title-modern" id="muscleModalTitle">
+                    <i class="bi bi-heart-pulse me-2"></i>Linked Muscles
+                </h5>
+                <button type="button" class="btn-close-modern" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body-modern">
+                <div class="row g-3" id="musclesList">
+                    <!-- Muscles will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Page Header Styles */
+    .page-header {
+        margin-bottom: 2rem;
+    }
+
+    .page-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0;
+    }
+
+    .page-subtitle {
+        font-size: 0.95rem;
+        color: #64748b;
+    }
+
+    /* Stats Cards */
+    .stats-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+        .stats-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+    .stats-card-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .stats-card-primary .stats-card-icon {
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        color: white;
+    }
+
+    .stats-card-success .stats-card-icon {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+    }
+
+    .stats-card-warning .stats-card-icon {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+    }
+
+    .stats-card-content {
+        flex: 1;
+    }
+
+    .stats-card-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1e293b;
+        line-height: 1;
+        margin-bottom: 0.25rem;
+    }
+
+    .stats-card-label {
+        font-size: 0.875rem;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    /* Modern Card */
+    .card-modern {
+        background: white;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .card-modern-body {
+        padding: 1.5rem;
+    }
+
+    /* Search Wrapper */
+    .search-wrapper {
+        position: relative;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 1.1rem;
+        pointer-events: none;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 0.875rem 1rem 0.875rem 3rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: #f8fafc;
+    }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #6366f1;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+    /* Anatomy Card */
+    .anatomy-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .anatomy-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+            border-color: #6366f1;
+        }
+
+    .anatomy-image-wrapper {
+        width: 100%;
+        height: 160px;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 1rem;
+        background: #f1f5f9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .anatomy-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .anatomy-card:hover .anatomy-image {
+        transform: scale(1.05);
+    }
+
+    .anatomy-name {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .anatomy-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: auto;
+    }
+
+    /* Action Buttons */
+    .btn-action {
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        border: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .btn-action-primary {
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        color: white;
+    }
+
+        .btn-action-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+        }
+
+    .btn-action-edit {
+        flex: 1;
+        background: #f8fafc;
+        color: #6366f1;
+        border: 1px solid #e2e8f0;
+        justify-content: center;
+    }
+
+        .btn-action-edit:hover {
+            background: #6366f1;
+            color: white;
+            border-color: #6366f1;
+        }
+
+    .btn-action-delete {
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        background: #fef2f2;
+        color: #ef4444;
+        border: 1px solid #fee2e2;
+        justify-content: center;
+        align-items: center;
+    }
+
+        .btn-action-delete:hover {
+            background: #ef4444;
+            color: white;
+            border-color: #ef4444;
+        }
+
+    /* Modern Modal Styles */
+    .modal-modern {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .modal-header-modern {
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        color: white;
+        padding: 1.5rem 2rem;
+        border: none;
+    }
+
+    .modal-title-modern {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .btn-close-modern {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        opacity: 1;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+    }
+
+        .btn-close-modern::before,
+        .btn-close-modern::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 2px;
+            background: white;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(45deg);
+        }
+
+        .btn-close-modern::after {
+            transform: translate(-50%, -50%) rotate(-45deg);
+        }
+
+        .btn-close-modern:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+    .modal-body-modern {
+        padding: 2rem;
+    }
+
+    .modal-footer-modern {
+        padding: 1.5rem 2rem;
+        border-top: 1px solid #e2e8f0;
+        display: flex;
+        gap: 0.75rem;
+        justify-content: flex-end;
+    }
+
+    /* Form Styles */
+    .form-group-modern {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label-modern {
+        display: block;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .form-control-modern {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: #f8fafc;
+    }
+
+        .form-control-modern:focus {
+            outline: none;
+            border-color: #6366f1;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+    /* File Upload */
+    .file-upload-wrapper {
+        position: relative;
+    }
+
+    .file-input-modern {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .file-label-modern {
+        display: block;
+        padding: 0.875rem 1rem;
+        background: #f8fafc;
+        border: 2px dashed #d1d5db;
+        border-radius: 12px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+        .file-label-modern:hover {
+            border-color: #6366f1;
+            background: #f0f1ff;
+            color: #6366f1;
+        }
+
+    .image-preview-wrapper {
+        margin-top: 1rem;
+        text-align: center;
+    }
+
+    .image-preview {
+        max-height: 160px;
+        max-width: 100%;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        object-fit: cover;
+    }
+
+    /* Modal Buttons */
+    .btn-modern {
+        padding: 0.75rem 1.5rem;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        border: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .btn-modern-primary {
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        color: white;
+    }
+
+        .btn-modern-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+    .btn-modern-secondary {
+        background: white;
+        color: #64748b;
+        border: 1px solid #e2e8f0;
+    }
+
+        .btn-modern-secondary:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .empty-state-icon {
+        font-size: 4rem;
+        color: #cbd5e1;
+        margin-bottom: 1rem;
+    }
+
+    .empty-state-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #64748b;
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-state-text {
+        color: #94a3b8;
+    }
+
+    /* Loading Spinner */
+    .loading-spinner {
+        padding: 3rem;
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .page-title
+
+    {
+        font-size: 1.5rem;
+    }
+
+    .stats-card-value {
+        font-size: 1.75rem;
+    }
+
+    .anatomy-card {
+        padding: 1.25rem;
+    }
+
+    .modal-header-modern,
+    .modal-body-modern,
+    .modal-footer-modern {
+        padding: 1.25rem;
+    }
+
+    }
+</style>
+
+@section Scripts {
+    <script>
+        // Image Preview for Add Modal
+        document.getElementById('Image').addEventListener('change', function (event) {
+            const preview = document.getElementById('addImagePreview');
+            const wrapper = document.getElementById('addImagePreviewWrapper');
+            const file = event.target.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    preview.src = e.target.result;
+                    wrapper.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                wrapper.style.display = 'none';
+            }
+        });
+
+        // Image Preview for Edit Modal
+        document.getElementById('editAnatomyImage').addEventListener('change', function (event) {
+            const preview = document.getElementById('editImagePreview');
+            const wrapper = document.getElementById('editImagePreviewWrapper');
+            const file = event.target.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    preview.src = e.target.result;
+                    wrapper.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                wrapper.style.display = 'none';
+            }
+        });
+    </script>
+    <script src="~/ViewJs/Anatomy.js"></script>
+}
