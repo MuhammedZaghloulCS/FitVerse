@@ -15,6 +15,7 @@ using FitVerse.Service.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 
@@ -28,6 +29,8 @@ namespace FitVerse.Data.UnitOfWork
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly ILogger<AccountService> accountLogger;
+        private readonly ILogger<ClientDashboardService> clientDashboardLogger;
 
         // Lazy-loaded services
         private ICoachService coachService;
@@ -64,7 +67,7 @@ namespace FitVerse.Data.UnitOfWork
         private ISpecialtiesRepository specialtiesRepository;
         private ICoachSpecialtiesRepository coachSpecialtiesRepository;
 
-        public UnitOfWorkService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IHttpContextAccessor httpContextAccessor)
+        public UnitOfWorkService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IHttpContextAccessor httpContextAccessor, ILogger<AccountService> accountLogger, ILogger<ClientDashboardService> clientDashboardLogger)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
@@ -72,6 +75,8 @@ namespace FitVerse.Data.UnitOfWork
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.httpContextAccessor = httpContextAccessor;
+            this.accountLogger = accountLogger;
+            this.clientDashboardLogger = clientDashboardLogger;
         }
 
         // Identity
@@ -86,10 +91,10 @@ namespace FitVerse.Data.UnitOfWork
         public IDietPlan DietPlanService => dietPlanService ??= new DietPlanService(unitOfWork, mapper);
         public IPackageAppService PackageAppService => packageAppService ??= new PackageAppService(unitOfWork, mapper);
         public IUsersService UsersService => users ??= new UsersService(userManager, mapper, unitOfWork);
-        public IAccountService AccountService => account ??= new AccountService(userManager, mapper, signInManager, ClientService);
+        public IAccountService AccountService => account ??= new AccountService(userManager, mapper, signInManager, ClientService, accountLogger);
         public IAdminService AdminService => adminService ??= new AdminService(unitOfWork, userManager);
         public IDailyLogService DailyLogService => dailyLogService ??= new DailyLogService(unitOfWork);
-        public IClientDashboardService ClientDashboardService => clientDashboardService ??= new ClientDashboardService(unitOfWork, ClientService, CoachService, ImageHandleService, httpContextAccessor);
+        public IClientDashboardService ClientDashboardService => clientDashboardService ??= new ClientDashboardService(unitOfWork, ClientService, CoachService, ImageHandleService, httpContextAccessor, clientDashboardLogger);
         public IClientOnCoachesService clientOnCoachesService => _clientOnCoachesService ??= new ClientOnCoachesService(unitOfWork);
         public IExercisePlanService ExercisePlanService => exercisePlanService ??= new ExercisePlanService(unitOfWork,mapper);
         public IExercisePlanDetailService ExercisePlanDetailService => exercisePlanDetailService ??= new ExercisePlanDetailService(unitOfWork);

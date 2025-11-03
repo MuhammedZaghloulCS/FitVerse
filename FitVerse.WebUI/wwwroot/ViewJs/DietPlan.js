@@ -1,7 +1,11 @@
 $(document).ready(function () {
 
-    // 🟢 تحميل جميع خطط الدايت عند تحميل الصفحة
+    // 🟢 Load all diet plans on page load
     loadDietPlans();
+    loadStatistics();
+    
+    // Enhanced UI interactions
+    initializeEnhancedFeatures();
    
 
     //// 🟢 دالة تحميل كل الخطط
@@ -116,6 +120,8 @@ $(document).ready(function () {
                                                         <ul class="dropdown-menu">
                                                             <li><a class="dropdown-item view-plan" data-id="${plan.Id}" href="#"><i class="bi bi-eye me-2"></i>View Details</a></li>
                                                             <li><a class="dropdown-item edit-plan" data-id="${plan.Id}" href="#"><i class="bi bi-pencil me-2"></i>Edit</a></li>
+                                                            <li><a class="dropdown-item assign-plan" data-id="${plan.Id}" href="#"><i class="bi bi-person-plus me-2"></i>Assign to Client</a></li>
+                                                            <li><hr class="dropdown-divider"></li>
                                                             <li><a class="dropdown-item delete-plan text-danger" data-id="${plan.Id}" href="#"><i class="bi bi-trash me-2"></i>Delete</a></li>
                                                         </ul>
                                                     </div>
@@ -147,9 +153,14 @@ $(document).ready(function () {
                                                     </div>
                                                 </div>
 
-                                                <button class="btn btn-primary-custom btn-sm w-100 view-plan" data-id="${plan.Id}">
-                                                    <i class="bi bi-eye me-1"></i> View Full Plan
-                                                </button>
+                                                <div class="d-flex gap-2">
+                                                    <button class="btn btn-primary-custom btn-sm flex-fill view-plan" data-id="${plan.Id}">
+                                                        <i class="bi bi-eye me-1"></i> View
+                                                    </button>
+                                                    <button class="btn btn-success btn-sm flex-fill assign-plan" data-id="${plan.Id}">
+                                                        <i class="bi bi-person-plus me-1"></i> Assign
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -330,6 +341,194 @@ $(document).ready(function () {
             },
             error: function () {
                 swal("Error", "An error occurred while updating the diet plan.", "error");
+            }
+        });
+    });
+
+    // 🟢 Enhanced Features Initialization
+    function initializeEnhancedFeatures() {
+        // Refresh button
+        $('#refreshPlansBtn').on('click', function() {
+            $(this).html('<i class="bi bi-hourglass-split me-2"></i>Refreshing...');
+            loadDietPlans();
+            setTimeout(() => {
+                $(this).html('<i class="bi bi-arrow-clockwise me-2"></i>Refresh');
+            }, 1000);
+        });
+
+        // Filter functionality
+        $('.filter-option').on('click', function(e) {
+            e.preventDefault();
+            const filter = $(this).data('filter');
+            applyFilter(filter);
+        });
+
+        // Sort functionality
+        $('.sort-option').on('click', function(e) {
+            e.preventDefault();
+            const sort = $(this).data('sort');
+            applySorting(sort);
+        });
+
+        // View toggle
+        $('#gridViewBtn, #listViewBtn').on('click', function() {
+            $('.btn-group .btn').removeClass('active');
+            $(this).addClass('active');
+            
+            if ($(this).attr('id') === 'listViewBtn') {
+                $('#dietPlansContainer').removeClass('row g-4').addClass('list-view');
+            } else {
+                $('#dietPlansContainer').removeClass('list-view').addClass('row g-4');
+            }
+        });
+    }
+
+    // 🟢 Load Statistics
+    function loadStatistics() {
+        $.ajax({
+            url: '/DietPlan/GetAll',
+            method: 'GET',
+            success: function(response) {
+                if (response.data) {
+                    const plans = response.data;
+                    const activePlans = plans.filter(p => p.IsActive).length;
+                    const avgCalories = plans.length > 0 ? 
+                        Math.round(plans.reduce((sum, p) => sum + p.TotalCal, 0) / plans.length) : 0;
+                    
+                    $('#activePlansCount').text(activePlans);
+                    $('#avgCaloriesCount').text(avgCalories);
+                }
+            }
+        });
+    }
+
+    // 🟢 Apply Filter
+    function applyFilter(filter) {
+        const cards = $('#dietPlansContainer .col-lg-4');
+        
+        cards.each(function() {
+            const card = $(this);
+            const planName = card.find('h5').text().toLowerCase();
+            
+            switch(filter) {
+                case 'weight-loss':
+                    card.toggle(planName.includes('weight') || planName.includes('loss'));
+                    break;
+                case 'muscle-gain':
+                    card.toggle(planName.includes('muscle') || planName.includes('gain'));
+                    break;
+                case 'maintenance':
+                    card.toggle(planName.includes('maintenance'));
+                    break;
+                default:
+                    card.show();
+            }
+        });
+    }
+
+    // 🟢 Apply Sorting
+    function applySorting(sort) {
+        const container = $('#dietPlansContainer');
+        const cards = container.children('.col-lg-4').get();
+        
+        cards.sort(function(a, b) {
+            let aVal, bVal;
+            
+            switch(sort) {
+                case 'name':
+                    aVal = $(a).find('h5').text();
+                    bVal = $(b).find('h5').text();
+                    return aVal.localeCompare(bVal);
+                case 'calories':
+                    aVal = parseInt($(a).find('small').text().match(/\d+/)[0]);
+                    bVal = parseInt($(b).find('small').text().match(/\d+/)[0]);
+                    return bVal - aVal; // Descending
+                default:
+                    return 0;
+            }
+        });
+        
+        container.empty().append(cards);
+    }
+
+    // 🟢 Assign Plan to Client
+    $(document).on('click', '.assign-plan', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const planId = $(this).data('id');
+        
+        // Load plan details
+        $.ajax({
+            url: `/DietPlan/GetById/${planId}`,
+            method: 'GET',
+            success: function(plan) {
+                $('#assignPlanId').val(plan.Id);
+                $('#assignPlanName').text(plan.Name);
+                $('#assignPlanDetails').text(`${plan.TotalCal} calories/day • ${plan.Goal}`);
+                
+                // Load clients
+                loadClientsForAssign();
+                
+                $('#assignDietPlanModal').modal('show');
+            },
+            error: function() {
+                swal("Error", "Failed to load plan details.", "error");
+            }
+        });
+    });
+
+    // 🟢 Load Clients for Assignment
+    function loadClientsForAssign() {
+        $.ajax({
+            url: '/DietPlan/GetCoachClients',
+            method: 'GET',
+            success: function(clients) {
+                const selector = $('#assignClientSelector');
+                selector.empty().append('<option value="">Select a client...</option>');
+                
+                clients.forEach(client => {
+                    selector.append(`<option value="${client.Id}">${client.Name}</option>`);
+                });
+            },
+            error: function() {
+                swal("Error", "Failed to load clients.", "error");
+            }
+        });
+    }
+
+    // 🟢 Confirm Assignment
+    $('#confirmAssignDietPlanBtn').on('click', function() {
+        const planId = $('#assignPlanId').val();
+        const clientId = $('#assignClientSelector').val();
+        
+        if (!clientId) {
+            swal("Warning", "Please select a client.", "warning");
+            return;
+        }
+        
+        const $btn = $(this);
+        $btn.prop('disabled', true).html('<i class="bi bi-hourglass-split me-2"></i>Assigning...');
+        
+        $.ajax({
+            url: '/DietPlan/AssignPlan',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ PlanId: parseInt(planId), ClientId: clientId }),
+            success: function(response) {
+                if (response.success) {
+                    swal("Success!", response.message, "success");
+                    $('#assignDietPlanModal').modal('hide');
+                    loadDietPlans();
+                } else {
+                    swal("Error", response.message, "error");
+                }
+            },
+            error: function() {
+                swal("Error", "Failed to assign diet plan.", "error");
+            },
+            complete: function() {
+                $btn.prop('disabled', false).html('<i class="bi bi-check-circle me-2"></i>Assign Plan');
             }
         });
     });
