@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using FitVerse.Core.IService;
 using FitVerse.Core.IUnitOfWorkServices;
 using FitVerse.Core.UnitOfWork;
@@ -93,15 +93,23 @@ namespace FitVerse.Web.Controllers
         }
 
 
-        [HttpDelete]
+        [HttpPost]
         public IActionResult DeleteCoach(string Id)
         {
-
-            var coach = unitOFWorkService.CoachService.DeleteCoachById(Id);
-            if (coach.Success)
-                return Json(new { success = true, message = coach.Message });
-            else
-                return Json(new { success = false, message = coach.Message });
+            var result = unitOFWorkService.CoachService.DeleteCoachById(Id);
+            
+            if (result.Success)
+            {
+                return Json(new { 
+                    success = true, 
+                    message = result.Message 
+                });
+            }
+            
+            return Json(new { 
+                success = false, 
+                message = result.Message 
+            });
         }
 
 

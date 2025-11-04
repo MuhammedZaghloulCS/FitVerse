@@ -15,6 +15,7 @@ namespace FitVerse.Core.IService
         public Task<(bool Success, string Message)> Register(Register auth);
         public Task<String> GetRole(ApplicationUser user);
         public Task<String> GetRoleOptimized(ApplicationUser user);
+        public Task Logout();
 
     }
 }

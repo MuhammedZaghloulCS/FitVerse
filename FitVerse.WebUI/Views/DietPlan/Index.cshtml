@@ -586,3 +586,54 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src="/ViewJs/DietPlan.js"></script>
+
+<style>
+    /* Diet Plan Notes Cards Styling */
+    .diet-notes-card {
+        background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
+        border: 2px solid #10b981 !important;
+        border-radius: 8px;
+        padding: 10px 14px;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        margin-bottom: 8px !important;
+    }
+
+    .diet-notes-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-color: #10b981;
+    }
+
+    .diet-notes-content {
+        color: #374151;
+        font-size: 13px;
+        line-height: 1.5;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+
+    .diet-notes-section {
+        max-height: 200px;
+        overflow-y: auto;
+        padding-right: 6px;
+    }
+
+    .diet-notes-section::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .diet-notes-section::-webkit-scrollbar-track {
+        background: #f3f4f6;
+        border-radius: 10px;
+    }
+
+    .diet-notes-section::-webkit-scrollbar-thumb {
+        background: #10b981;
+        border-radius: 10px;
+    }
+
+    .diet-notes-section::-webkit-scrollbar-thumb:hover {
+        background: #059669;
+    }
+</style>

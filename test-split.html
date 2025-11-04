@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Split Function</title>
+    <style>
+        .card {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            background: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Delimiter Split</h1>
+    <div id="output"></div>
+
+    <script>
+        // Test data - same as your diet plan
+        const testNotes = "Day 1 – Monday (Clean Start): Focus on clean, balanced meals: Breakfast – Oats with milk and banana, Lunch – Grilled chicken breast with brown rice and salad, Snack – A handful of almonds or yogurt, Dinner – Tuna or boiled eggs with mixed vegetables. ,,, Day 2 – Tuesday (High Protein Focus): Keep protein high to support recovery: Breakfast – Scrambled eggs with whole-grain toast, Lunch – Beef or chicken stir-fry with quinoa, Snack – Protein shake or fruit, Dinner – Grilled fish with steamed broccoli. ,,, Day 3 – Wednesday (Light & Fresh): Add more greens and fiber: Breakfast – Greek yogurt with berries, Lunch – Vegetable soup with grilled chicken, Snack – Apple or cucumber slices, Dinner – Mixed salad with tuna and olive oil dressing.";
+
+        console.log('Original text:', testNotes);
+        console.log('Contains ,,,?', testNotes.includes(',,,'));
+
+        let segments = [];
+        if (testNotes.includes(',,,')) {
+            segments = testNotes.split(/\s*,,,\s*/);
+            console.log('Split by English commas:', segments.length, 'segments');
+        }
+
+        segments = segments.filter(segment => segment.trim() !== '');
+        console.log('After filtering:', segments.length, 'segments');
+
+        let html = '<h2>Result: ' + segments.length + ' cards</h2>';
+        segments.forEach((segment, index) => {
+            html += `
+                <div class="card">
+                    <strong>Card ${index + 1}:</strong><br>
+                    ${segment.trim()}
+                </div>
+            `;
+        });
+
+        document.getElementById('output').innerHTML = html;
+    </script>
+</body>
+</html>

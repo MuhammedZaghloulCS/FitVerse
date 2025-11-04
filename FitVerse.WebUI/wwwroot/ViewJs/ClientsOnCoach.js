@@ -171,7 +171,7 @@ function createGridCard(c) {
                 <div class="client-card-header">
                     <div class="d-flex align-items-center gap-3">
                         <div class="client-avatar">
-                            <img src="${c.Image || '/images/default-avatar.png'}" alt="${c.Name}" class="avatar-img">
+                            <img src="${c.ImagePath || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(c.Name) + '&background=6366f1&color=fff'}" alt="${c.Name}" class="avatar-img">
                         </div>
                         <div class="flex-grow-1">
                             <h5 class="client-name mb-1">${c.Name}</h5>
@@ -250,7 +250,7 @@ function createListCard(c) {
                     <div class="col-lg-4">
                         <div class="d-flex align-items-center gap-3">
                             <div class="client-avatar">
-                                <img src="${c.Image || '/images/default-avatar.png'}" alt="${c.Name}" class="avatar-img">
+                                <img src="${c.ImagePath || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(c.Name) + '&background=6366f1&color=fff'}" alt="${c.Name}" class="avatar-img">
                             </div>
                             <div>
                                 <h6 class="client-name mb-1">${c.Name}</h6>

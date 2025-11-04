@@ -106,5 +106,28 @@ namespace FitVerse.Web.Controllers
 
            return RedirectToAction("Dashboard", "ClientDashboard");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            try
+            {
+                // Sign out the user
+                await unitOfWorkService.AccountService.Logout();
+                
+                // Clear session data
+                HttpContext.Session.Clear();
+                
+                logger.LogInformation("User logged out successfully");
+                
+                // Redirect to login page
+                return RedirectToAction("Login", "Account");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error during logout");
+                return RedirectToAction("Login", "Account");
+            }
+        }
     }
 }

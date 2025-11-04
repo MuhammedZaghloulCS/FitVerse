@@ -9,6 +9,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@title</title>
+    <link rel="icon" type="image/jpeg" href="~/Images/logo2.jpg" />
+    <link rel="shortcut icon" type="image/jpeg" href="~/Images/logo2.jpg" />
 
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -26,13 +28,15 @@
            ======================================== */
 
         :root {
-            --primary-color: #6366f1;
-            --secondary-color: #10b981;
+            --primary-color: #1e293b;
+            --primary-dark: #0f172a;
+            --primary-gradient: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            --secondary-color: #ffffff;
             --danger-color: #ef4444;
             --warning-color: #f59e0b;
-            --info-color: #3b82f6;
+            --info-color: #1e293b;
             --dark-color: #1e293b;
-            --light-color: #f8fafc;
+            --light-color: #ffffff;
             --border-color: #e2e8f0;
             --text-muted: #64748b;
             --sidebar-width: 280px;
@@ -173,8 +177,8 @@
 
         .nav-link.active {
             color: white;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(16, 185, 129, 0.2));
-            border-right: 3px solid var(--primary-color);
+            background: rgba(255, 255, 255, 0.1);
+            border-right: 3px solid #ffffff;
         }
 
         .nav-link.active::before {
@@ -352,7 +356,7 @@
 
         .user-profile:focus {
             outline: none;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            box-shadow: 0 0 0 3px rgba(30, 41, 59, 0.1);
         }
 
         .user-avatar {
@@ -412,8 +416,8 @@
         }
 
         .notification-item.unread {
-            background-color: #f0f9ff;
-            border-left: 3px solid #3b82f6;
+            background-color: rgba(30, 41, 59, 0.05);
+            border-left: 3px solid #1e293b;
         }
 
         .notification-content {
@@ -564,8 +568,8 @@
         }
 
         .chat-item.active {
-            background: #f0f9ff;
-            border-left: 3px solid #6366f1;
+            background: rgba(30, 41, 59, 0.05);
+            border-left: 3px solid #1e293b;
         }
 
         .chat-content, .coach-content {
@@ -634,7 +638,7 @@
         }
 
         .unread-badge {
-            background: #6366f1;
+            background: #1e293b;
             color: white;
             font-size: 0.7rem;
             font-weight: 600;
@@ -748,7 +752,7 @@
         }
 
         .feature-item i {
-            color: #6366f1;
+            color: #1e293b;
         }
 
         .modern-chat-input {
@@ -777,7 +781,7 @@
         }
 
         .modern-send-btn {
-            background: #6366f1;
+            background: var(--primary-gradient);
             color: white;
             border: none;
             border-radius: 50%;
@@ -814,7 +818,7 @@
         }
 
         .message-bubble.sent .message-content {
-            background: #6366f1;
+            background: var(--primary-gradient);
             color: white;
         }
 
@@ -919,7 +923,7 @@
         }
 
         .card-header-custom {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            background: var(--primary-gradient);
             color: white;
             padding: 1.25rem 1.5rem;
             font-weight: 600;
@@ -932,19 +936,19 @@
 
         /* Custom Buttons */
         .btn-primary-custom {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            background: var(--primary-gradient);
             border: none;
             color: white;
             font-weight: 600;
             padding: 0.75rem 1.5rem;
             border-radius: 12px;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 4px 12px rgba(30, 41, 59, 0.3);
         }
 
         .btn-primary-custom:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+            box-shadow: 0 6px 20px rgba(30, 41, 59, 0.4);
             color: white;
         }
 
@@ -960,7 +964,7 @@
 
         .form-control-custom:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            box-shadow: 0 0 0 4px rgba(30, 41, 59, 0.1);
             background: white;
         }
 
@@ -1018,13 +1022,13 @@
         }
 
         .stat-icon.primary {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            background: rgba(30, 41, 59, 0.1);
             color: var(--primary-color);
         }
 
         .stat-icon.success {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
-            color: var(--secondary-color);
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
         }
 
         .stat-icon.warning {
@@ -1173,12 +1177,7 @@
                 <!-- Training & Progress -->
                 <div class="nav-section">
                     <div class="nav-section-title">Training</div>
-                    <div class="nav-item">
-                        <a class="nav-link @(ViewBag.Active == "Workouts" ? "active" : "")" href="~/Client/Workouts">
-                            <div class="nav-icon"><i class="bi bi-lightning"></i></div>
-                            <span class="nav-text">My Workouts</span>
-                        </a>
-                    </div>
+            
       
                     <div class="nav-item">
                         <a class="nav-link @(ViewBag.Active == "DailyLogs" ? "active" : "")" asp-controller="DailyLog" asp-action="ClientLogs">
@@ -1251,7 +1250,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow">
                             <li>
-                                <a class="dropdown-item" asp-controller="Client" asp-action="Profile">
+                                <a class="dropdown-item" asp-controller="Users" asp-action="Profile" asp-route-UserName="@User.Identity.Name">
                                     <i class="bi bi-person me-2"></i> Profile
                                 </a>
                             </li>

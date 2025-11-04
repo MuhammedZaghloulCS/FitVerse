@@ -150,5 +150,20 @@ namespace FitVerse.Service.Service
 
             return (Success: false, Message: "Please, Try Again later");
         }
+
+        public async Task Logout()
+        {
+            try
+            {
+                // Sign out the user from Identity
+                await signInManager.SignOutAsync();
+                logger.LogInformation("User logged out successfully");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error during logout");
+                throw;
+            }
+        }
     }
 }

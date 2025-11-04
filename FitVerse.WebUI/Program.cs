@@ -50,12 +50,12 @@ namespace FitVerse.WebUI
                 options.Password.RequiredLength = 3;
                 options.User.AllowedUserNameCharacters = null;
                 options.Password.RequiredUniqueChars = 0;
-            }).AddEntityFrameworkStores<FitVerseDbContext>()
-            .AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>(TokenOptions.DefaultProvider);
-            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,
-              options =>
-              {
+                }).AddEntityFrameworkStores<FitVerseDbContext>()
+                .AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>(TokenOptions.DefaultProvider);
+                builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,
+                  options =>
+                  {
                   options.LoginPath = new PathString("/Account/Login");
                   options.AccessDeniedPath = new PathString("/Account/AccessDenied");
               });
@@ -87,6 +87,19 @@ namespace FitVerse.WebUI
                 // Add global action filter to populate user info in all views
                 options.Filters.Add<FitVerse.WebUI.Filters.UserInfoActionFilter>();
             });
+
+
+            // Add SignalR
+            builder.Services.AddSignalR()
+             .AddJsonProtocol(options =>
+             {
+                 options.PayloadSerializerOptions.PropertyNamingPolicy = null;
+                 options.PayloadSerializerOptions.PropertyNameCaseInsensitive = true;
+             });
+
+            
+            builder.Services.AddScoped<IExercisePlanDetailRepository, ExercisePlanDetailRepository>();
+            builder.Services.AddScoped<IExercisePlanDetailService, ExercisePlanDetailService>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IEquipmentRepository, EquipmentRepository>();
             builder.Services.AddScoped<IAnatomyRepository, AnatomyRepository>();
@@ -109,21 +122,8 @@ namespace FitVerse.WebUI
             builder.Services.AddScoped<IImageHandleService, ImageHandleService>();
             builder.Services.AddScoped<IClientOnCoachesService, ClientOnCoachesService>();
             builder.Services.AddScoped<IExerciseService, ExerciseService>();
-            
             builder.Services.AddScoped<IExercisePlanRepository, ExercisePlanRepository>();
             builder.Services.AddScoped<IExercisePlanService, FitVerse.Service.Service.ExercisePlanService>();
-
-            // Add SignalR
-            builder.Services.AddSignalR()
-     .AddJsonProtocol(options =>
-     {
-         options.PayloadSerializerOptions.PropertyNamingPolicy = null;
-         options.PayloadSerializerOptions.PropertyNameCaseInsensitive = true;
-     });
-
-            
-            builder.Services.AddScoped<IExercisePlanDetailRepository, ExercisePlanDetailRepository>();
-            builder.Services.AddScoped<IExercisePlanDetailService, ExercisePlanDetailService>();
 
 
 

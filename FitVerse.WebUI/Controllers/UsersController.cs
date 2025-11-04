@@ -1,4 +1,4 @@
-﻿using FitVerse.Core.IUnitOfWorkServices;
+using FitVerse.Core.IUnitOfWorkServices;
 using FitVerse.Core.ViewModels.Admin.User;
 using FitVerse.Core.ViewModels.User;
 using Microsoft.AspNetCore.Identity;
@@ -103,14 +103,23 @@ namespace FitVerse.Web.Controllers
             return Json(new { Succeeded = res.Success, Message = res.Message });
         }
     
-        [HttpGet("DeleteUser/{Id}")]
-        public async Task<IActionResult> DeleteUser(string Id)
+        [HttpPost("DeleteUser")]
+        public async Task<IActionResult> DeleteUser(string id)
         {
-           
-            await unitOFWorkService.UsersService.DeleteUserAsync(Id);
-
+            var result = await unitOFWorkService.UsersService.DeleteUserAsync(id);
             
-            return RedirectToAction("Index");
+            if (result.Success)
+            {
+                return Json(new { 
+                    success = true, 
+                    message = result.Message 
+                });
+            }
+            
+            return Json(new { 
+                success = false, 
+                message = result.Message 
+            });
         }
         [HttpPost("ChangePasswordByAdmin")]
 

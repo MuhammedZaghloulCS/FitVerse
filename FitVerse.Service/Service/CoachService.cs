@@ -67,20 +67,24 @@ namespace FitVerse.Data.Service
             public List<AddCoachVM> GetAllCoaches()
             {
                 // نجيب الكوتشات ومعاهم التخصصات والـ User
-                var coaches = unitOfWork.Coaches.GetAll(includeProperties: "User,CoachSpecialties.Specialty");
+                var coaches = unitOfWork.Coaches.GetAll(includeProperties: "User,CoachSpecialties.Specialty").ToList();
 
-                // نعمل المابينج
-                var coachVMs = mapper.Map<List<AddCoachVM>>(coaches);
-
-                // نضيف التخصصات جوه الـ ViewModel
-                foreach (var coachVm in coachVMs)
+                // نعمل المابينج يدوياً عشان نضمن إن كل الداتا راجعة
+                var coachVMs = coaches.Select(coach => new AddCoachVM
                 {
-                    var coachEntity = coaches.First(c => c.Id == coachVm.Id);
-                    coachVm.Specialties = coachEntity.CoachSpecialties
+                    Id = coach.Id,
+                    Name = coach.User?.FullName ?? "Unknown",
+                    Title = coach.User?.UserName ?? "Coach",
+                    About = coach.About ?? "No description available",
+                    ExperienceYears = coach.ExperienceYears ?? 0,
+                    ImagePath = coach.User?.ImagePath,
+                    IsActive = coach.User?.Status?.ToLower() == "active",
+                    UserId = coach.UserId,
+                    Specialties = coach.CoachSpecialties?
                         .Select(cs => cs.Specialty?.Name)
                         .Where(name => !string.IsNullOrEmpty(name))
-                        .ToList();
-                }
+                        .ToList() ?? new List<string>()
+                }).ToList();
 
                 return coachVMs;
             }
@@ -95,9 +99,69 @@ namespace FitVerse.Data.Service
 
             (bool Success, string Message) ICoachService.DeleteCoachById(string id)
             {
-                var coaches = unitOfWork.Coaches.DeleteCoachById(id);
+                try
+                {
+                    var coach = unitOfWork.Coaches.Find(c => c.Id == id).FirstOrDefault();
+                    if (coach == null)
+                        return (false, "Coach not found");
 
-                return coaches;
+                    // Delete related data in correct order
+                    // 1. Delete Chats and Messages
+                    var chats = unitOfWork.Chats.Find(c => c.CoachId == coach.Id.ToString()).ToList();
+                    foreach (var chat in chats)
+                    {
+                        var messages = unitOfWork.Messages.Find(m => m.ChatId == chat.Id).ToList();
+                        unitOfWork.Messages.RemoveRange(messages);
+                        unitOfWork.Chats.Delete(chat);
+                    }
+
+                    // 2. Delete Coach Feedbacks
+                    var feedbacks = unitOfWork.CoachFeedbacks.Find(f => f.CoachId == coach.Id).ToList();
+                    foreach (var feedback in feedbacks)
+                    {
+                        unitOfWork.CoachFeedbacks.Delete(feedback);
+                    }
+
+                    // 3. Delete Exercise Plans
+                    var exercisePlans = unitOfWork.ExercisePlans.Find(e => e.CoachId == coach.Id).ToList();
+                    foreach (var plan in exercisePlans)
+                    {
+                        unitOfWork.ExercisePlans.Delete(plan);
+                    }
+
+                    // 4. Delete Diet Plans
+                    var dietPlans = unitOfWork.DietPlans.Find(d => d.CoachId == coach.Id).ToList();
+                    foreach (var plan in dietPlans)
+                    {
+                        unitOfWork.DietPlans.Delete(plan);
+                    }
+
+                    // 5. Delete Coach Packages
+                    var coachPackages = unitOfWork.coachPackageRepository.Find(cp => cp.CoachId == coach.Id).ToList();
+                    foreach (var package in coachPackages)
+                    {
+                        unitOfWork.coachPackageRepository.Delete(package);
+                    }
+
+                    // 6. Delete Coach Specialties
+                    var specialties = unitOfWork.CoachSpecialties.Find(cs => cs.CoachId == coach.Id).ToList();
+                    foreach (var specialty in specialties)
+                    {
+                        unitOfWork.CoachSpecialties.Delete(specialty);
+                    }
+
+                    // 7. Delete Coach record
+                    unitOfWork.Coaches.Delete(coach);
+                    
+                    // Save all deletions
+                    unitOfWork.Complete();
+
+                    return (true, "Coach and all related data deleted successfully");
+                }
+                catch (Exception ex)
+                {
+                    return (false, $"Error deleting coach: {ex.Message}");
+                }
             }
 
             public (bool Success, string Message) UpdateCoach(AddCoachVM model)

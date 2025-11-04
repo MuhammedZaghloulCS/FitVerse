@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using FitVerse.Core.Helpers;
 using FitVerse.Core.IService;
 using FitVerse.Core.IUnitOfWorkServices;
@@ -154,12 +154,130 @@ namespace FitVerse.Service.Service
             if (user == null)
                 return (false, "User not found");
 
-            var res = await userManager.DeleteAsync(user);
-            if (res.Succeeded)
+            try
             {
-                return (true, "User Deleted successfully");
+                // Get user role to determine what related data to delete
+                var roles = await userManager.GetRolesAsync(user);
+                var userRole = roles.FirstOrDefault();
+
+                // Handle Coach deletion
+                if (userRole == "Coach")
+                {
+                    var coach = UnitOfWork.Coaches.Find(c => c.UserId == id).FirstOrDefault();
+                    if (coach != null)
+                    {
+                        // Note: Skipping active subscription check as ClientSubscriptions repository is not available
+                        // TODO: Add IClientSubscriptionRepository to UnitOfWork
+
+                        // Delete related data in correct order
+                        // 1. Delete Chats and Messages
+                        var chats = UnitOfWork.Chats.Find(c => c.CoachId == coach.Id.ToString()).ToList();
+                        foreach (var chat in chats)
+                        {
+                            var messages = UnitOfWork.Messages.Find(m => m.ChatId == chat.Id).ToList();
+                            UnitOfWork.Messages.RemoveRange(messages);
+                            UnitOfWork.Chats.Delete(chat);
+                        }
+
+                        // 2. Delete Coach Feedbacks
+                        var feedbacks = UnitOfWork.CoachFeedbacks.Find(f => f.CoachId == coach.Id).ToList();
+                        foreach (var feedback in feedbacks)
+                        {
+                            UnitOfWork.CoachFeedbacks.Delete(feedback);
+                        }
+
+                        // 3. Delete Exercise Plans
+                        var exercisePlans = UnitOfWork.ExercisePlans.Find(e => e.CoachId == coach.Id).ToList();
+                        foreach (var plan in exercisePlans)
+                        {
+                            UnitOfWork.ExercisePlans.Delete(plan);
+                        }
+
+                        // 4. Delete Diet Plans
+                        var dietPlans = UnitOfWork.DietPlans.Find(d => d.CoachId == coach.Id).ToList();
+                        foreach (var plan in dietPlans)
+                        {
+                            UnitOfWork.DietPlans.Delete(plan);
+                        }
+
+                        // Note: ClientSubscriptions repository needs to be added to UnitOfWork
+                        // Skipping inactive subscriptions deletion for now
+
+                        // 5. Delete Coach Packages
+                        var coachPackages = UnitOfWork.coachPackageRepository.Find(cp => cp.CoachId == coach.Id).ToList();
+                        foreach (var package in coachPackages)
+                        {
+                            UnitOfWork.coachPackageRepository.Delete(package);
+                        }
+
+                        // 6. Delete Coach Specialties
+                        var specialties = UnitOfWork.CoachSpecialties.Find(cs => cs.CoachId == coach.Id).ToList();
+                        foreach (var specialty in specialties)
+                        {
+                            UnitOfWork.CoachSpecialties.Delete(specialty);
+                        }
+
+                        // 7. Delete Coach record
+                        UnitOfWork.Coaches.Delete(coach);
+                    }
+                }
+                // Handle Client deletion
+                else if (userRole == "Client")
+                {
+                    var client = UnitOfWork.Clients.Find(c => c.UserId == id).FirstOrDefault();
+                    if (client != null)
+                    {
+                        // Note: Skipping active subscription check as ClientSubscriptions repository is not available
+                        // TODO: Add IClientSubscriptionRepository to UnitOfWork
+
+                        // Delete related data
+                        // 1. Delete Chats and Messages
+                        var chats = UnitOfWork.Chats.Find(c => c.ClientId == client.Id.ToString()).ToList();
+                        foreach (var chat in chats)
+                        {
+                            var messages = UnitOfWork.Messages.Find(m => m.ChatId == chat.Id).ToList();
+                            UnitOfWork.Messages.RemoveRange(messages);
+                            UnitOfWork.Chats.Delete(chat);
+                        }
+
+                        // 2. Delete Daily Logs
+                        var dailyLogs = UnitOfWork.DailyLogsRepository.Find(d => d.ClientId == client.Id).ToList();
+                        foreach (var log in dailyLogs)
+                        {
+                            UnitOfWork.DailyLogsRepository.Delete(log);
+                        }
+
+                        // 3. Delete Coach Feedbacks
+                        var feedbacks = UnitOfWork.CoachFeedbacks.Find(f => f.ClientId == client.Id).ToList();
+                        foreach (var feedback in feedbacks)
+                        {
+                            UnitOfWork.CoachFeedbacks.Delete(feedback);
+                        }
+
+                        // Note: ClientSubscriptions repository needs to be added to UnitOfWork
+                        // Skipping inactive subscriptions deletion for now
+
+                        // 4. Delete Client record
+                        UnitOfWork.Clients.Delete(client);
+                    }
+                }
+
+                // Save all deletions
+                UnitOfWork.Complete();
+
+                // Finally delete the user
+                var res = await userManager.DeleteAsync(user);
+                if (res.Succeeded)
+                {
+                    return (true, "User and all related data deleted successfully");
+                }
+
+                return (false, string.Join(", ", res.Errors.Select(e => e.Description)));
             }
-            return (false, "Try Again");
+            catch (Exception ex)
+            {
+                return (false, $"Error deleting user: {ex.Message}");
+            }
         }
 
         public async Task<(bool Success, string Message, ApplicationUser user)> GetUserByEmailAsync(string email)

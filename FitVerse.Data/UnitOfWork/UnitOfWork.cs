@@ -32,13 +32,6 @@ namespace FitVerse.Data.UnitOfWork
         NotificationRepository notifications;
         ExercisePlanRepository exercisePlans;
         ExercisePlanDetailRepository exercisePlanDetail;
-        
-
-        
-
-
-
-
         public UnitOfWork(FitVerseDbContext context)
         {
             _context = context;

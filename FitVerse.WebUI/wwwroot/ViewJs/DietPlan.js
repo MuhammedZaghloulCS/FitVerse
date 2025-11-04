@@ -104,6 +104,46 @@ $(document).ready(function () {
 
 
                             response.data.forEach(function (plan) {
+                                // Split notes by ,,, delimiter (supports both Arabic and English commas)
+                                let notesCards = '';
+                                
+                                console.log('Plan Notes:', plan.Notes); // Debug log
+                                
+                                if (plan.Notes && plan.Notes.trim() !== '') {
+                                    // Try splitting with different delimiter patterns
+                                    let segments = [];
+                                    
+                                    // Check for various comma patterns (with or without spaces)
+                                    if (plan.Notes.includes(',,,')) {
+                                        // Split by ,,, and handle spaces
+                                        segments = plan.Notes.split(/\s*,,,\s*/);
+                                        console.log('Split by English commas (with spaces):', segments.length, 'segments');
+                                    } else if (plan.Notes.includes('،،،')) {
+                                        // Split by Arabic commas and handle spaces
+                                        segments = plan.Notes.split(/\s*،،،\s*/);
+                                        console.log('Split by Arabic commas (with spaces):', segments.length, 'segments');
+                                    } else {
+                                        // If no delimiter found, show as single card
+                                        segments = [plan.Notes];
+                                        console.log('No delimiter found, showing as single card');
+                                    }
+                                    
+                                    segments = segments.filter(segment => segment.trim() !== '');
+                                    
+                                    segments.forEach((segment, index) => {
+                                        notesCards += `
+                                            <div class="diet-notes-card mb-2">
+                                                <div class="diet-notes-content">
+                                                    ${segment.trim()}
+                                                </div>
+                                            </div>
+                                        `;
+                                    });
+                                } else {
+                                    notesCards = '<div class="text-muted small">No notes available</div>';
+                                    console.log('No notes found for this plan');
+                                }
+
                                 $('#dietPlansContainer').append(`
                                     <div class="col-lg-4 col-md-6 mb-4">
                                         <div class="card-custom h-100 shadow-sm">
@@ -125,6 +165,10 @@ $(document).ready(function () {
                                                             <li><a class="dropdown-item delete-plan text-danger" data-id="${plan.Id}" href="#"><i class="bi bi-trash me-2"></i>Delete</a></li>
                                                         </ul>
                                                     </div>
+                                                </div>
+
+                                                <div class="diet-notes-section mb-3">
+                                                    ${notesCards}
                                                 </div>
 
                                                 <div class="mb-3">
@@ -165,7 +209,7 @@ $(document).ready(function () {
                                         </div>
                                     </div>
                                 `);
-                });
+                            });
             },
             error: function (xhr) {
                 console.error("Error loading diet plans:", xhr);

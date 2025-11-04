@@ -1,4 +1,4 @@
-﻿var allData;
+var allData;
 var filteredData = [];
 var currentPage = 1;
 var rowsPerPage = 5;
@@ -283,38 +283,54 @@ function DeleteUser() {
 
         Swal.fire({
             title: `Are you sure?`,
-            text: `Do you want to delete ${user.FullName}?`,
+            text: `Do you want to delete ${user.FullName}? ${user.Role === 'Coach' ? 'All related data (plans, feedbacks, etc.) will be deleted.' : 'All related data will be deleted.'}`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#3085d6',
             confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'Cancel'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: `/Admin/Users/DeleteUser/${user.Id}`,
-                    method: 'GET',
-                    success: function () {
-                        Swal.fire(
-                            'Deleted!',
-                            `${user.FullName} has been deleted.`,
-                            'success'
-                        );
-                        // تحديث البيانات
-                        filteredData = filteredData.filter(u => u.Id !== user.Id);
-                        allData = allData.filter(u => u.Id !== user.Id);
-                        renderUsersPaginated(filteredData, currentPage);
-                        renderPagination(filteredData);
-                    },
-                    error: function () {
-                        Swal.fire(
-                            'Error!',
-                            'There was an error deleting the user.',
-                            'error'
-                        );
+            cancelButtonText: 'Cancel',
+            showLoaderOnConfirm: true,
+            preConfirm: () => {
+                return $.ajax({
+                    url: `/Admin/Users/DeleteUser`,
+                    method: 'POST',
+                    data: { id: user.Id },
+                    dataType: 'json'
+                }).then(response => {
+                    if (!response.success) {
+                        throw new Error(response.message);
                     }
+                    return response;
+                }).catch(error => {
+                    Swal.showValidationMessage(
+                        `Request failed: ${error.message || error.responseJSON?.message || 'Unknown error'}`
+                    );
                 });
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+            if (result.isConfirmed && result.value) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Deleted!',
+                    text: result.value.message || `${user.FullName} has been deleted successfully.`,
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+                
+                // Update data and refresh UI
+                filteredData = filteredData.filter(u => u.Id !== user.Id);
+                allData = allData.filter(u => u.Id !== user.Id);
+                
+                // Adjust current page if needed
+                const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+                if (currentPage > totalPages && totalPages > 0) {
+                    currentPage = totalPages;
+                }
+                
+                renderUsersPaginated(filteredData, currentPage);
+                renderPagination(filteredData);
             }
         });
     });

@@ -68,59 +68,33 @@ function LoadCoaches() {
                     `);
                 } else {
                     coaches.forEach(coach => {
-                        // Determine experience level
-                        let experienceLevel = 'beginner';
-                        let experienceBadge = 'Beginner';
-                        if (coach.ExperienceYears > 10) {
-                            experienceLevel = 'expert';
-                            experienceBadge = 'Expert';
-                        } else if (coach.ExperienceYears > 5) {
-                            experienceLevel = 'advanced';
-                            experienceBadge = 'Advanced';
-                        } else if (coach.ExperienceYears > 2) {
-                            experienceLevel = 'intermediate';
-                            experienceBadge = 'Intermediate';
-                        }
-
                         // Status badge
                         let statusBadge = coach.IsActive 
-                            ? '<span class="coach-status active">Active</span>'
-                            : '<span class="coach-status inactive">Inactive</span>';
+                            ? '<span class="badge bg-success">✅ Active</span>'
+                            : '<span class="badge bg-danger">❌ Inactive</span>';
 
                         // Avatar URL
                         let avatarUrl = coach.ImagePath || `https://ui-avatars.com/api/?name=${encodeURIComponent(coach.Name)}&background=6366f1&color=fff`;
 
                         let row = `
                             <tr>
-                                <td class="coach-details">
-                                    <div class="d-flex align-items-center">
-                                        <img src="${avatarUrl}" alt="${coach.Name}" class="coach-avatar">
-                                        <div>
-                                            <div class="coach-name">${coach.Name}</div>
-                                            <p class="coach-title">${coach.Title || 'Fitness Coach'}</p>
-                                        </div>
-                                    </div>
-                                </td>
+                                <td>${coach.Name || 'Unknown'}</td>
+                                <td>${coach.Title || 'Coach'}</td>
+                                <td>${coach.About || 'No description'}</td>
                                 <td class="text-center">
-                                    <div class="coach-experience">${coach.ExperienceYears || 0} Years</div>
-                                    <span class="experience-level ${experienceLevel}">${experienceBadge}</span>
-                                </td>
-                                <td class="text-center">
-                                    <span class="fw-semibold">${coach.PackageCount || 0}</span>
-                                    <small class="d-block text-muted">Packages</small>
+                                    <img src="${avatarUrl}" alt="${coach.Name}" 
+                                         style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
                                 </td>
                                 <td class="text-center">${statusBadge}</td>
                                 <td class="text-center">
-                                    <div class="action-buttons">
-                                        <button type="button" onclick="getById('${coach.Id}')" 
-                                                class="btn btn-sm btn-outline-primary" title="Edit Coach">
-                                            <i class="bi bi-pencil"></i>
-                                        </button>
-                                        <button type="button" onclick="DeleteCoach('${coach.Id}')" 
-                                                class="btn btn-sm btn-outline-danger" title="Delete Coach">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </div>
+                                    <button type="button" onclick="getById('${coach.Id}')" 
+                                            class="btn btn-sm btn-outline-primary" title="Edit Coach">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button type="button" onclick="DeleteCoach('${coach.Id}')" 
+                                            class="btn btn-sm btn-outline-danger" title="Delete Coach">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
                                 </td>
                             </tr>`;
                         coachTableBody.append(row);
@@ -166,32 +140,46 @@ function getById(id) {
 }
 
 function DeleteCoach(id) {
-    swal({
+    Swal.fire({
         title: "Are you sure?",
-        text: "Once deleted, you will not be able to recover this coach!",
+        text: "This will delete the coach and all related data (plans, feedbacks, chats, etc.). This action cannot be undone!",
         icon: "warning",
-        buttons: true,
-        dangerMode: true,
-    }).then((willDelete) => {
-        if (willDelete) {
-            $.ajax({
-                url: '/Coach/DeleteCoach?id=' + id,
-                method: 'DELETE',
-                success: function (res) {
-                    if (res.success) {
-                        swal("✅ Success", res.message, "success");
-                        LoadCoaches();
-                    } else {
-                        swal("❌ Error", res.message, "error");
-                    }
-                },
-                error: function () {
-                    swal("⚠️ Warning", "An error occurred while deleting the coach.", "error");
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel',
+        showLoaderOnConfirm: true,
+        preConfirm: () => {
+            return $.ajax({
+                url: '/Coach/DeleteCoach',
+                method: 'POST',
+                data: { Id: id },
+                dataType: 'json'
+            }).then(response => {
+                if (!response.success) {
+                    throw new Error(response.message);
                 }
+                return response;
+            }).catch(error => {
+                Swal.showValidationMessage(
+                    `Request failed: ${error.message || error.responseJSON?.message || 'Unknown error'}`
+                );
             });
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+        if (result.isConfirmed && result.value) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Deleted!',
+                text: result.value.message || 'Coach has been deleted successfully.',
+                timer: 2000,
+                showConfirmButton: false
+            });
+            LoadCoaches();
         }
     });
-
 }
 let currentPage = 1;
 let pageSize = 10;

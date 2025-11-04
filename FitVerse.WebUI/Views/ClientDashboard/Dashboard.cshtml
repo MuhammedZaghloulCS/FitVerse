@@ -298,24 +298,14 @@
                         <span>Chat with Coach</span>
                     </a>
                 </div>
-                <div class="col-md-3 col-6 mb-3">
-                    <a href="@Url.Action("Progress", "Client")" class="btn btn-outline-success w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3">
-                        <i class="bi bi-graph-up fs-4 mb-2"></i>
-                        <span>View Progress</span>
-                    </a>
-                </div>
+
                 <div class="col-md-3 col-6 mb-3">
                     <a href="@Url.Action("ClientLogs", "DailyLog")" class="btn btn-outline-warning w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3">
                         <i class="bi bi-journal-text fs-4 mb-2"></i>
                         <span>Daily Logs</span>
                     </a>
                 </div>
-                <div class="col-md-3 col-6 mb-3">
-                    <a href="@Url.Action("Profile", "Client")" class="btn btn-outline-info w-100 h-100 d-flex flex-column align-items-center justify-content-center py-3">
-                        <i class="bi bi-person-gear fs-4 mb-2"></i>
-                        <span>Profile Settings</span>
-                    </a>
-                </div>
+     
             </div>
         </div>
     </div>
@@ -471,3 +461,154 @@ else
         </div>
     </div>
 </div>
+
+@section Styles {
+    <style>
+        /* Fix alert container after cards are added */
+        .plan-content .alert {
+            padding: 0 !important;
+            margin: 0 !important;
+            background: transparent !important;
+            border: none !important;
+        }
+
+        /* Exercise Plan Cards */
+        .exercise-plan-card {
+            background: linear-gradient(135deg, #e0e7ff 0%, #ffffff 100%);
+            border-left: 4px solid #6366f1 !important;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 12px !important;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .exercise-plan-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #6366f1, #8b5cf6);
+        }
+
+        .exercise-plan-card:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.2);
+            background: linear-gradient(135deg, #ddd6fe 0%, #ffffff 100%);
+        }
+
+        .exercise-plan-content {
+            color: #1e293b;
+            font-size: 14px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-weight: 500;
+        }
+
+        .exercise-plan-content strong {
+            color: #6366f1;
+            font-weight: 700;
+        }
+
+        /* Diet Plan Cards */
+        .diet-plan-card {
+            background: linear-gradient(135deg, #d1fae5 0%, #ffffff 100%);
+            border-left: 4px solid #10b981 !important;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 12px !important;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .diet-plan-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #10b981, #059669);
+        }
+
+        .diet-plan-card:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.2);
+            background: linear-gradient(135deg, #a7f3d0 0%, #ffffff 100%);
+        }
+
+        .diet-plan-content {
+            color: #1e293b;
+            font-size: 14px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-weight: 500;
+        }
+
+        .diet-plan-content strong {
+            color: #10b981;
+            font-weight: 700;
+        }
+
+        /* Add day number badge */
+        .exercise-plan-card:first-child::after,
+        .diet-plan-card:first-child::after {
+            content: '1';
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 28px;
+            height: 28px;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: #6366f1;
+        }
+
+        .diet-plan-card:first-child::after {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        /* Scrollable container for cards */
+        .plan-content .alert {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 8px !important;
+        }
+
+        .plan-content .alert::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .plan-content .alert::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        .plan-content .alert::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        .plan-content .alert::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src="~/js/dashboard-cards-split.js"></script>
+}

@@ -224,7 +224,45 @@ function loadPlans() {
                 `;
             } else {
                 plans.forEach(p => {
-                    const truncatedNotes = p.notes && p.notes.length > 100 ? p.notes.substring(0, 100) + '...' : p.notes || 'No description available';
+                    // Split description by ,,, delimiter (supports both Arabic and English commas)
+                    let descriptionCards = '';
+                    
+                    console.log('Plan Notes:', p.notes); // Debug log
+                    
+                    if (p.notes && p.notes.trim() !== '') {
+                        // Try splitting with different delimiter patterns
+                        let segments = [];
+                        
+                        // Check for various comma patterns (with or without spaces)
+                        if (p.notes.includes(',,,')) {
+                            // Split by ,,, and handle spaces
+                            segments = p.notes.split(/\s*,,,\s*/);
+                            console.log('Split by English commas (with spaces):', segments.length, 'segments');
+                        } else if (p.notes.includes('،،،')) {
+                            // Split by Arabic commas and handle spaces
+                            segments = p.notes.split(/\s*،،،\s*/);
+                            console.log('Split by Arabic commas (with spaces):', segments.length, 'segments');
+                        } else {
+                            // If no delimiter found, show as single card
+                            segments = [p.notes];
+                            console.log('No delimiter found, showing as single card');
+                        }
+                        
+                        segments = segments.filter(segment => segment.trim() !== '');
+                        
+                        segments.forEach((segment, index) => {
+                            descriptionCards += `
+                                <div class="description-card mb-2">
+                                    <div class="description-card-content">
+                                        ${segment.trim()}
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        descriptionCards = '<div class="text-muted">No description available</div>';
+                        console.log('No notes found for this plan');
+                    }
                     
                     html += `
                         <div class="plan-card" data-plan-id="${p.id}">
@@ -249,7 +287,7 @@ function loadPlans() {
                             
                             <div class="plan-card-body">
                                 <div class="plan-description">
-                                    ${truncatedNotes}
+                                    ${descriptionCards}
                                 </div>
                                 
                                 <div class="plan-stats">
