@@ -48,7 +48,7 @@ namespace FitVerse.Core.IUnitOfWorkServices
         IExercisePlanRepository ExercisePlanRepository { get; }
         IExerciseRepository ExerciseRepository { get; }
         IPaymentRepository PaymentRepository { get; }
-
+        
         // Generic repositories for direct access
         IGenericRepository<FitVerse.Data.Models.Coach> Coaches { get; }
         IGenericRepository<FitVerse.Data.Models.Client> Clients { get; }
